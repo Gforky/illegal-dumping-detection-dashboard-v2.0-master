@@ -6,9 +6,11 @@ $(document).ready(function() {
       x : 'x',
       columns: [
         ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-        ['matrix', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
-        ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
-      ]
+        ['cpuUsage', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88]
+      ],
+      types: {
+        cpuUsage: 'bar'   
+      }
     },
     axis: {
       x: {
@@ -123,6 +125,8 @@ $(document).ready(function() {
   $(".cpuUsage").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     sysChart.axis.labels({y : 'CPU Usage'})
+    sysChart.load({columns: [['cpuUsage', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88]]})
+    sysChart.unload({ids: ['sofa']})
     document.getElementsByClassName('cpuUsage')[0].style.backgroundColor = "#3ab795"
     document.getElementsByClassName('memLoad')[0].style.backgroundColor = "#008CBA"
     document.getElementsByClassName('netTraff')[0].style.backgroundColor = "#008CBA"
@@ -132,6 +136,8 @@ $(document).ready(function() {
   $(".memLoad").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     sysChart.axis.labels({y : 'Memory Load'})
+    sysChart.load({columns: [['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]]})
+    sysChart.unload({ids: ['cpuUsage']})
     document.getElementsByClassName('cpuUsage')[0].style.backgroundColor = "#008CBA"
     document.getElementsByClassName('memLoad')[0].style.backgroundColor = "#3ab795"
     document.getElementsByClassName('netTraff')[0].style.backgroundColor = "#008CBA"
@@ -141,6 +147,8 @@ $(document).ready(function() {
   $(".netTraff").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     sysChart.axis.labels({y : 'Network Traffic'})
+    sysChart.load({columns: [['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]]})
+    sysChart.unload({ids: ['cpuUsage']})
     document.getElementsByClassName('cpuUsage')[0].style.backgroundColor = "#008CBA"
     document.getElementsByClassName('memLoad')[0].style.backgroundColor = "#008CBA"
     document.getElementsByClassName('netTraff')[0].style.backgroundColor = "#3ab795"
@@ -150,6 +158,8 @@ $(document).ready(function() {
   $(".cpuTemp").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     sysChart.axis.labels({y : 'CPU Temperature'})
+    sysChart.load({columns: [['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]]})
+    sysChart.unload({ids: ['cpuUsage']})
     document.getElementsByClassName('cpuUsage')[0].style.backgroundColor = "#008CBA"
     document.getElementsByClassName('memLoad')[0].style.backgroundColor = "#008CBA"
     document.getElementsByClassName('netTraff')[0].style.backgroundColor = "#008CBA"
