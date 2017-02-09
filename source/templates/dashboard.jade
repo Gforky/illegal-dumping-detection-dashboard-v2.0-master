@@ -1,0 +1,311 @@
+doctype html
+
+html(ng-app='dashboard')
+  head
+    link(rel='stylesheet', href='/css/index.css')
+    // load c3.css
+    link(rel='stylesheet', href='/c3/c3.css', type='text/css')
+    // load angular js
+    script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js')
+    // load jquery
+    script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js')
+    // load c3.js and d3.js
+    script(src='/d3/d3.min.js', charset='utf-8')
+    script(src='/c3/c3.min.js')
+    // external js to generate charts
+    script(src='/js/chartGen.js')
+    // dropzone scripts
+    script(src='https://rawgit.com/enyo/dropzone/master/dist/dropzone.js')
+    link(rel='stylesheet', href='/css/basic.css')
+    link(rel='stylesheet', href='/css/dropzone.css')
+    // external script to dynamically change the neural network
+    script(src="/js/changeNet.js")
+
+    // angularjs controllers
+    script.
+      var app = angular.module('dashboard', [])
+
+      app.controller('trainCtrl', function($scope) {
+        // add the function to dynamically display the cnn traning process outputs
+        
+      })
+
+      app.controller('chartCtrl', function($scope) {
+        // add the function to dynamically read the AP data from back-end
+      })
+
+      app.controller('inputCtrl', function($scope) {
+        // add the function to handle the input data, including images, labels, etc.
+      })
+
+      app.controller('searchCtrl', function($scope) {
+        $scope.searchButton = function() {
+          // add the function for image search
+        }
+      })
+
+      app.controller('modelCtrl', function($scope) {
+        // add the function to change the network correspondingly
+        $scope.VGG16 = function() {
+          $scope.networkName='VGG16'
+        }
+
+        $scope.ZF = function() {
+          $scope.networkName='ZF'
+        }
+
+        $scope.VGG_CNN_M_1024 = function() {
+          $scope.networkName='VGG_CNN_M_1024'
+        }
+      })
+
+      app.controller('alertCtrl', function($scope) {
+        // add the function to continously display the alters for detected illegal dumping
+      })
+
+      app.controller('objectDetectionCtrl', function($scope) {
+        // add the function to continously display the detected trash
+      })
+
+      app.controller('realTimeTrainingCtrl', function($scope) {
+
+      })
+
+      app.controller('todoController', ['$scope', '$interval', function($scope, $interval) {
+        // controller for to-do list of trash collections
+        $scope.tasks = [];
+        $scope.title = 'test';
+        $scope.add = function() {
+          $scope.tasks.push($scope.title);
+        }
+        $scope.delete = function() {
+          $scope.tasks.splice(this.$index, 1);
+        }
+
+        function updateTodoList() {
+          $scope.tasks.push($scope.title);
+        }
+
+        // set interval to continously update the list
+        var updateTime = $interval(updateTodoList, 1000);
+
+        /*element.on('$destroy', function() {
+          $interval.cancel(updateTime);
+        })*/
+      }])
+
+      // Register the 'myCurrentTime' directive factory method.
+      app.directive('myCurrentTime', ['$interval', function($interval) {
+        // return the directive link function. (compile function not needed)
+        return function(scope, element) {
+          var trainingTime = 0, // initial training time
+          hours, mins, secs, millisecs,
+          stopTime; // so that we can cancel the time updates
+
+          // used to update the UI
+          function updateTime() {
+            trainingTime += 1000;
+            //millisecs = parseInt(trainingTime % 1000);
+            secs = trainingTime / 1000;
+            mins = secs / 60;
+            hours = parseInt(mins / 60);
+            mins = parseInt(mins % 60);
+            secs = parseInt(secs - hours * 3600 - mins * 60);
+            element.text(hours + ":" + mins + ":" + secs);
+          }
+
+          stopTime = $interval(updateTime, 1000);
+
+          // listen on DOM destroy (removal) event, and cancel the next UI update
+          // to prevent updating time after the DOM element was removed.
+          element.on('$destroy', function() {
+            $interval.cancel(stopTime);
+          });
+        }
+      }])
+
+      app.directive('myCurrentDataset', ['$interval', function($interval) {
+        // return the directive link function. (compile function not needed)
+        return function(scope, element) {
+          var datasetSize = 0, // dataset size
+          stopTime; // so that we can cancel the time updates
+
+          // used to update the UI
+          function updateSize() {
+            datasetSize += 1;
+            element.text(datasetSize);
+          }
+
+          stopTime = $interval(updateSize, 1000);
+
+          // listen on DOM destroy (removal) event, and cancel the next UI update
+          // to prevent updating time after the DOM element was removed.
+          element.on('$destroy', function() {
+            $interval.cancel(stopTime);
+          });
+        }
+      }])
+
+      app.directive()
+
+    // js functions to dynamically read logs from back-end
+    script.
+      $(document).ready(function monitorTraining() {
+        $(".trainingLogRefresh").click(function() {
+          for(i = 0; i < 10; ++i)
+          $("p.trainingLog").append("This is a training output" + i + "<br />")
+        })
+        $(".trainingLogReset").click(function() {
+          $("p.trainingLog").replaceWith("<p class='trainingLog'></p>")
+        })
+
+        $(".alertLogRefresh").click(function() {
+          for(i = 0; i < 10; ++i)
+          $("p.alertLog").append("This is a alert output" + i + "<br />")
+        })
+        $(".alertLogReset").click(function() {
+          $("p.alertLog").replaceWith("<p class='alertLog'></p>")
+        })
+
+        $(".detectionLogRefresh").click(function() {
+          for(i = 0; i < 10; ++i)
+          $("p.detectionLog").append("This is a detection output" + i + "<br />")
+        })
+        $(".detectionLogReset").click(function() {
+          $("p.detectionLog").replaceWith("<p class='detectionLog'></p>")
+        })
+        // this function will repeatedly check the updates of logs
+        var checker = function() {
+          $("p.trainingLog").append("This is a training output <br />")
+          $("p.alertLog").append("This is a alert output <br />")
+          $("p.detectionLog").append("This is a detection output <br />")
+          // jquery function to automatically scroll down to bottom of div
+          $(".train").scrollTop($(".train")[0].scrollHeight)
+          $(".alert").scrollTop($(".alert")[0].scrollHeight)
+          $(".detection").scrollTop($(".detection")[0].scrollHeight)
+          //clearInternal(timer)
+        }
+        timer = setInterval(checker, 500)
+      })
+
+    // js function to dynamically set display parameter of div
+    script.
+      var setVisibility = function(classNames) {
+        document.getElementsByClassName(classNames[0])[0].style.display = "inline-block";
+        document.getElementsByClassName(classNames[0] + "Button")[0].style.backgroundColor = "#3ab795";
+        for (index = 1; index < classNames.length; ++index) {
+          document.getElementsByClassName(classNames[index])[0].style.display = "none";
+          document.getElementsByClassName(classNames[index] + "Button")[0].style.backgroundColor = "#008CBA";
+        }
+      }
+
+    // c3 library charts
+
+
+  title Illegal Dumping Detection System Dashboard
+  body
+    .header
+      h1.page-title Illegal Dumping Detection System Dashboard
+
+    div.switchGridButtons
+      button.sysOpsButton(onclick='setVisibility(["sysOps", "dataViews", "logViews"])') System Operations
+      button.dataViewsButton(onclick='setVisibility(["dataViews", "logViews", "sysOps"])') Data Virtualization
+      button.logViewsButton(onclick='setVisibility(["logViews", "dataViews", "sysOps"])') Log Views
+
+    div(ng-app="dashboard")
+
+      // system opertations webpage
+      div.sysOps
+        div.left-half
+          div.left-half-1
+            div.upload-files
+              form.dropzone.dz-clickable(action='/upload-files')
+                 div.dz-message Drop files here or click to upload.
+                    //br
+                    //span.note (This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)
+            div.realTime-training(ng-controller="realTimeTrainingCtrl")
+              //div.search(ng-controller="searchCtrl")
+              //  input(type="text", ng-model="imgName")
+              //  button(ng-click="searchButton()") Search Image
+              //div.model(ng-controller="modelCtrl")
+              //  ul.nav
+              //    li: button.VGG16(ng-click="VGG16()") VGG16
+              //    li: button.ZF(ng-click="ZF()") ZF
+              //    li: button.VGG_CNN_M_1024(ng-click="VGG_CNN_M_1024()") VGG_CNN_M_1024
+              div.realTime-trainingTime
+                span(style="color:#008CBA") Training Time of Current Dataset: 
+                span(my-current-time, style="color:#ff4000")
+              div.realTime-dataset
+                span(style="color:#008CBA") Dataset Size of Current Training:
+                span(my-current-dataset, style="color:#ff4000")
+          div.left-half-2
+            div.todo-list(ng-controller='todoController')
+              form(ng-submit='add()')
+                input(ng-model='title')
+                button Add
+              ul
+                li(ng-repeat='t in tasks track by $index'): button(ng-click='delete()') {{ t }} 
+
+        div.right-half
+          iframe.detectLocations(src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB-denz3OyVbLzOvKpehCzSLJzNohqAebo &q=Space+Needle,Seattle+WA" allowfullscreen)
+
+      // data virtualization webpage
+      div.dataViews
+        div.sysStat
+          h2 System Status
+          div.chartButtons
+            button.cpuUsage CPU Usage
+            button.memLoad Memory Load
+            button.netTraff Network Traffic
+            button.cpuTemp CPU Temprature
+          div.sysChart(ng-controller="chartCtrl")
+
+        div.dbStat
+          h2 Database Status
+          div.chartButtons
+            button.imgStorage Image Storage
+            button.dbIO I/O Traffic
+            button.dbQuery Database Queries
+          div.dbChart(ng-controller="chartCtrl")
+
+        div.nnStat
+          h2 Neural Network Status
+          div.chartButtons
+            button.AP Average Precisions
+            button.datasetSize Dataset Size
+            button.detectedObjects Detected Objects
+          div.nnChart(ng-controller="chartCtrl")
+
+        div.cuStat
+          h2 Client Usage Status
+          div.chartButtons
+            button.completedTasks Completed Tasks
+            button.supDec Supervision Decisions
+            button.upImg Upload Images
+          div.cuChart(ng-controller="chartCtrl")
+
+      // log views webpage
+      div.logViews
+        div.left-half
+          div.left-half-1
+          div.left-half-2
+            div.logButtons
+              button.alertLogRefresh Manually refresh log
+              button.alertLogReset Reset Log
+            div.alert
+              p.alertLog
+            div.logButtons
+              button.detectionLogRefresh Manually refresh log
+              button.detectionLogReset Reset Log
+            div.detection
+              p.detectionLog
+
+        div.right-half
+          div.logButtons
+            button.trainingLogRefresh Manually refresh log
+            button.trainingLogReset Reset Log
+          div.train(ng-controller="trainCtrl")
+            p.trainingLog
+
+    .footer
+      p Copyright © 2016 Wendy Boo, Alan Chen, Luwen Miao, Xiaoming Chuang

@@ -1,0 +1,259 @@
+@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,200,700");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Source Code Pro', monospace;
+}
+.header {
+  background-color: #008CBA;
+  background-position: center;
+}
+.header .page-title {
+  font-weight: 200;
+  font-size: 20px;
+  text-align: center;
+  padding: 20px;
+  text-transform: uppercase;
+  color: #fff;
+}
+.nav {
+  background: #000;
+  text-align: center;
+}
+.nav li {
+  display: inline-block;
+}
+.nav button {
+  display: inline-block;
+  padding: 5px;
+  background-color: #008CBA;
+  color: white;
+  text-decoration: none;
+}
+.nav button:hover {
+  background-color: #3ab795;
+  text-decoration: underline;
+}
+.main-content {
+  margin: 50px auto;
+  max-width: 600px;
+}
+.main-content p {
+  line-height: 1.6;
+  margin-bottom: 1.7em;
+}
+.footer {
+  margin: 50px auto;
+  max-width: 600px;
+  border-top: 1px solid #444;
+  padding: 20px 0;
+}
+.footer p {
+  color: #444;
+  font-size: 12px;
+}
+
+.logViews {
+  display: none;
+  padding:25px;
+  width: 100%;
+  height: 600px;
+}
+
+.dataViews {
+  padding:25px;
+  width: 100%;
+}
+
+.sysOps {
+  display: block;
+  padding:25px;
+  width: 100%;
+  height: 600px;
+}
+
+.left-half, 
+.right-half {
+  float:left;
+  width:50%;
+  height:100%;
+}
+
+.left-half-1 {
+  height:30%;
+  margin-bottom: 5px;
+}
+
+.left-half-2 {
+  height:70%;
+}
+
+.upload-files {
+  float:left;
+  width:50%;
+  height:100%;
+  overflow: scroll;
+  padding: 1%;
+}
+
+.realTime-training {
+  float:left;
+  width:50%;
+  height:100%;
+  padding: 1%;
+}
+
+.search,
+.model {
+  height:50%;
+}
+
+.alert,
+.train,
+.detection {
+  display: block;
+  height:45%;
+  overflow: scroll;
+}
+
+.AP,
+.datasetSize,
+.detectedObjects,
+.cpuUsage,
+.memLoad,
+.netTraff,
+.cpuTemp,
+.imgStorage,
+.dbIO,
+.dbQuery,
+.completedTasks,
+.supDec,
+.upImg {
+  display: inline-block;
+  background-color: #008CBA;
+  color: white;
+  height:100%;
+  width:25%;
+  text-decoration: none;
+}
+
+.AP:hover,
+.datasetSize:hover,
+.detectedObjects:hover,
+.cpuUsage:hover,
+.memLoad:hover,
+.netTraff:hover,
+.cpuTemp:hover,
+.imgStorage:hover,
+.dbIO:hover,
+.dbQuery:hover,
+.completedTasks:hover,
+.supDec:hover,
+.upImg:hover {
+  background-color: #3ab795;
+}
+
+.detectLocations {
+  width: 100%;
+  height: 100%;
+  frameborder: 0px;
+  border: 0px;
+  padding-left: 5%;
+}
+
+.todo-list {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #008CBA;
+  padding: 3px;
+  overflow: scroll;
+}
+
+.op-todo-list {
+  margin-left: 30%;
+  margin-right: 30%;
+  height: 80%;
+  border: 1px solid #008CBA;
+  padding: 3px;
+  overflow: scroll;
+}
+
+.sysStat,
+.dbStat,
+.nnStat,
+.cuStat {
+  border: 1px solid #008CBA;
+  padding: 3px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.sysStat h2,
+.dbStat h2,
+.nnStat h2,
+.cuStat h2 {
+  color: #008CBA;
+}
+
+.switchGridButtons {
+  width: 100%;
+  height: 50px;
+  margin-left: 0.5%;
+}
+.switchGridButtons button {
+  display: inline-block;
+  background-color: #008CBA;
+  color: white;
+  height:100%;
+  width:33%;
+  text-decoration: none;
+}
+
+.switchGridButtons button:hover {
+  background-color: #3ab795;
+}
+
+.adminLogin,
+.operatorLogin {
+  height: 500px;
+  width: 100%;
+}
+
+.adminTitle,
+.opTitle {
+  color: #008CBA;
+  text-align: center;
+}
+
+.adminInput,
+.opInput {
+  margin-top: 20px;
+  margin-left: 42%;
+  margin-right: 42%;
+  padding: 15px;
+  border: 1px solid #008CBA;
+}
+
+.adminLoginBtn,
+.opLoginBtn {
+  background-color: #008CBA;
+  color: white;
+  height:50%;
+  width:25%;
+  margin-left: 75%;
+  margin-top: 10%;
+  text-decoration: none;
+}
+
+.adminLoginBtn:hover,
+.opLoginBtn:hover {
+  background-color: #3ab795;
+}
+
+.realTime-trainingTime,
+.realTime-dataset {
+  margin-bottom: 20px;
+}

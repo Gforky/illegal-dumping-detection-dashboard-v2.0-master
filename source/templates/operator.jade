@@ -1,0 +1,48 @@
+html(ng-app='opTodoList')
+  head
+    link(rel='stylesheet', href='/css/index.css')
+    // load angular js
+    script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js')
+    // load jquery
+    script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js')
+
+
+    script.
+      var app = angular.module('opTodoList', [])
+
+      app.controller('todoController', ['$scope', '$interval', function($scope, $interval) {
+        // controller for to-do list of trash collections
+        $scope.tasks = [];
+        $scope.title = 'test';
+        $scope.add = function() {
+          $scope.tasks.push($scope.title);
+        }
+        $scope.delete = function() {
+          $scope.tasks.splice(this.$index, 1);
+        }
+
+        function updateTodoList() {
+          $scope.tasks.push($scope.title);
+        }
+
+        // set interval to continously update the list
+        var updateTime = $interval(updateTodoList, 1000);
+
+        /*element.on('$destroy', function() {
+          $interval.cancel(updateTime);
+        })*/
+      }])
+
+  title Illegal Dumping Detection System Operator To-Do List
+  body
+    .header
+      h1.page-title Illegal Dumping Detection System Operator To-Do List
+
+    div.op-todo-list(ng-controller='todoController')
+      div.opID
+        h4 Sudo Operator
+      form(ng-submit='add()')
+        input(ng-model='title')
+        button Add
+      ul
+        li(ng-repeat='t in tasks track by $index'): button(ng-click='delete()') {{ t }} 
