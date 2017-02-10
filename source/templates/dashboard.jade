@@ -33,7 +33,7 @@ html(ng-app='dashboard')
     // load fancybox on load
     script.
       $(document).ready(function() {
-        $(".fancybox").fancybox({'minWidth':700})
+        $(".fancybox").fancybox({'minWidth':700, 'speedIn':100, 'speedOut':100})
       })
 
     // angularjs controllers
@@ -86,7 +86,7 @@ html(ng-app='dashboard')
 
       })
 
-      //app.controller('todoController', ['$scope', '$interval', function($scope, $interval) {
+      //app.controller('todoCtrl', ['$scope', '$interval', function($scope, $interval) {
         // controller for to-do list of trash collections
       //  $scope.tasks = [];
       //  $scope.title = 'test';
@@ -109,7 +109,7 @@ html(ng-app='dashboard')
       //  })
       //}])
 
-      app.controller('todoController', function($scope) {
+      app.controller('todoCtrl', function($scope) {
         $scope.photos = [
           {src: '/images/tv-monitor/345361872_9e7aff54f5_b.jpg', desc: 'Image 01'},
           {src: '/images/tv-monitor/501173063_6e1b3775e5_b.jpg', desc: 'Image 02'},
@@ -141,6 +141,21 @@ html(ng-app='dashboard')
         // show a specific image
         $scope.showPhoto = function(index) {
           $scope._Index = index;
+        }
+        // delete image and shift to next image
+        $scope.removePhoto = function() {
+          $scope.photos.splice($scope._Index, 1);
+          $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+        }
+        // functions handling object decisions
+        $scope.findSofa = function() {
+
+        }
+        $scope.findMattress = function() {
+
+        }
+        $scope.findTvMonitor = function() {
+
         }
       })
 
@@ -249,6 +264,28 @@ html(ng-app='dashboard')
         }
       }
 
+    // js to change Supervision buttons' colors
+    script.
+      $(document).ready(function() {
+        $('#findSofa').click(function() {
+          $(this).toggleClass('chosenColor');
+        })
+
+        $('#findMattress').click(function() {
+          $(this).toggleClass('chosenColor');
+        })
+
+        $('#findTvMonitor').click(function() {
+          $(this).toggleClass('chosenColor');
+        })
+
+        $('.deleteImg').click(function() {
+          $('#findSofa').toggleClass('chosenColor', false);
+          $('#findMattress').toggleClass('chosenColor', false);
+          $('#findTvMonitor').toggleClass('chosenColor', false);
+        })
+      })
+
   title Illegal Dumping Detection System Dashboard
   body
     .header
@@ -286,7 +323,7 @@ html(ng-app='dashboard')
                 span(style="color:#008CBA") Dataset Size of Current Training:
                 span(my-current-dataset, style="color:#ff4000")
           div.left-half-2
-            div.slider(ng-controller='todoController')
+            div.slider(ng-controller='todoCtrl')
               //form(ng-submit='add()')
               //  input(ng-model='title')
               //  button Add
@@ -296,6 +333,13 @@ html(ng-app='dashboard')
                 img.slide(ng-repeat='photo in photos', ng-swipe-right='showPrev()', ng-swipe-left='showNext()', ng-show='isActive($index)', ng-src='{{photo.src}}')
               div.arrow.prev(ng-click='showPrev()')
               div.arrow.next(ng-click='showNext()')
+              button#findSofa(ng-click='findSofa()')
+                p(style="font-size:12px; text-align:center") Sofa
+              button#findMattress(ng-click='findMattress()')
+                p(style="font-size:12px; text-align:center") Mattress
+              button#findTvMonitor(ng-click='findTvMonitor()')
+                p(style="font-size:9px; text-align:center") TV Monitor
+              div.deleteImg(ng-click='removePhoto()')
               //ul.navPhoto
                 //li(ng-repeat='photo in photos', ng-class='{"active" : isActive($index)}')
                   //img(src='{{photo.src}}', alt='{{photo.desc}}', title='{{photo.desc}}', ng-click='showPhoto($index)')
