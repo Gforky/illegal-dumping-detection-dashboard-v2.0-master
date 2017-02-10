@@ -120,7 +120,7 @@ $(document).ready(function() {
       }
     }
   })
-
+  
   // button clicks of System Status Chart
   $(".cpuUsage").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
