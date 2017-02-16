@@ -1,4 +1,8 @@
 @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,200,700");
+:root {
+  --blue: #0055A2;
+  --gold: #E5A823;
+}
 * {
   margin: 0;
   padding: 0;
@@ -8,7 +12,7 @@ body {
   font-family: 'Source Code Pro', monospace;
 }
 .header {
-  background-color: #008CBA;
+  background-color: var(--blue);
   background-position: center;
 }
 .header .page-title {
@@ -18,6 +22,24 @@ body {
   padding: 20px;
   text-transform: uppercase;
   color: #fff;
+}
+.button {
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+button {
+  background-color: white;
+  color: black;
+}
+button:hover {
+  background-color: var(--blue);
+  color: white;
+  cursor: pointer;
 }
 .nav {
   background: #000;
@@ -29,12 +51,9 @@ body {
 .nav button {
   display: inline-block;
   padding: 5px;
-  background-color: #008CBA;
-  color: white;
   text-decoration: none;
 }
 .nav button:hover {
-  background-color: #3ab795;
   text-decoration: underline;
 }
 .main-content {
@@ -133,27 +152,33 @@ body {
 .supDec,
 .upImg {
   display: inline-block;
-  background-color: #008CBA;
-  color: white;
   height:100%;
   width:25%;
   text-decoration: none;
 }
 
-.AP:hover,
-.datasetSize:hover,
-.detectedObjects:hover,
-.cpuUsage:hover,
-.memLoad:hover,
-.netTraff:hover,
-.cpuTemp:hover,
-.imgStorage:hover,
-.dbIO:hover,
-.dbQuery:hover,
-.completedTasks:hover,
-.supDec:hover,
-.upImg:hover {
-  background-color: #3ab795;
+.findSofa,
+.findMattress,
+.findTvMonitor {
+  height: 20px;
+  width: 60px;
+  top: 50%;
+  margin-top: 27%;
+  position: absolute;
+  border: 1px solid var(--blue);
+}
+
+.findSofa {
+  left: 10%;
+}
+
+.findMattress {
+  left: 20%;
+}
+
+.findTvMonitor {
+  left: 30%;
+  font-size: 10px;
 }
 
 .detectLocations {
@@ -167,7 +192,7 @@ body {
 .todo-list {
   width: 100%;
   height: 100%;
-  border: 1px solid #008CBA;
+  border: 1px solid var(--blue);
   padding: 3px;
   overflow: scroll;
 }
@@ -176,7 +201,7 @@ body {
   margin-left: 30%;
   margin-right: 30%;
   height: 80%;
-  border: 1px solid #008CBA;
+  border: 1px solid var(--blue);
   padding: 3px;
   overflow: scroll;
 }
@@ -185,7 +210,7 @@ body {
 .dbStat,
 .nnStat,
 .cuStat {
-  border: 1px solid #008CBA;
+  border: 1px solid var(--blue);
   padding: 3px;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -195,7 +220,7 @@ body {
 .dbStat h2,
 .nnStat h2,
 .cuStat h2 {
-  color: #008CBA;
+  color: var(--blue);
 }
 
 .switchGridButtons {
@@ -205,15 +230,9 @@ body {
 }
 .switchGridButtons button {
   display: inline-block;
-  background-color: #008CBA;
-  color: white;
   height:100%;
   width:33%;
   text-decoration: none;
-}
-
-.switchGridButtons button:hover {
-  background-color: #3ab795;
 }
 
 .adminLogin,
@@ -224,7 +243,7 @@ body {
 
 .adminTitle,
 .opTitle {
-  color: #008CBA;
+  color: var(--blue);
   text-align: center;
 }
 
@@ -234,23 +253,16 @@ body {
   margin-left: 42%;
   margin-right: 42%;
   padding: 15px;
-  border: 1px solid #008CBA;
+  border: 1px solid var(--blue);
 }
 
 .adminLoginBtn,
 .opLoginBtn {
-  background-color: #008CBA;
-  color: white;
   height:50%;
   width:25%;
   margin-left: 75%;
   margin-top: 10%;
   text-decoration: none;
-}
-
-.adminLoginBtn:hover,
-.opLoginBtn:hover {
-  background-color: #3ab795;
 }
 
 .realTime-trainingTime,
@@ -310,33 +322,9 @@ body {
   opacity: 1;
 }
 
-#findSofa,
-#findMattress,
-#findTvMonitor {
-  cursor: pointer;
-  height: 20px;
-  width: 60px;
-  top: 50%;
-  margin-top: 27%;
-  position: absolute;
-  display: block;
-  border: 1px solid #008CBA;
-}
-
-#findSofa {
-  left: 10%;
-}
-
-#findMattress {
-  left: 20%;
-}
-
-#findTvMonitor {
-  left: 30%;
-}
-
 .chosenColor {
-  background-color: #008CBA;
+  background-color: var(--blue);
+  color: white;
 }
 
 .navPhoto {

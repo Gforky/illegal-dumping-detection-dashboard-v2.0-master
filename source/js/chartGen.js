@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  var blue = "#0055A2", gold = "#E5A823", white = "#ffffff";
 // chart of system status
   var sysChart = c3.generate({
     bindto: '.sysChart',
@@ -127,10 +128,6 @@ $(document).ready(function() {
     sysChart.axis.labels({y : 'CPU Usage'})
     sysChart.load({columns: [['cpuUsage', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88]]})
     sysChart.unload({ids: ['sofa']})
-    document.getElementsByClassName('cpuUsage')[0].style.backgroundColor = "#3ab795"
-    document.getElementsByClassName('memLoad')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('netTraff')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('cpuTemp')[0].style.backgroundColor = "#008CBA"
   })
 
   $(".memLoad").click(function() {
@@ -138,10 +135,6 @@ $(document).ready(function() {
     sysChart.axis.labels({y : 'Memory Load'})
     sysChart.load({columns: [['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]]})
     sysChart.unload({ids: ['cpuUsage']})
-    document.getElementsByClassName('cpuUsage')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('memLoad')[0].style.backgroundColor = "#3ab795"
-    document.getElementsByClassName('netTraff')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('cpuTemp')[0].style.backgroundColor = "#008CBA"
   })
 
   $(".netTraff").click(function() {
@@ -149,10 +142,6 @@ $(document).ready(function() {
     sysChart.axis.labels({y : 'Network Traffic'})
     sysChart.load({columns: [['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]]})
     sysChart.unload({ids: ['cpuUsage']})
-    document.getElementsByClassName('cpuUsage')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('memLoad')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('netTraff')[0].style.backgroundColor = "#3ab795"
-    document.getElementsByClassName('cpuTemp')[0].style.backgroundColor = "#008CBA"
   })
 
   $(".cpuTemp").click(function() {
@@ -160,92 +149,53 @@ $(document).ready(function() {
     sysChart.axis.labels({y : 'CPU Temperature'})
     sysChart.load({columns: [['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]]})
     sysChart.unload({ids: ['cpuUsage']})
-    document.getElementsByClassName('cpuUsage')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('memLoad')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('netTraff')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('cpuTemp')[0].style.backgroundColor = "#3ab795"
   })
 
   // button clicks of Database Status Chart
   $(".imgStorage").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     dbChart.axis.labels({y : 'Image Storage'})
-    document.getElementsByClassName('imgStorage')[0].style.backgroundColor = "#3ab795"
-    document.getElementsByClassName('dbIO')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('dbQuery')[0].style.backgroundColor = "#008CBA"
   })
 
   $(".dbIO").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     dbChart.axis.labels({y : 'I/O Traffic'})
-    document.getElementsByClassName('imgStorage')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('dbIO')[0].style.backgroundColor = "#3ab795"
-    document.getElementsByClassName('dbQuery')[0].style.backgroundColor = "#008CBA"
   })
 
   $(".dbQuery").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     dbChart.axis.labels({y : 'Database Queries'})
-    document.getElementsByClassName('imgStorage')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('dbIO')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('dbQuery')[0].style.backgroundColor = "#3ab795"
   })
 
   // button clicks of Neural Network Status Chart
   $(".AP").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     nnChart.axis.labels({y : 'Average Precision'})
-    document.getElementsByClassName('AP')[0].style.backgroundColor = "#3ab795"
-    document.getElementsByClassName('datasetSize')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('detectedObjects')[0].style.backgroundColor = "#008CBA"
   })
 
   $(".datasetSize").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     nnChart.axis.labels({y : 'Dataset Size'})
-    document.getElementsByClassName('AP')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('datasetSize')[0].style.backgroundColor = "#3ab795"
-    document.getElementsByClassName('detectedObjects')[0].style.backgroundColor = "#008CBA"
   })
 
   $(".detectedObjects").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     nnChart.axis.labels({y : 'Detected Objects'})
-    document.getElementsByClassName('AP')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('datasetSize')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('detectedObjects')[0].style.backgroundColor = "#3ab795"
   })
 
   // button clicks of Client Usage Status Chart
   $(".completedTasks").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     cuChart.axis.labels({y : 'Completed Tasks'})
-    document.getElementsByClassName('completedTasks')[0].style.backgroundColor = "#3ab795"
-    document.getElementsByClassName('supDec')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('upImg')[0].style.backgroundColor = "#008CBA"
   })
 
   $(".supDec").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     cuChart.axis.labels({y : 'Supervision Decisions'})
-    document.getElementsByClassName('completedTasks')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('supDec')[0].style.backgroundColor = "#3ab795"
-    document.getElementsByClassName('upImg')[0].style.backgroundColor = "#008CBA"
   })
 
   $(".upImg").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     cuChart.axis.labels({y : 'Upload Images'})
-    document.getElementsByClassName('completedTasks')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('supDec')[0].style.backgroundColor = "#008CBA"
-    document.getElementsByClassName('upImg')[0].style.backgroundColor = "#3ab795"
   })
-
-  //set some initial styles of buttons
-  document.getElementsByClassName("dataViews")[0].style.display = "none";
-  document.getElementsByClassName("sysOpsButton")[0].style.backgroundColor = "#3ab795";
-  document.getElementsByClassName("cpuUsage")[0].style.backgroundColor = "#3ab795";
-  document.getElementsByClassName("imgStorage")[0].style.backgroundColor = "#3ab795";
-  document.getElementsByClassName("AP")[0].style.backgroundColor = "#3ab795";
-  document.getElementsByClassName("completedTasks")[0].style.backgroundColor = "#3ab795";
 })
