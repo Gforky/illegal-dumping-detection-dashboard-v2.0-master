@@ -2,11 +2,11 @@ $(document).ready(function() {
 	//set some initial styles of buttons
 	var blue = "#0055A2";
 	document.getElementsByClassName("dataViews")[0].style.display = "none";
-	document.getElementsByClassName("sysOpsButton")[0].style.backgroundColor = blue;
-	document.getElementsByClassName("cpuUsage")[0].style.backgroundColor = blue;
-	document.getElementsByClassName("imgStorage")[0].style.backgroundColor = blue;
-	document.getElementsByClassName("AP")[0].style.backgroundColor = blue;
-	document.getElementsByClassName("completedTasks")[0].style.backgroundColor = blue;
+	$('.sysOpsButton').toggleClass('chosenColor');
+	$('.cpuUsage').toggleClass('chosenColor');
+	$('.imgStorage').toggleClass('chosenColor');
+	$('.AP').toggleClass('chosenColor');
+	$('.completedTasks').toggleClass('chosenColor');
 	// js to change Supervision buttons' colors
 	$('.findSofa').click(function() {
 	  	$(this).toggleClass('chosenColor');

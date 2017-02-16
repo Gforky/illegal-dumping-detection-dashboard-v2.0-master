@@ -45,10 +45,17 @@ html(ng-app='dashboard')
     script.
       var setVisibility = function(classNames) {
         document.getElementsByClassName(classNames[0])[0].style.display = "inline-block";
-        document.getElementsByClassName(classNames[0] + "Button")[0].style.backgroundColor = "#0055A2";
+        $('.' + classNames[0] + "Button").toggleClass('chosenColor');
         for (index = 1; index < classNames.length; ++index) {
           document.getElementsByClassName(classNames[index])[0].style.display = "none";
-          document.getElementsByClassName(classNames[index] + "Button")[0].style.backgroundColor = "white";
+          $('.' + classNames[index] + "Button").toggleClass('chosenColor', false);
+        }
+      }
+
+      var setChartButtonsVisualbility = function(classNames) {
+        $(classNames[0]).toggleClass('chosenColor');
+        for (index = 1; index < classNames.length; ++index) {
+          $(classNames[index]).toggleClass('chosenColor', false);
         }
       }
 
@@ -58,9 +65,9 @@ html(ng-app='dashboard')
       h1.page-title Illegal Dumping Detection System Dashboard
 
     div.switchGridButtons
-      button.sysOpsButton(onclick='setVisibility(["sysOps", "dataViews", "logViews"])') System Operations
-      button.dataViewsButton(onclick='setVisibility(["dataViews", "logViews", "sysOps"])') Data Virtualization
-      button.logViewsButton(onclick='setVisibility(["logViews", "dataViews", "sysOps"])') Log Views
+      button.button.sysOpsButton(onclick='setVisibility(["sysOps", "dataViews", "logViews"])') System Operations
+      button.button.dataViewsButton(onclick='setVisibility(["dataViews", "logViews", "sysOps"])') Data visualization
+      button.button.logViewsButton(onclick='setVisibility(["logViews", "dataViews", "sysOps"])') Log Views
 
     div(ng-app="dashboard")
 
@@ -99,9 +106,9 @@ html(ng-app='dashboard')
                 img.slide(ng-repeat='photo in photos', ng-swipe-right='showPrev()', ng-swipe-left='showNext()', ng-show='isActive($index)', ng-src='{{photo.src}}')
               div.arrow.prev(ng-click='showPrev()')
               div.arrow.next(ng-click='showNext()')
-              button.button.findSofa(ng-click='findSofa()') Sofa
-              button.button.findMattress(ng-click='findMattress()') Mattress
-              button.button.findTvMonitor(ng-click='findTvMonitor()') TV Monitor
+              button.findSofa(ng-click='findSofa()') Sofa
+              button.findMattress(ng-click='findMattress()') Mattress
+              button.findTvMonitor(ng-click='findTvMonitor()') TV Monitor
               div.deleteImg(ng-click='removePhoto()')
               //ul.navPhoto
                 //li(ng-repeat='photo in photos', ng-class='{"active" : isActive($index)}')
@@ -110,39 +117,39 @@ html(ng-app='dashboard')
         div.right-half
           iframe.detectLocations(src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB-denz3OyVbLzOvKpehCzSLJzNohqAebo &q=Space+Needle,Seattle+WA" allowfullscreen)
 
-      // data virtualization webpage
+      // data visualization webpage
       div.dataViews
         div.sysStat
           h2 System Status
           div.chartButtons
-            button.cpuUsage CPU Usage
-            button.memLoad Memory Load
-            button.netTraff Network Traffic
-            button.cpuTemp CPU Temprature
+            button.button.cpuUsage(onclick='setChartButtonsVisualbility([".cpuUsage", ".memLoad", ".netTraff", ".cpuTemp"])') CPU Usage
+            button.button.memLoad(onclick='setChartButtonsVisualbility([".memLoad", ".cpuUsage", ".netTraff", ".cpuTemp"])') Memory Load
+            button.button.netTraff(onclick='setChartButtonsVisualbility([".netTraff", ".memLoad", ".cpuUsage", ".cpuTemp"])') Network Traffic
+            button.button.cpuTemp(onclick='setChartButtonsVisualbility([".cpuTemp", ".memLoad", ".netTraff", ".cpuUsage"])') CPU Temprature
           div.sysChart(ng-controller="chartCtrl")
 
         div.dbStat
           h2 Database Status
           div.chartButtons
-            button.imgStorage Image Storage
-            button.dbIO I/O Traffic
-            button.dbQuery Database Queries
+            button.button.imgStorage(onclick='setChartButtonsVisualbility([".imgStorage", ".dbIO", ".dbQuery"])') Image Storage
+            button.button.dbIO(onclick='setChartButtonsVisualbility([".dbIO", ".imgStorage", ".dbQuery"])') I/O Traffic
+            button.button.dbQuery(onclick='setChartButtonsVisualbility([".dbQuery", ".dbIO", ".imgStorage"])') Database Queries
           div.dbChart(ng-controller="chartCtrl")
 
         div.nnStat
           h2 Neural Network Status
           div.chartButtons
-            button.AP Average Precisions
-            button.datasetSize Dataset Size
-            button.detectedObjects Detected Objects
+            button.button.AP(onclick='setChartButtonsVisualbility([".AP", ".datasetSize", ".detectedObjects"])') Average Precisions
+            button.button.datasetSize(onclick='setChartButtonsVisualbility([".datasetSize", ".AP", ".detectedObjects"])') Dataset Size
+            button.button.detectedObjects(onclick='setChartButtonsVisualbility([".detectedObjects", ".datasetSize", ".AP"])') Detected Objects
           div.nnChart(ng-controller="chartCtrl")
 
         div.cuStat
           h2 Client Usage Status
           div.chartButtons
-            button.completedTasks Completed Tasks
-            button.supDec Supervision Decisions
-            button.upImg Upload Images
+            button.button.completedTasks(onclick='setChartButtonsVisualbility([".completedTasks", ".supDec", ".upImg"])') Completed Tasks
+            button.button.supDec(onclick='setChartButtonsVisualbility([".supDec", ".completedTasks", ".upImg"])')  Supervision Decisions
+            button.button.upImg(onclick='setChartButtonsVisualbility([".upImg", ".supDec", ".completedTasks"])')  Upload Images
           div.cuChart(ng-controller="chartCtrl")
 
       // log views webpage
