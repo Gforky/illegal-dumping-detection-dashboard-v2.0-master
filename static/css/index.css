@@ -11,6 +11,12 @@
 body {
   font-family: 'Source Code Pro', monospace;
 }
+input,
+button,
+select,
+textarea {
+  outline:none
+}
 .header {
   background-color: var(--blue);
   background-position: center;
@@ -210,7 +216,6 @@ button {
   right: 0;
 }
 .deleteImg:active {
-  background-color: #008CBA;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
