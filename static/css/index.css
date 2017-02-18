@@ -82,13 +82,6 @@ button {
   height: 100%;
 }
 
-.logViews {
-  display: none;
-  padding:25px;
-  width: 100%;
-  height: 600px;
-}
-
 .dataViews {
   padding:25px;
   width: 100%;
@@ -164,13 +157,20 @@ button {
   text-decoration: none;
 }
 
+.btn-group {
+  width: 100%;
+  height: 30px;
+  margin-top: 380px;
+  position: absolute;
+}
+
 .findSofa,
 .findMattress,
 .findTvMonitor {
   height: 20px;
   width: 70px;
   margin-right: 1%;
-  margin-top: 55%;
+  margin-top: 15px;
   display: inline-block;
   text-align: center;
   float: left;
@@ -184,7 +184,6 @@ button {
   padding: 10px 15px;
   font-size: 15px;
   border-radius: 15px;
-  margin-top: 53%;
   float: left;
   display: inline-block;
   background-color: var(--blue);
@@ -388,7 +387,6 @@ width: 80%;
 
 .slide {
   position: absolute;
-  top: 0;
   left: 0;
   width: 100%;
   height: 100%;

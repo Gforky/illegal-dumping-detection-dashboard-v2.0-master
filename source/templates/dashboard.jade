@@ -96,20 +96,16 @@ html(ng-app='dashboard')
                 span(my-current-dataset, style="color:#ff4000")
           div.left-half-2
             div.slider(ng-controller='todoCtrl')
-              //form(ng-submit='add()')
-              //  input(ng-model='title')
-              //  button Add
-              //ul
-              //  li(ng-repeat='t in tasks track by $index'): button(ng-click='delete()') {{ t }}
               a.slide.fancybox(ng-repeat='photo in photos', ng-swipe-right='showPrev()', ng-swipe-left='showNext()', ng-show='isActive($index)', href='{{photo.src}}')
                 img.slide(ng-repeat='photo in photos', ng-swipe-right='showPrev()', ng-swipe-left='showNext()', ng-show='isActive($index)', ng-src='{{photo.src}}')
               div.arrow.prev(ng-click='showPrev()')
               div.arrow.next(ng-click='showNext()')
-              button.findSofa(ng-click='findSofa()') Sofa
-              button.findMattress(ng-click='findMattress()') Mattress
-              button.findTvMonitor(ng-click='findTvMonitor()', style="font-size:10px") TV Monitor
-              button.deleteImg(ng-click='removePhoto()') 
-                span Submit
+              div.btn-group
+                button.findSofa(ng-click='findSofa()') Sofa
+                button.findMattress(ng-click='findMattress()') Mattress
+                button.findTvMonitor(ng-click='findTvMonitor()', style="font-size:10px") TV Monitor
+                button.deleteImg(ng-click='removePhoto()') 
+                  span Submit
               //ul.navPhoto
                 //li(ng-repeat='photo in photos', ng-class='{"active" : isActive($index)}')
                   //img(src='{{photo.src}}', alt='{{photo.desc}}', title='{{photo.desc}}', ng-click='showPhoto($index)')
