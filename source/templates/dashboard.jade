@@ -65,9 +65,8 @@ html(ng-app='dashboard')
       h1.page-title Illegal Dumping Detection System Dashboard
 
     div.switchGridButtons
-      button.button.sysOpsButton(onclick='setVisibility(["sysOps", "dataViews", "logViews"])') System Operations
-      button.button.dataViewsButton(onclick='setVisibility(["dataViews", "logViews", "sysOps"])') Data visualization
-      button.button.logViewsButton(onclick='setVisibility(["logViews", "dataViews", "sysOps"])') Log Views
+      button.button.sysOpsButton(onclick='setVisibility(["sysOps", "dataViews"])') System Operations
+      button.button.dataViewsButton(onclick='setVisibility(["dataViews", "sysOps"])') Data visualization
 
     div(ng-app="dashboard")
 
@@ -108,14 +107,18 @@ html(ng-app='dashboard')
               div.arrow.next(ng-click='showNext()')
               button.findSofa(ng-click='findSofa()') Sofa
               button.findMattress(ng-click='findMattress()') Mattress
-              button.findTvMonitor(ng-click='findTvMonitor()') TV Monitor
-              div.deleteImg(ng-click='removePhoto()')
+              button.findTvMonitor(ng-click='findTvMonitor()', style="font-size:10px") TV Monitor
+              button.deleteImg(ng-click='removePhoto()') 
+                span Submit
               //ul.navPhoto
                 //li(ng-repeat='photo in photos', ng-class='{"active" : isActive($index)}')
                   //img(src='{{photo.src}}', alt='{{photo.desc}}', title='{{photo.desc}}', ng-click='showPhoto($index)')
-
         div.right-half
-          iframe.detectLocations(src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB-denz3OyVbLzOvKpehCzSLJzNohqAebo &q=Space+Needle,Seattle+WA" allowfullscreen)
+          div.logButtons
+            button.trainingLogRefresh Manually refresh log
+            button.trainingLogReset Reset Log
+          div.train(ng-controller="trainCtrl")
+            p.trainingLog
 
       // data visualization webpage
       div.dataViews
@@ -152,28 +155,7 @@ html(ng-app='dashboard')
             button.button.upImg(onclick='setChartButtonsVisualbility([".upImg", ".supDec", ".completedTasks"])')  Upload Images
           div.cuChart(ng-controller="chartCtrl")
 
-      // log views webpage
-      div.logViews
-        div.left-half
-          div.left-half-1
-          div.left-half-2
-            div.logButtons
-              button.alertLogRefresh Manually refresh log
-              button.alertLogReset Reset Log
-            div.alert
-              p.alertLog
-            div.logButtons
-              button.detectionLogRefresh Manually refresh log
-              button.detectionLogReset Reset Log
-            div.detection
-              p.detectionLog
-
-        div.right-half
-          div.logButtons
-            button.trainingLogRefresh Manually refresh log
-            button.trainingLogReset Reset Log
-          div.train(ng-controller="trainCtrl")
-            p.trainingLog
+        iframe.detectLocations(src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB-denz3OyVbLzOvKpehCzSLJzNohqAebo &q=Space+Needle,Seattle+WA" allowfullscreen)        
 
     .footer
       p Copyright © 2016 Wendy Boo, Alan Chen, Luwen Miao, Xiaoming Chuang

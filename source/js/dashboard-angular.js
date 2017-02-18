@@ -70,53 +70,53 @@ app.controller('realTimeTrainingCtrl', function($scope) {
 //}])
 
 app.controller('todoCtrl', function($scope) {
-$scope.photos = [
-  {src: '/images/tv-monitor/345361872_9e7aff54f5_b.jpg', desc: 'Image 01'},
-  {src: '/images/tv-monitor/501173063_6e1b3775e5_b.jpg', desc: 'Image 02'},
-  {src: '/images/tv-monitor/6197024779_31371d2b4b_b.jpg', desc: 'Image 03'},
-  {src: '/images/tv-monitor/computer-monitor-in-front-of-a-full-skip-or-dumpster-with-unwanted-achk1e.jpg', desc: 'Image 04'},
-  {src: '/images/tv-monitor/16627981590_c605c940ac_b.jpg', desc: 'Image 05'},
-  {src: '/images/tv-monitor/EP-160139853.jpg', desc: 'Image 06'},
-  {src: '/images/tv-monitor/1.jpg', desc: 'Image 07'},
-  {src: '/images/tv-monitor/3.jpg', desc: 'Image 08'},
-  {src: '/images/tv-monitor/8.jpg', desc: 'Image 09'},
-  {src: '/images/tv-monitor/160424-analog-tv-set-recycle-yh-0754a_160bd0ae9c2c95d18a1102fed4884ec3.nbcnews-fp-1200-800.jpg', desc: 'Image 10'},
-  {src: '/images/tv-monitor/802263183_cb915bcfd3_b.jpg', desc: 'Image 11'}
-];
+  $scope.photos = [
+    {src: '/images/tv-monitor/345361872_9e7aff54f5_b.jpg', desc: 'Image 01'},
+    {src: '/images/tv-monitor/501173063_6e1b3775e5_b.jpg', desc: 'Image 02'},
+    {src: '/images/tv-monitor/6197024779_31371d2b4b_b.jpg', desc: 'Image 03'},
+    {src: '/images/tv-monitor/computer-monitor-in-front-of-a-full-skip-or-dumpster-with-unwanted-achk1e.jpg', desc: 'Image 04'},
+    {src: '/images/tv-monitor/16627981590_c605c940ac_b.jpg', desc: 'Image 05'},
+    {src: '/images/tv-monitor/EP-160139853.jpg', desc: 'Image 06'},
+    {src: '/images/tv-monitor/1.jpg', desc: 'Image 07'},
+    {src: '/images/tv-monitor/3.jpg', desc: 'Image 08'},
+    {src: '/images/tv-monitor/8.jpg', desc: 'Image 09'},
+    {src: '/images/tv-monitor/160424-analog-tv-set-recycle-yh-0754a_160bd0ae9c2c95d18a1102fed4884ec3.nbcnews-fp-1200-800.jpg', desc: 'Image 10'},
+    {src: '/images/tv-monitor/802263183_cb915bcfd3_b.jpg', desc: 'Image 11'}
+  ];
 
-// initial image index
-$scope._Index = 0;
-// if current image is the same as requested image
-$scope.isActive = function(index) {
-  return $scope._Index === index;
-}
-// show prev image
-$scope.showPrev = function() {
-  $scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
-}
-// show next image
-$scope.showNext = function() {
-  $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
-}
-// show a specific image
-$scope.showPhoto = function(index) {
-  $scope._Index = index;
-}
-// delete image and shift to next image
-$scope.removePhoto = function() {
-  $scope.photos.splice($scope._Index, 1);
-  $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
-}
-// functions handling object decisions
-$scope.findSofa = function() {
+  // initial image index
+  $scope._Index = 0;
+  // if current image is the same as requested image
+  $scope.isActive = function(index) {
+    return $scope._Index === index;
+  }
+  // show prev image
+  $scope.showPrev = function() {
+    $scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
+  }
+  // show next image
+  $scope.showNext = function() {
+    $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+  }
+  // show a specific image
+  $scope.showPhoto = function(index) {
+    $scope._Index = index;
+  }
+  // delete image and shift to next image
+  $scope.removePhoto = function() {
+    $scope.photos.splice($scope._Index, 1);
+    $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+  }
+  // functions handling object decisions
+  $scope.findSofa = function() {
 
-}
-$scope.findMattress = function() {
+  }
+  $scope.findMattress = function() {
 
-}
-$scope.findTvMonitor = function() {
+  }
+  $scope.findTvMonitor = function() {
 
-}
+  }
 })
 
 // Register the 'myCurrentTime' directive factory method.
