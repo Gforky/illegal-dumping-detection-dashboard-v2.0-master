@@ -101,11 +101,11 @@ html(ng-app='dashboard')
               div.arrow.prev(ng-click='showPrev()')
               div.arrow.next(ng-click='showNext()')
               div.btn-group
+                button.deleteImg(ng-click='removePhoto()') 
+                  span Submit
                 button.findSofa(ng-click='findSofa()') Sofa
                 button.findMattress(ng-click='findMattress()') Mattress
                 button.findTvMonitor(ng-click='findTvMonitor()', style="font-size:10px") TV Monitor
-                button.deleteImg(ng-click='removePhoto()') 
-                  span Submit
               //ul.navPhoto
                 //li(ng-repeat='photo in photos', ng-class='{"active" : isActive($index)}')
                   //img(src='{{photo.src}}', alt='{{photo.desc}}', title='{{photo.desc}}', ng-click='showPhoto($index)')

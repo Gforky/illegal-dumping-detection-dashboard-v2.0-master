@@ -173,18 +173,16 @@ button {
   margin-top: 15px;
   display: inline-block;
   text-align: center;
-  float: left;
+  float: right;
   border: 1px solid var(--blue);
 }
-.findSofa {
-  margin-left: 45%;
-}
+
 .deleteImg {
   cursor: pointer;
   padding: 10px 15px;
   font-size: 15px;
   border-radius: 15px;
-  float: left;
+  float: right;
   display: inline-block;
   background-color: var(--blue);
   color: var(--gold);
