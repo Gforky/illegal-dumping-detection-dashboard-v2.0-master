@@ -35,6 +35,8 @@ html(ng-app='dashboard')
     script(type="text/javascript" src="/js/changeColors.js")
     // load js app to read logs from back-end
     script(type="text/javascript" src="/js/readLogs.js")
+    // load js app to fix the switchViewButtons at top
+    script(type="text/javascript", src="js/scrollANDfix.js")
 
     // load fancybox on load
     script.
@@ -45,7 +47,7 @@ html(ng-app='dashboard')
     script.
       var setVisibility = function(classNames) {
         document.getElementsByClassName(classNames[0])[0].style.display = "inline-block";
-        $('.' + classNames[0] + "Button").toggleClass('chosenColor');
+        $('.' + classNames[0] + "Button").toggleClass('chosenColor', true);
         for (index = 1; index < classNames.length; ++index) {
           document.getElementsByClassName(classNames[index])[0].style.display = "none";
           $('.' + classNames[index] + "Button").toggleClass('chosenColor', false);
@@ -53,7 +55,7 @@ html(ng-app='dashboard')
       }
 
       var setChartButtonsVisualbility = function(classNames) {
-        $(classNames[0]).toggleClass('chosenColor');
+        $(classNames[0]).toggleClass('chosenColor', true);
         for (index = 1; index < classNames.length; ++index) {
           $(classNames[index]).toggleClass('chosenColor', false);
         }
@@ -64,7 +66,7 @@ html(ng-app='dashboard')
     .header
       h1.page-title Illegal Dumping Detection System Dashboard
 
-    div.switchGridButtons
+    div.switchViewButtons
       button.button.sysOpsButton(onclick='setVisibility(["sysOps", "dataViews"])') System Operations
       button.button.dataViewsButton(onclick='setVisibility(["dataViews", "sysOps"])') Data visualization
 

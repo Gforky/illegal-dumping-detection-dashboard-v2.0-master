@@ -1,19 +1,13 @@
 // js functions to dynamically read logs from back-end
 $(document).ready(function monitorTraining() {
+  var atBottom = 1;
+  var testNum = 0;
   $(".trainingLogRefresh").click(function() {
     for(i = 0; i < 10; ++i)
     $("p.trainingLog").append("This is a training output" + i + "<br />")
   })
   $(".trainingLogReset").click(function() {
     $("p.trainingLog").replaceWith("<p class='trainingLog'></p>")
-  })
-
-  $(".alertLogRefresh").click(function() {
-    for(i = 0; i < 10; ++i)
-    $("p.alertLog").append("This is a alert output" + i + "<br />")
-  })
-  $(".alertLogReset").click(function() {
-    $("p.alertLog").replaceWith("<p class='alertLog'></p>")
   })
 
   $(".detectionLogRefresh").click(function() {
@@ -23,15 +17,24 @@ $(document).ready(function monitorTraining() {
   $(".detectionLogReset").click(function() {
     $("p.detectionLog").replaceWith("<p class='detectionLog'></p>")
   })
+
+  // check if divs are scrolled to bottom
+  $(".train").scroll(function() {
+    if(($(this)[0].scrollTop + $(".train").height()) >= $(this)[0].scrollHeight) {
+      atBottom = 1;
+    } else {
+      atBottom = 0;
+    }
+  })
   // this function will repeatedly check the updates of logs
   var checker = function() {
-    $("p.trainingLog").append("This is a training output <br />")
-    $("p.alertLog").append("This is a alert output <br />")
-    $("p.detectionLog").append("This is a detection output <br />")
+    testNum++;
+    $("p.trainingLog").append("This is a training output " + testNum +  "<br />")
+    $("p.detectionLog").append("This is a detection output " + testNum +  "<br />")
     // jquery function to automatically scroll down to bottom of div
-    $(".train").scrollTop($(".train")[0].scrollHeight)
-    $(".alert").scrollTop($(".alert")[0].scrollHeight)
-    $(".detection").scrollTop($(".detection")[0].scrollHeight)
+    if(atBottom === 1) {
+      $(".train").scrollTop($(".train")[0].scrollHeight)
+    }    $(".detection").scrollTop($(".detection")[0].scrollHeight)
     //clearInternal(timer)
   }
   timer = setInterval(checker, 500)
