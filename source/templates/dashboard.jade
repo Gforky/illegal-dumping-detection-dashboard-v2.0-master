@@ -103,6 +103,8 @@ html(ng-app='dashboard')
               div.arrow.prev(ng-click='showPrev()')
               div.arrow.next(ng-click='showNext()')
               div.btn-group
+                span.imgToBeSupervised(style="color:#ff4000") {{photos.length}}
+                span(style="margin-left:5px") images waitting for supervision
                 button.deleteImg(ng-click='removePhoto()') 
                   span Submit
                 button.findSofa(ng-click='findSofa()') Sofa
