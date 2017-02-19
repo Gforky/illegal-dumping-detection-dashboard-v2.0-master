@@ -102,9 +102,10 @@ html(ng-app='dashboard')
                 img.slide(ng-repeat='photo in photos', ng-swipe-right='showPrev()', ng-swipe-left='showNext()', ng-show='isActive($index)', ng-src='{{photo.src}}')
               div.arrow.prev(ng-click='showPrev()')
               div.arrow.next(ng-click='showNext()')
-              div.btn-group
+              div.remainImg
                 span.imgToBeSupervised(style="color:#ff4000") {{photos.length}}
                 span(style="margin-left:5px") images waitting for supervision
+              div.btn-group
                 button.deleteImg(ng-click='removePhoto()') 
                   span Submit
                 button.findSofa(ng-click='findSofa()') Sofa
