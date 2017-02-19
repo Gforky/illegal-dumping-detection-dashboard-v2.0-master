@@ -136,12 +136,24 @@ button {
   height:50%;
 }
 
-.alert,
+.trainingLogView {
+  height: 50%;
+  border: 1px solid var(--blue);
+}
+.detectionLogView {
+  margin-top: 20px;
+  height: 50%;
+  border: 1px solid var(--blue);
+}
 .train,
 .detection {
   display: block;
-  height:45%;
+  height:85%;
   overflow: scroll;
+}
+.logButtons {
+  border-bottom: 1px solid var(--blue);
+  height: 15%;
 }
 
 .AP,
@@ -394,4 +406,9 @@ width: 80%;
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.trainingLogReset,
+.detectionLogReset {
+  margin-left: 5px;
 }

@@ -91,10 +91,10 @@ html(ng-app='dashboard')
               //    li: button.ZF(ng-click="ZF()") ZF
               //    li: button.VGG_CNN_M_1024(ng-click="VGG_CNN_M_1024()") VGG_CNN_M_1024
               div.realTime-trainingTime
-                span(style="color:#008CBA") Training Time of Current Dataset: 
+                span(style="color:#0055A2") Training Time of Current Dataset: 
                 span(my-current-time, style="color:#ff4000")
               div.realTime-dataset
-                span(style="color:#008CBA") Dataset Size of Current Training:
+                span(style="color:#0055A2") Dataset Size of Current Training:
                 span(my-current-dataset, style="color:#ff4000")
           div.left-half-2
             div.slider(ng-controller='todoCtrl')
@@ -112,11 +112,20 @@ html(ng-app='dashboard')
                 //li(ng-repeat='photo in photos', ng-class='{"active" : isActive($index)}')
                   //img(src='{{photo.src}}', alt='{{photo.desc}}', title='{{photo.desc}}', ng-click='showPhoto($index)')
         div.right-half
-          div.logButtons
-            button.trainingLogRefresh Manually refresh log
-            button.trainingLogReset Reset Log
-          div.train(ng-controller="trainCtrl")
-            p.trainingLog
+          div.trainingLogView
+            div.logButtons
+              h5(style="color:#0055A2") Training Log
+              button.button.trainingLogRefresh Manually refresh log
+              button.button.trainingLogReset Reset Log
+            div.train(ng-controller="trainCtrl")
+              p.trainingLog
+          div.detectionLogView
+            div.logButtons
+              h5(style="color:#0055A2") Detection Log
+              button.button.detectionLogRefresh Manually refresh log
+              button.button.detectionLogReset Reset Log
+            div.detection(ng-controller="detectCtrl")
+              p.detectionLog
 
       // data visualization webpage
       div.dataViews
