@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html ng-app="dashboard">
+  <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- load c3.css-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='c3.css') }}">
+    <!-- load angular js-->
+    <!--script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js')-->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script type="text/javascript" src="https://code.angularjs.org/1.5.8/angular-animate.min.js"></script>
+    <script type="text/javascript" src="https://code.angularjs.org/1.5.8/angular-touch.min.js"></script>
+    <!-- load jquery-->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <!-- load c3.js and d3.js-->
+    <script src="{{ url_for('static', filename='d3.js') }}"></script>
+    <script src="{{ url_for('static', filename='c3.js') }}"></script>
+    <!-- external js to generate charts-->
+    <script src="{{ url_for('static', filename='chartGen.js') }}"></script>
+    <!-- dropzone scripts-->
+    <script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='basic.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dropzone.css') }}">
+    <!-- external script to dynamically change the neural network-->
+    <script src="{{ url_for('static', filename='changeNet.js') }}"></script>
+    <!-- include fancybox lightbox library-->
+    <!-- Add mousewheel plugin (this is optional)-->
+    <script src="{{ url_for('static', filename='jquery.mousewheel.pack.js') }}"></script>
+    <!-- Add fancyBox-->
+    <link href="{{ url_for('static', filename='jquery.fancybox.css') }}" media="screen">
+    <script src="{{ url_for('static', filename='jquery.fancybox.pack.js') }}"></script>
+    <!-- load dashboard angularjs application-->
+    <script src="{{ url_for('static', filename='dashboard-angular.js') }}"></script>
+    <!-- load js app to change colors of divs and buttons dynamically-->
+    <script src="{{ url_for('static', filename='changeColors.js') }}"></script>
+    <!-- load js app to read logs from back-end-->
+    <script src="{{ url_for('static', filename='readLogs.js') }}"></script>
+    <!-- load fancybox on load-->
+    <script>
+      $(document).ready(function() {
+        $(".fancybox").fancybox({'minWidth':700, 'speedIn':100, 'speedOut':100})
+      })
+    </script>
+    <!-- js function to dynamically set display parameter of div-->
+    <script>
+      var setVisibility = function(classNames) {
+        document.getElementsByClassName(classNames[0])[0].style.display = "inline-block";
+        $('.' + classNames[0] + "Button").toggleClass('chosenColor');
+        for (index = 1; index < classNames.length; ++index) {
+          document.getElementsByClassName(classNames[index])[0].style.display = "none";
+          $('.' + classNames[index] + "Button").toggleClass('chosenColor', false);
+        }
+      }
+      var setChartButtonsVisualbility = function(classNames) {
+        $(classNames[0]).toggleClass('chosenColor');
+        for (index = 1; index < classNames.length; ++index) {
+          $(classNames[index]).toggleClass('chosenColor', false);
+        }
+      }
+    </script>
+  </head>
+  <title>Illegal Dumping Detection System Dashboard</title>
+  <body>
+    <div class="header">
+      <h1 class="page-title">Illegal Dumping Detection System Dashboard</h1>
+    </div>
+    <div class="switchGridButtons">
+      <button onclick="setVisibility([&quot;sysOps&quot;, &quot;dataViews&quot;])" class="button sysOpsButton">System Operations</button>
+      <button onclick="setVisibility([&quot;dataViews&quot;, &quot;sysOps&quot;])" class="button dataViewsButton">Data visualization</button>
+    </div>
+    <div ng-app="dashboard" class="dashboard">
+      <!-- system opertations webpage-->
+      <div class="sysOps">
+        <div class="left-half">
+          <div class="left-half-1">
+            <div class="upload-files">
+              <form action="/upload-files" class="dropzone dz-clickable">
+                <div class="dz-message">Drop files here or click to upload.
+                  <!--br-->
+                  <!--span.note (This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)-->
+                </div>
+              </form>
+            </div>
+            <div ng-controller="realTimeTrainingCtrl" class="realTime-training">
+              <!--div.search(ng-controller="searchCtrl")-->
+              <!--  input(type="text", ng-model="imgName")-->
+              <!--  button(ng-click="searchButton()") Search Image-->
+              <!--div.model(ng-controller="modelCtrl")-->
+              <!--  ul.nav-->
+              <!--    li: button.VGG16(ng-click="VGG16()") VGG16-->
+              <!--    li: button.ZF(ng-click="ZF()") ZF-->
+              <!--    li: button.VGG_CNN_M_1024(ng-click="VGG_CNN_M_1024()") VGG_CNN_M_1024-->
+              <div class="realTime-trainingTime"><span style="color:#008CBA">Training Time of Current Dataset: </span><span my-current-time style="color:#ff4000"></span></div>
+              <div class="realTime-dataset"><span style="color:#008CBA">Dataset Size of Current Training:</span><span my-current-dataset style="color:#ff4000"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="right-half">
+          <div class="logButtons">
+            <button class="trainingLogRefresh">Manually refresh log</button>
+            <button class="trainingLogReset">Reset Log</button>
+          </div>
+          <div ng-controller="trainCtrl" class="train">
+            <p class="trainingLog"></p>
+          </div>
+        </div>
+      </div>
+      <!-- data visualization webpage-->
+      <div class="dataViews">
+        <div class="sysStat">
+          <h2>System Status</h2>
+          <div class="chartButtons">
+            <button onclick="setChartButtonsVisualbility([&quot;.cpuUsage&quot;, &quot;.memLoad&quot;, &quot;.netTraff&quot;, &quot;.cpuTemp&quot;])" class="button cpuUsage">CPU Usage</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.memLoad&quot;, &quot;.cpuUsage&quot;, &quot;.netTraff&quot;, &quot;.cpuTemp&quot;])" class="button memLoad">Memory Load</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.netTraff&quot;, &quot;.memLoad&quot;, &quot;.cpuUsage&quot;, &quot;.cpuTemp&quot;])" class="button netTraff">Network Traffic</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.cpuTemp&quot;, &quot;.memLoad&quot;, &quot;.netTraff&quot;, &quot;.cpuUsage&quot;])" class="button cpuTemp">CPU Temprature</button>
+          </div>
+          <div ng-controller="chartCtrl" class="sysChart"></div>
+        </div>
+        <div class="dbStat">
+          <h2>Database Status</h2>
+          <div class="chartButtons">
+            <button onclick="setChartButtonsVisualbility([&quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.dbQuery&quot;])" class="button imgStorage">Image Storage</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.dbIO&quot;, &quot;.imgStorage&quot;, &quot;.dbQuery&quot;])" class="button dbIO">I/O Traffic</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.dbQuery&quot;, &quot;.dbIO&quot;, &quot;.imgStorage&quot;])" class="button dbQuery">Database Queries</button>
+          </div>
+          <div ng-controller="chartCtrl" class="dbChart"></div>
+        </div>
+        <div class="nnStat">
+          <h2>Neural Network Status</h2>
+          <div class="chartButtons">
+            <button onclick="setChartButtonsVisualbility([&quot;.AP&quot;, &quot;.datasetSize&quot;, &quot;.detectedObjects&quot;])" class="button AP">Average Precisions</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.datasetSize&quot;, &quot;.AP&quot;, &quot;.detectedObjects&quot;])" class="button datasetSize">Dataset Size</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.detectedObjects&quot;, &quot;.datasetSize&quot;, &quot;.AP&quot;])" class="button detectedObjects">Detected Objects</button>
+          </div>
+          <div ng-controller="chartCtrl" class="nnChart"></div>
+        </div>
+        <div class="cuStat">
+          <h2>Client Usage Status</h2>
+          <div class="chartButtons">
+            <button onclick="setChartButtonsVisualbility([&quot;.completedTasks&quot;, &quot;.supDec&quot;, &quot;.upImg&quot;])" class="button completedTasks">Completed Tasks</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.supDec&quot;, &quot;.completedTasks&quot;, &quot;.upImg&quot;])" class="button supDec"> Supervision Decisions</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.upImg&quot;, &quot;.supDec&quot;, &quot;.completedTasks&quot;])" class="button upImg"> Upload Images</button>
+          </div>
+          <div ng-controller="chartCtrl" class="cuChart"></div>
+        </div>
+        <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB-denz3OyVbLzOvKpehCzSLJzNohqAebo &amp;q=Space+Needle,Seattle+WA" allowfullscreen class="detectLocations">       </iframe>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Copyright © 2016 Wendy Boo, Alan Chen, Luwen Miao, Xiaoming Chuang</p>
+    </div>
