@@ -65,37 +65,37 @@ def allowed_file_type(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_FILE_EXTENSIONS
 
 #testing postgresql with sqlalchemy - test ok
-db = SQLAlchemy(app)
-engine = create_engine('postgresql://localhost/cmpe295')
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
-session = Session()
-
-#create category instance in the db
-category1 = ImageCategories(category_name='couch')
-category2 = ImageCategories(category_name='mattress')
-category3 = ImageCategories(category_name='tv-monitor')
-session.add(category1)
-session.add(category2)
-session.add(category3)
-
-# create image instance
-image1 = ImageData(category_id='1', path='abc/ccc', preProcessed = True)
-image2 = ImageData(category_id='2', path='abc/bbb', preProcessed = False)
-session.add(image1)
-session.add(image2)
-
-#create employee instance
-employee1 = UserData(userName='Andrew', user_password = 'a',workType='admin')
-employee2 = UserData(userName='Eric', user_password = 'b', workType='operator')
-session.add(employee1)
-session.add(employee2)
-
-#creaet unidentified image
-unidentified1 = UnIdentifiedImage(category_id='1', path='aaa/ccc')
-unidentified2 = UnIdentifiedImage(category_id='2', path='bbb/aaa')
-session.add(unidentified1)
-session.add(unidentified2)
+# db = SQLAlchemy(app)
+# engine = create_engine('postgresql://localhost/cmpe295')
+# Base.metadata.create_all(engine)
+# Session = sessionmaker(bind=engine)
+# session = Session()
+#
+# #create category instance in the db
+# category1 = ImageCategories(category_name='couch')
+# category2 = ImageCategories(category_name='mattress')
+# category3 = ImageCategories(category_name='tv-monitor')
+# session.add(category1)
+# session.add(category2)
+# session.add(category3)
+#
+# # create image instance
+# image1 = ImageData(category_id='1', path='abc/ccc', preProcessed = True)
+# image2 = ImageData(category_id='2', path='abc/bbb', preProcessed = False)
+# session.add(image1)
+# session.add(image2)
+#
+# #create employee instance
+# employee1 = UserData(userName='Andrew', user_password = 'a',workType='admin')
+# employee2 = UserData(userName='Eric', user_password = 'b', workType='operator')
+# session.add(employee1)
+# session.add(employee2)
+#
+# #creaet unidentified image
+# unidentified1 = UnIdentifiedImage(category_id='1', path='aaa/ccc')
+# unidentified2 = UnIdentifiedImage(category_id='2', path='bbb/aaa')
+# session.add(unidentified1)
+# session.add(unidentified2)
 
 # try:
 # 	session.commit()

@@ -24,35 +24,30 @@ class ImageData(Base):
 	"""
 	__tablename__ = 'imagedata'
 	image_id = Column(Integer, primary_key = True)
-	category_id = Column(Integer, ForeignKey("imagecategory.category_id"), nullable=False)
+	category_id = Column(Integer, ForeignKey("imagecategory.category_id"), nullable=True)
 	path = Column(String(100), nullable = False)
-	preProcessed = Column(Boolean, nullable = False)
 	createDate = Column(DateTime, nullable = False)
-	preprocessedDate = Column(DateTime, nullable = True, default = None)
 	trainedDate = Column(DateTime, nullable = True, default = None)
 
-	def __init__(self, category_id, path, preProcessed):
-		self.category_id = category_id
-		self.path = path
-		self.preProcessed = preProcessed
-		self.createDate = datetime.utcnow()
-		if self.preProcessed == True:
-			self.preprocessedDate = datetime.utcnow()
-
-class UnIdentifiedImage(Base):
-	"""
-	RDMS - table for unIdentified image
-	"""
-	__tablename__ = 'unidentified'
-	unidentified_id = Column(Integer, primary_key = True)
-	category_id = Column(Integer, ForeignKey("imagecategory.category_id"), nullable=False)
-	path = Column(String(100), nullable = False)
-	createDate = Column(DateTime, nullable = False)
 	def __init__(self, category_id, path):
 		self.category_id = category_id
 		self.path = path
 		self.createDate = datetime.utcnow()
 
+class ClassificationResult(Base):
+	"""
+	RDMS - table for classification result
+	"""
+	__tablename__ = 'classificationResult'
+	classification_id =Column(Integer, primary_key = True)
+	category_id = Column(Integer, ForeignKey("imagecategory.category_id"), nullable=True)
+	image_id = Column(Integer, ForeignKey("imagedata.image_id"), nullable=False)
+	trainedDate = Column(DateTime, nullable = False)
+
+	def __init__(self, category_id, image_id, trainedDate):
+		self.category_id = category_id
+		self.image_id = image_id
+		self.trainedDate = trainedDate
 
 class UserData(Base):
 	"""
