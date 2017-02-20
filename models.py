@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
-# from app import Base
 Base = declarative_base()
 engine = create_engine('postgresql://localhost/cmpe295')
 
@@ -18,9 +17,9 @@ class ImageCategories(Base):
 	def __init__(self, category_name):
 		self.category_name = category_name
 
-class ImageData(Base):
+class TrainingImageData(Base):
 	"""
-	RDMS - table for image meta data
+	RDMS - table for image data waiting for training or trained
 	"""
 	__tablename__ = 'imagedata'
 	image_id = Column(Integer, primary_key = True)
@@ -34,20 +33,34 @@ class ImageData(Base):
 		self.path = path
 		self.createDate = datetime.utcnow()
 
+class InputImageData(Base):
+	"""
+	RDMS - table for input image data
+	"""
+	__tablename__ = 'inputimagedata'
+	inputimage_id = Column(Integer, primary_key = True)
+	path = Column(String(100), nullable = False)
+	createDate = Column(DateTime, nullable = False)
+
+	def __init__(self, path):
+		self.inputimage_id = inputimage_id
+		self.path = path
+		self.createDate = datetime.utcnow()
+
 class ClassificationResult(Base):
 	"""
 	RDMS - table for classification result
 	"""
+
 	__tablename__ = 'classificationResult'
 	classification_id =Column(Integer, primary_key = True)
 	category_id = Column(Integer, ForeignKey("imagecategory.category_id"), nullable=True)
-	image_id = Column(Integer, ForeignKey("imagedata.image_id"), nullable=False)
-	trainedDate = Column(DateTime, nullable = False)
+	classificationDate = Column(DateTime, nullable = False)
 
-	def __init__(self, category_id, image_id, trainedDate):
+	def __init__(self, category_id, image_id, classificationDate):
 		self.category_id = category_id
 		self.image_id = image_id
-		self.trainedDate = trainedDate
+		self.classificationDate = classificationDate
 
 class UserData(Base):
 	"""

@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 import models
-from models import Base, ImageData, UserData, ImageCategories, UnIdentifiedImage
+from models import Base, TrainingImageData, UserData, ImageCategories, ClassificationResult
 from werkzeug import secure_filename
 from flask import json
 import os
@@ -31,19 +31,23 @@ def uploadfile():
 		if imgFile and allowed_file_type(imgFile.filename):
 			filename = secure_filename(imgFile.filename)
 			imgFile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			return ''
+			return 'sucessfully upload'
 	return 'not successfully upload'
 
-"""
-This is an API for getting image stats
-Usage: return json arr [category_1 count, category_2 count, category_3 count, total count]
-"""
+
 @app.route("/getImageStats", methods=['POST'])
 def getImageStats():
+    """
+    This is function for API of getting image stats
+
+    -----
+    Returns
+    json arr [category_1 count, category_2 count, category_3 count, total count]
+    """
     if request.method == 'POST':
         imagedata_stats_arr = []
         counter, counter1, counter2, counter3 = 0, 0, 0, 0
-        getTotalSQL = engine.execute("select * from imagedata;")
+        getTotalSQL = engine.execute("SELECT * FROM imagedata;")
         for data in session.query(ImageData.category_id == 1).all():
             counter1 += 1
         imagedata_stats_arr.append(counter1)
@@ -59,6 +63,16 @@ def getImageStats():
 
         json_str = json.dumps(imagedata_stats_arr)
         return json_str
+
+@app.route("/getClassificationStats", methods=['POST'])
+def getClassifiactionStats():
+    """
+    This is function for API of getting classification stats
+
+    Returns:
+        json String: []
+
+    """
 
 #helper function
 def allowed_file_type(filename):
