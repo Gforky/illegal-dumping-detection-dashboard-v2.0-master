@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 import models
-from models import Base, TrainingImageData, UserData, ImageCategories, ClassificationResult
+from models import Base, TrainingImageData, UserData, ImageCategories, ClassificationResult, InputImageData
 from werkzeug import secure_filename
 from flask import json
 import os
@@ -35,19 +35,19 @@ def uploadfile():
 	return 'not successfully upload'
 
 
-@app.route("/getImageStats", methods=['POST'])
+@app.route("/getTrainingImageStats", methods=['POST'])
 def getImageStats():
     """
     This is function for API of getting image stats
 
-    -----
-    Returns
-    json arr [category_1 count, category_2 count, category_3 count, total count]
+    Returns: json arr [category_1 count, category_2 count, category_3 count, total count]
+
+    ---
+    TODO: can use bar chart to show the result
     """
     if request.method == 'POST':
         imagedata_stats_arr = []
         counter, counter1, counter2, counter3 = 0, 0, 0, 0
-        getTotalSQL = engine.execute("SELECT * FROM imagedata;")
         for data in session.query(ImageData.category_id == 1).all():
             counter1 += 1
         imagedata_stats_arr.append(counter1)
@@ -70,25 +70,47 @@ def getClassifiactionStats():
     This is function for API of getting classification stats
 
     Returns:
-        json String: []
+        json String: [count for category 1, count for category 2,
+         count for category 3, count for unkonwn, total image count]
 
+    ---
+    TODO: use piechart to show the result
     """
+    if request.method == 'POST':
+        classfication_stats_arr = []
+        counterUnknown, counter1, counter2, counter3, denominator = 0, 0, 0, 0, 0
+        for data in session.query(ClassificationResult).all():
+            print(data.classification_id)
+            denominator += 1
+            if data.category_id == 9999: # count knowon image
+                counterUnknown += 1
+            if data.category_id == 1:
+                counter1 += 1
+            if data.category_id == 2:
+                counter2 += 1
+            if data.category_id == 3:
+                counter3 += 1
+        classfication_stats_arr = [counter1, counter2, counter3, counterUnknown, denominator]
+
+        json_str = json.dumps(classfication_stats_arr)
+        return json_str
 
 #helper function
 def allowed_file_type(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_FILE_EXTENSIONS
 
 #testing postgresql with sqlalchemy - test ok
-# db = SQLAlchemy(app)
-# engine = create_engine('postgresql://localhost/cmpe295')
-# Base.metadata.create_all(engine)
-# Session = sessionmaker(bind=engine)
-# session = Session()
-#
+db = SQLAlchemy(app)
+engine = create_engine('postgresql://localhost/cmpe295')
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+session = Session()
+
 # #create category instance in the db
 # category1 = ImageCategories(category_name='couch')
 # category2 = ImageCategories(category_name='mattress')
 # category3 = ImageCategories(category_name='tv-monitor')
+# category_unknown = ImageCategories(category_name='unknown')
 # session.add(category1)
 # session.add(category2)
 # session.add(category3)
@@ -110,6 +132,16 @@ def allowed_file_type(filename):
 # unidentified2 = UnIdentifiedImage(category_id='2', path='bbb/aaa')
 # session.add(unidentified1)
 # session.add(unidentified2)
+
+#create image input
+# imageinput1 = InputImageData(session_id='1', path='abc/a')
+# session.add(imageinput1)
+#create classification result
+# classification1 = ClassificationResult(inputimage_id = '1', category_id='1', batch_id='1')
+# classification2 = ClassificationResult(inputimage_id = '3', category_id='9999', batch_id='1')
+# session.add(classification1)
+# session.add(classification2)
+
 
 # try:
 # 	session.commit()
