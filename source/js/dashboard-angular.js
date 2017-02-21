@@ -67,17 +67,17 @@ app.controller('realTimeTrainingCtrl', function($scope) {
 
 app.controller('todoCtrl', function($scope) {
   $scope.photos = [
-    {src: 'images/tv-monitor/345361872_9e7aff54f5_b.jpg', desc: 'Image 01'},
-    {src: 'images/tv-monitor/501173063_6e1b3775e5_b.jpg', desc: 'Image 02'},
-    {src: 'images/tv-monitor/6197024779_31371d2b4b_b.jpg', desc: 'Image 03'},
-    {src: 'images/tv-monitor/computer-monitor-in-front-of-a-full-skip-or-dumpster-with-unwanted-achk1e.jpg', desc: 'Image 04'},
-    {src: 'images/tv-monitor/16627981590_c605c940ac_b.jpg', desc: 'Image 05'},
-    {src: 'images/tv-monitor/EP-160139853.jpg', desc: 'Image 06'},
-    {src: 'images/tv-monitor/1.jpg', desc: 'Image 07'},
-    {src: 'images/tv-monitor/3.jpg', desc: 'Image 08'},
-    {src: 'images/tv-monitor/8.jpg', desc: 'Image 09'},
-    {src: 'images/tv-monitor/160424-analog-tv-set-recycle-yh-0754a_160bd0ae9c2c95d18a1102fed4884ec3.nbcnews-fp-1200-800.jpg', desc: 'Image 10'},
-    {src: 'images/tv-monitor/802263183_cb915bcfd3_b.jpg', desc: 'Image 11'}
+    {src: '345361872_9e7aff54f5_b.jpg', desc: 'Image 01'},
+    {src: '501173063_6e1b3775e5_b.jpg', desc: 'Image 02'},
+    {src: '6197024779_31371d2b4b_b.jpg', desc: 'Image 03'},
+    {src: 'computer-monitor-in-front-of-a-full-skip-or-dumpster-with-unwanted-achk1e.jpg', desc: 'Image 04'},
+    {src: '16627981590_c605c940ac_b.jpg', desc: 'Image 05'},
+    {src: 'EP-160139853.jpg', desc: 'Image 06'},
+    {src: '1.jpg', desc: 'Image 07'},
+    {src: '3.jpg', desc: 'Image 08'},
+    {src: '8.jpg', desc: 'Image 09'},
+    {src: '160424-analog-tv-set-recycle-yh-0754a_160bd0ae9c2c95d18a1102fed4884ec3.nbcnews-fp-1200-800.jpg', desc: 'Image 10'},
+    {src: '802263183_cb915bcfd3_b.jpg', desc: 'Image 11'}
   ];
 
   // initial image index

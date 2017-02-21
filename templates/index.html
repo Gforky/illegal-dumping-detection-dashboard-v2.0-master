@@ -97,7 +97,7 @@
           </div>
           <div class="left-half-2">
             {% raw %}
-            <div ng-controller="todoCtrl" class="slider"><a ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" href="{{photo.src}}" class="slide fancybox"><img ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" ng-src="{{photo.src}}" class="slide"></a>
+            <div ng-controller="todoCtrl" class="slider"><a ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" href="/static{{photo.src}}" class="slide fancybox"><img ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" ng-src="/static{{photo.src}}" class="slide"></a>
               <div ng-click="showPrev()" class="arrow prev"></div>
               <div ng-click="showNext()" class="arrow next"></div>
               <div class="remainImg"><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length}}</span><span style="margin-left:5px">images waiting for supervision</span></div>
