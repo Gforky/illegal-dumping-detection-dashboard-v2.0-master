@@ -100,7 +100,7 @@
             <div ng-controller="todoCtrl" class="slider"><a ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" href="{{photo.src}}" class="slide fancybox"><img ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" ng-src="{{photo.src}}" class="slide"></a>
               <div ng-click="showPrev()" class="arrow prev"></div>
               <div ng-click="showNext()" class="arrow next"></div>
-              <div class="remainImg"><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length}}</span><span style="margin-left:5px">images waitting for supervision</span></div>
+              <div class="remainImg"><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length}}</span><span style="margin-left:5px">images waiting for supervision</span></div>
               <div class="btn-group">
                 <button ng-click="removePhoto()" class="deleteImg"> <span>Submit</span></button>
                 <button ng-click="findSofa()" class="findSofa">Sofa</button>
