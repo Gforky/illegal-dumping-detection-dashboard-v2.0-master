@@ -39,11 +39,12 @@ class InputImageData(Base):
 	"""
 	__tablename__ = 'inputimagedata'
 	inputimage_id = Column(Integer, primary_key = True)
+	session_id = Column(Integer, nullable = False)
 	path = Column(String(100), nullable = False)
 	createDate = Column(DateTime, nullable = False)
 
-	def __init__(self, path):
-		self.inputimage_id = inputimage_id
+	def __init__(self, session_id, path):
+		self.session_id = session_id
 		self.path = path
 		self.createDate = datetime.utcnow()
 
@@ -52,15 +53,18 @@ class ClassificationResult(Base):
 	RDMS - table for classification result
 	"""
 
-	__tablename__ = 'classificationResult'
-	classification_id =Column(Integer, primary_key = True)
+	__tablename__ = 'classificationresult'
+	classification_id = Column(Integer, primary_key = True)
+	inputimage_id = Column(Integer, ForeignKey("inputimagedata.inputimage_id"), nullable = False)
 	category_id = Column(Integer, ForeignKey("imagecategory.category_id"), nullable=True)
+	batch_id = Column(Integer, nullable = False)
 	classificationDate = Column(DateTime, nullable = False)
 
-	def __init__(self, category_id, image_id, classificationDate):
+	def __init__(self, inputimage_id, category_id, batch_id):
+		self.inputimage_id = inputimage_id
 		self.category_id = category_id
-		self.image_id = image_id
-		self.classificationDate = classificationDate
+		self.batch_id = batch_id
+		self.classificationDate = datetime.utcnow()
 
 class UserData(Base):
 	"""
