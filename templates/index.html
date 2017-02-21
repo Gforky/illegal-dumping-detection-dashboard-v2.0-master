@@ -34,6 +34,8 @@
     <script src="{{ url_for('static', filename='changeColors.js') }}"></script>
     <!-- load js app to read logs from back-end-->
     <script src="{{ url_for('static', filename='readLogs.js') }}"></script>
+    <!-- load js app to fix the switchViewButtons at top-->
+    <script src="{{ url_for('static', filename='scrollANDfix.js') }}"></script>
     <!-- load fancybox on load-->
     <script>
       $(document).ready(function() {
@@ -44,14 +46,14 @@
     <script>
       var setVisibility = function(classNames) {
         document.getElementsByClassName(classNames[0])[0].style.display = "inline-block";
-        $('.' + classNames[0] + "Button").toggleClass('chosenColor');
+        $('.' + classNames[0] + "Button").toggleClass('chosenColor', true);
         for (index = 1; index < classNames.length; ++index) {
           document.getElementsByClassName(classNames[index])[0].style.display = "none";
           $('.' + classNames[index] + "Button").toggleClass('chosenColor', false);
         }
       }
       var setChartButtonsVisualbility = function(classNames) {
-        $(classNames[0]).toggleClass('chosenColor');
+        $(classNames[0]).toggleClass('chosenColor', true);
         for (index = 1; index < classNames.length; ++index) {
           $(classNames[index]).toggleClass('chosenColor', false);
         }
@@ -63,7 +65,7 @@
     <div class="header">
       <h1 class="page-title">Illegal Dumping Detection System Dashboard</h1>
     </div>
-    <div class="switchGridButtons">
+    <div class="switchViewButtons">
       <button onclick="setVisibility([&quot;sysOps&quot;, &quot;dataViews&quot;])" class="button sysOpsButton">System Operations</button>
       <button onclick="setVisibility([&quot;dataViews&quot;, &quot;sysOps&quot;])" class="button dataViewsButton">Data visualization</button>
     </div>
@@ -93,14 +95,42 @@
               <div class="realTime-dataset"><span style="color:#008CBA">Dataset Size of Current Training:</span><span my-current-dataset style="color:#ff4000"></span></div>
             </div>
           </div>
+          <div class="left-half-2">
+            {% raw %}
+            <div ng-controller="todoCtrl" class="slider"><a ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" href="{{photo.src}}" class="slide fancybox"><img ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" ng-src="{{photo.src}}" class="slide"></a>
+              <div ng-click="showPrev()" class="arrow prev"></div>
+              <div ng-click="showNext()" class="arrow next"></div>
+              <div class="remainImg"><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length}}</span><span style="margin-left:5px">images waitting for supervision</span></div>
+              <div class="btn-group">
+                <button ng-click="removePhoto()" class="deleteImg"> <span>Submit</span></button>
+                <button ng-click="findSofa()" class="findSofa">Sofa</button>
+                <button ng-click="findMattress()" class="findMattress">Mattress</button>
+                <button ng-click="findTvMonitor()" style="font-size:10px" class="findTvMonitor">TV Monitor</button>
+              </div>
+            </div>
+            {% endraw %}
+          </div>
         </div>
         <div class="right-half">
-          <div class="logButtons">
-            <button class="trainingLogRefresh">Manually refresh log</button>
-            <button class="trainingLogReset">Reset Log</button>
+          <div class="trainingLogView">
+            <div class="logButtons">
+              <h5 style="color:#0055A2">Training Log</h5>
+              <button class="button trainingLogRefresh">Manually refresh log</button>
+              <button class="button trainingLogReset">Reset Log</button>
+            </div>
+            <div ng-controller="trainCtrl" class="train">
+              <p class="trainingLog"></p>
+            </div>
           </div>
-          <div ng-controller="trainCtrl" class="train">
-            <p class="trainingLog"></p>
+          <div class="detectionLogView">
+            <div class="logButtons">
+              <h5 style="color:#0055A2">Detection Log</h5>
+              <button class="button detectionLogRefresh">Manually refresh log</button>
+              <button class="button detectionLogReset">Reset Log</button>
+            </div>
+            <div ng-controller="detectCtrl" class="detection">
+              <p class="detectionLog"></p>
+            </div>
           </div>
         </div>
       </div>

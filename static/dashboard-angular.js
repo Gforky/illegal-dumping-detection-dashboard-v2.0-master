@@ -5,6 +5,10 @@ app.controller('trainCtrl', function($scope) {
 
 })
 
+app.controller('detectCtrl', function($scope) {
+// add the function to continously display the detected trash
+})
+
 app.controller('chartCtrl', function($scope) {
 // add the function to dynamically read the AP data from back-end
 })
@@ -32,14 +36,6 @@ $scope.ZF = function() {
 $scope.VGG_CNN_M_1024 = function() {
   $scope.networkName='VGG_CNN_M_1024'
 }
-})
-
-app.controller('alertCtrl', function($scope) {
-// add the function to continously display the alters for detected illegal dumping
-})
-
-app.controller('objectDetectionCtrl', function($scope) {
-// add the function to continously display the detected trash
 })
 
 app.controller('realTimeTrainingCtrl', function($scope) {

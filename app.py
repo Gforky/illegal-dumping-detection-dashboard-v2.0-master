@@ -24,6 +24,7 @@ def hello():
 def index():
 	return render_template('index.html')
 
+
 @app.route("/upload-files", methods=['GET', 'POST'])
 def uploadfile():
 	if request.method == 'POST':
