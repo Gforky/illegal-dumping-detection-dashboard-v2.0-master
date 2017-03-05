@@ -1,2 +1,2 @@
 # illegal-dumping-detection-dashboard
-MEAN stack based dashboard for illegal dumping detection project
+Python Flask sever with SQLALchemy schema connecting with PostgreSQL
