@@ -186,6 +186,7 @@ $(document).ready(function() {
       type: 'POST',
       success: function(response) {
         console.log(response);
+        // convert JSON object into javascript array
         imgStorageChart($.parseJSON(response));
       },
       error: function(error) {
