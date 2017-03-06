@@ -33,15 +33,11 @@ $(document).ready(function() {
   })
 
 // chart of database status
-  var imgStorageChart = function() {
+  var imgStorageChart = function(response) {
     c3.generate({
       bindto: '.dbChart',
       data: {
-        columns: [
-          ['matrix', 298],
-          ['sofa', 276],
-          ['tv-monitor', 198]
-        ],
+        columns: response,
         type : 'pie'
       },
       pie: {
@@ -54,7 +50,8 @@ $(document).ready(function() {
     })
   }
 
-  imgStorageChart(); 
+
+  imgStorageChart([['mattress', 298], ['sofa', 276], ['tv-monitor', 198]]); 
 
   var dbIOChart = function() {
     c3.generate({
@@ -63,7 +60,7 @@ $(document).ready(function() {
         x : 'x',
         columns: [
           ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-          ['matrix', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
+          ['mattress', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
           ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
         ]
       },
@@ -95,7 +92,7 @@ $(document).ready(function() {
         x : 'x',
         columns: [
           ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-          ['matrix', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
+          ['mattress', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
           ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
         ]
       },
@@ -128,7 +125,7 @@ $(document).ready(function() {
       x : 'x',
       columns: [
         ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-        ['matrix', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
+        ['mattress', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
         ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
       ]
     },
@@ -184,7 +181,17 @@ $(document).ready(function() {
   $(".imgStorage").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     //dbChart.axis.labels({y : 'Image Storage'})
-    imgStorageChart();
+    $.ajax({
+      url: '/getImgStorage',
+      type: 'POST',
+      success: function(response) {
+        console.log(response);
+        imgStorageChart($.parseJSON(response));
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    })
   })
 
   $(".dbIO").click(function() {

@@ -65,6 +65,16 @@ def getImageStats():
         json_str = json.dumps(imagedata_stats_arr)
         return json_str
 
+@app.route("/getImgStorage", methods=['POST'])
+def getImgStorage():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([['mattress', 376], ['sofa', 456], ['tv-monitor', 231]])
+    except Exception:
+        return traceback.format_exc()
+
 @app.route("/getClassificationStats", methods=['POST'])
 def getClassifiactionStats():
     """
