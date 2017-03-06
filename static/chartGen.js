@@ -43,6 +43,13 @@ $(document).ready(function() {
           ['tv-monitor', 198]
         ],
         type : 'pie'
+      },
+      pie: {
+        label: {
+          format: function (value, ratio, id) {
+            return d3.format('')(value);
+          }
+        }
       }
     })
   }
