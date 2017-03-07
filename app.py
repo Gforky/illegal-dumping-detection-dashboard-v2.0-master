@@ -73,7 +73,7 @@ def getCpuUsage():
     try:
         return json.dumps([
           ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-          ['CPU Usage', 0.46, 0.78, 0.88, 0.72, 0.98, 0.88]
+          ['CPU Usage', 46, 78, 88, 72, 98, 88]
         ])
     except Exception:
         return traceback.format_exc()
@@ -86,7 +86,7 @@ def getMemLoad():
     try:
         return json.dumps([
           ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-          ['Memory Load', 0.46, 0.78, 0.88, 0.72, 0.98, 0.88]
+          ['Memory Load', 46, 78, 88, 72, 98, 88]
         ])
     except Exception:
         return traceback.format_exc()
@@ -99,7 +99,7 @@ def getNetTraff():
     try:
         return json.dumps([
           ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-          ['Network Traffic', 0.46, 0.78, 0.88, 0.72, 0.98, 0.88]
+          ['Network Traffic', 100, 120, 130, 150, 120, 135]
         ])
     except Exception:
         return traceback.format_exc()
@@ -112,7 +112,7 @@ def getCpuTemp():
     try:
         return json.dumps([
           ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-          ['CPU Temperature', 0.46, 0.78, 0.88, 0.72, 0.98, 0.88]
+          ['CPU Temperature', 46, 50, 65, 72, 78, 54]
         ])
     except Exception:
         return traceback.format_exc()
@@ -151,6 +151,51 @@ def getDBQuery():
         return json.dumps([
             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             ['Database Queries', 200, 300, 880, 720, 980, 880]
+        ])
+    except Exception:
+        return traceback.format_exc()
+
+@app.route("/getAP", methods=['POST'])
+def getAP():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            ['mattress', 76, 80, 88, 90, 92, 96],
+            ['sofa', 56, 66, 76, 86, 90, 96],
+            ['tv-monitor', 55, 67, 73, 85, 89, 97]
+        ])
+    except Exception:
+        return traceback.format_exc()
+
+@app.route("/getDatasetSize", methods=['POST'])
+def getDatasetSize():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            ['mattress', 176, 180, 188, 190, 192, 196],
+            ['sofa', 156, 166, 276, 286, 390, 396],
+            ['tv-monitor', 55, 167, 173, 285, 389, 197]
+        ])
+    except Exception:
+        return traceback.format_exc()
+
+@app.route("/getDetectedObj", methods=['POST'])
+def getDetectedObj():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            ['mattress', 26, 20, 18, 19, 19, 16],
+            ['sofa', 15, 16, 26, 26, 39, 36],
+            ['tv-monitor', 55, 17, 13, 25, 39, 19]
         ])
     except Exception:
         return traceback.format_exc()

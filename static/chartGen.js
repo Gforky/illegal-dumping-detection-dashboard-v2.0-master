@@ -56,11 +56,10 @@ $(document).ready(function() {
       },
       y: {
         label: { // ADD
-          text: 'Compelted Tasks',
           position: 'outer-middle'
         },
         tick: {
-          format: function (d) { return d + "queries/second"; } // ADD
+          // ADD
         }
       }
     }
@@ -75,9 +74,11 @@ $(document).ready(function() {
       x : 'x',
       columns: [
         ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-        ['mattress', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
-        ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
-      ]
+        ['mattress', 55, 80, 70, 68, 98, 88],
+        ['sofa', 76, 85, 96, 97, 86, 78],
+        ['tv-monitor', 45, 55, 63, 75, 80, 92]
+      ],
+      groups: []
     },
     axis: {
       x: {
@@ -96,7 +97,7 @@ $(document).ready(function() {
         }
       }
     }
-  })
+  }
 
   var nnChart = c3.generate(nnChartConfig)
 
@@ -141,6 +142,8 @@ $(document).ready(function() {
       success: function(response) {
         console.log(response)
         // convert JSON object into javascript array
+        sysChartConfig.axis.y.tick = { format : function (d) { return d + "%"; } }
+        sysChart = c3.generate(sysChartConfig)
         sysChart.axis.labels({y : 'CPU Usage'})
         //sysChart.transform('bar');
         sysChart.load({
@@ -162,6 +165,8 @@ $(document).ready(function() {
       success: function(response) {
         console.log(response)
         // convert JSON object into javascript array
+        sysChartConfig.axis.y.tick = { format : function (d) { return d + "%"; } }
+        sysChart = c3.generate(sysChartConfig)
         sysChart.axis.labels({y : 'Memory Load'})
         //sysChart.transform('bar');
         sysChart.load({
@@ -183,6 +188,8 @@ $(document).ready(function() {
       success: function(response) {
         console.log(response)
         // convert JSON object into javascript array
+        sysChartConfig.axis.y.tick = { format : function (d) { return d + "MB/s"; } }
+        sysChart = c3.generate(sysChartConfig)
         sysChart.axis.labels({y : 'Network Traffic'})
         //sysChart.transform('bar');
         sysChart.load({
@@ -204,6 +211,8 @@ $(document).ready(function() {
       success: function(response) {
         console.log(response)
         // convert JSON object into javascript array
+        sysChartConfig.axis.y.tick = { format : function (d) { return d + "ºF"; } }
+        sysChart = c3.generate(sysChartConfig)
         sysChart.axis.labels({y : 'CPU Temperature'})
         //sysChart.transform('bar');
         sysChart.load({
@@ -250,7 +259,8 @@ $(document).ready(function() {
         console.log(response)
         // convert JSON object into javascript array
         //sysChart.transform('bar');
-        dbChartConfig.axis.y.tick = { format : function (d) { return d + "queries/second"; } }
+        dbChartConfig.axis.y.tick = { format : function (d) { return d + " queries/second"; } }
+        dbChart = c3.generate(dbChartConfig)
         dbChart.transform('line')
         dbChart.load({
           columns: $.parseJSON(response), 
@@ -274,7 +284,7 @@ $(document).ready(function() {
         console.log(response)
         // convert JSON object into javascript array
         //sysChart.transform('bar');
-        dbChartConfig.axis.y.tick = { format : function (d) { return d + "queries"; } }
+        dbChartConfig.axis.y.tick = { format : function (d) { return d + " queries"; } }
         dbChart = c3.generate(dbChartConfig)
         dbChart.transform('line')
         dbChart.load({
@@ -292,17 +302,78 @@ $(document).ready(function() {
   // button clicks of Neural Network Status Chart
   $(".AP").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    nnChart.axis.labels({y : 'Average Precision'})
+    $.ajax({
+      url: '/getAP',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        nnChartConfig.axis.y.tick = { format : function (d) { return d + "%"; } }
+        nnChartConfig.data = {
+          x : 'x',
+          columns: $.parseJSON(response),
+          type: 'line'
+        }
+        nnChart = c3.generate(nnChartConfig)
+        nnChart.axis.labels({ y : 'Avergae Precisions'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   $(".datasetSize").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    nnChart.axis.labels({y : 'Dataset Size'})
+    $.ajax({
+      url: '/getDatasetSize',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        nnChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
+        nnChartConfig.data = {
+          x : 'x',
+          columns: $.parseJSON(response),
+          groups: [['mattress', 'sofa', 'tv-monitor']],
+          type: 'bar'
+        }
+        nnChart = c3.generate(nnChartConfig)
+        //nnChart.transform('bar')
+        nnChart.axis.labels({ y : 'Dataset Size'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   $(".detectedObjects").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    nnChart.axis.labels({y : 'Detected Objects'})
+    $.ajax({
+      url: '/getDetectedObj',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        nnChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
+        nnChartConfig.data = {
+          x : 'x',
+          columns: $.parseJSON(response),
+          groups: [['mattress', 'sofa', 'tv-monitor']],
+          type: 'bar'
+        }
+        nnChart = c3.generate(nnChartConfig)
+        //nnChart.transform('bar')
+        nnChart.axis.labels({ y : 'Detected Objects'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   // button clicks of Client Usage Status Chart
