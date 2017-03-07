@@ -1,17 +1,15 @@
 $(document).ready(function() {
   var blue = "#0055A2", gold = "#E5A823", white = "#ffffff";
 // chart of system status
-  var sysChart = c3.generate({
+  var sysChartConfig = {
     bindto: '.sysChart',
     data: {
       x : 'x',
       columns: [
         ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-        ['cpuUsage', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88]
+        ['CPU Usage', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88]
       ],
-      types: {
-        cpuUsage: 'bar'   
-      }
+      type: 'bar'
     },
     axis: {
       x: {
@@ -30,96 +28,80 @@ $(document).ready(function() {
         }
       }
     }
-  })
+  }
+
+  var sysChart = c3.generate(sysChartConfig)
 
 // chart of database status
-  var imgStorageChart = function(response) {
-    c3.generate({
-      bindto: '.dbChart',
-      data: {
-        columns: response,
-        type : 'pie'
-      },
-      pie: {
-        label: {
-          format: function (value, ratio, id) {
-            return d3.format('')(value);
-          }
+  var dbChartConfig = {
+    bindto: '.dbChart',
+    data: {
+      x : 'x',
+      columns: [['x', 0], ['mattress', 298], ['sofa', 276], ['tv-monitor', 198]],
+      type : 'pie'
+    },
+    pie: {
+      label: {
+        format: function (value, ratio, id) {
+          return d3.format('')(value);
         }
       }
-    })
-  }
-
-
-  imgStorageChart([['mattress', 298], ['sofa', 276], ['tv-monitor', 198]]); 
-
-  var dbIOChart = function() {
-    c3.generate({
-      bindto: '.dbChart',
-      data: {
-        x : 'x',
-        columns: [
-          ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-          ['mattress', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
-          ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
-        ]
+    },
+    axis: {
+      x: {
+        type: 'timeseries',
+        tick: {
+            format: '%Y-%m-%d'
+        }
       },
-      axis: {
-        x: {
-          type: 'timeseries',
-          tick: {
-              format: '%Y-%m-%d'
-          }
+      y: {
+        label: { // ADD
+          text: 'Compelted Tasks',
+          position: 'outer-middle'
         },
-        y: {
-          label: { // ADD
-            text: 'Average Precisions',
-            position: 'outer-middle'
-          },
-          tick: {
-            format: d3.format(",%") // ADD
-          }
+        tick: {
+          format: function (d) { return d + "queries/second"; } // ADD
         }
       }
-    })
+    }
   }
+
+  var dbChart = c3.generate(dbChartConfig)
 
   // chart of neural network status
-  var nnChart = function() {
-    c3.generate({
-      bindto: '.nnChart',
-      data: {
-        x : 'x',
-        columns: [
-          ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-          ['mattress', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
-          ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
-        ]
+  var nnChartConfig = {
+    bindto: '.nnChart',
+    data: {
+      x : 'x',
+      columns: [
+        ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
+        ['mattress', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
+        ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
+      ]
+    },
+    axis: {
+      x: {
+        type: 'timeseries',
+        tick: {
+            format: '%Y-%m-%d'
+        }
       },
-      axis: {
-        x: {
-          type: 'timeseries',
-          tick: {
-              format: '%Y-%m-%d'
-          }
+      y: {
+        label: { // ADD
+          text: 'Average Precisions',
+          position: 'outer-middle'
         },
-        y: {
-          label: { // ADD
-            text: 'Average Precisions',
-            position: 'outer-middle'
-          },
-          tick: {
-            format: d3.format(",%") // ADD
-          }
+        tick: {
+          format: d3.format(",%") // ADD
         }
       }
-    })
-  }
+    }
+  })
 
-  nnChart();
+  var nnChart = c3.generate(nnChartConfig)
 
   // chart of client usage status
-  var cuChart = c3.generate({
+  var cuChartConfig = {
     bindto: '.cuChart',
     data: {
       x : 'x',
@@ -146,35 +128,93 @@ $(document).ready(function() {
         }
       }
     }
-  })
+  }
+
+  var cuChart = c3.generate(cuChartConfig)
   
   // button clicks of System Status Chart
   $(".cpuUsage").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    sysChart.axis.labels({y : 'CPU Usage'})
-    sysChart.load({columns: [['cpuUsage', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88]]})
-    sysChart.unload({ids: ['sofa']})
+    $.ajax({
+      url: '/getCpuUsage',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        sysChart.axis.labels({y : 'CPU Usage'})
+        //sysChart.transform('bar');
+        sysChart.load({
+          columns: $.parseJSON(response), 
+          type: 'bar'})
+        sysChart.unload({ids: ['Memory Load', 'Network Traffic', 'CPU Temperature']})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   $(".memLoad").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    sysChart.axis.labels({y : 'Memory Load'})
-    sysChart.load({columns: [['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]]})
-    sysChart.unload({ids: ['cpuUsage']})
+    $.ajax({
+      url: '/getMemLoad',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        sysChart.axis.labels({y : 'Memory Load'})
+        //sysChart.transform('bar');
+        sysChart.load({
+          columns: $.parseJSON(response), 
+          type: 'line'})
+        sysChart.unload({ids: ['CPU Usage', 'Network Traffic', 'CPU Temperature']})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   $(".netTraff").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    sysChart.axis.labels({y : 'Network Traffic'})
-    sysChart.load({columns: [['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]]})
-    sysChart.unload({ids: ['cpuUsage']})
+    $.ajax({
+      url: '/getNetTraff',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        sysChart.axis.labels({y : 'Network Traffic'})
+        //sysChart.transform('bar');
+        sysChart.load({
+          columns: $.parseJSON(response), 
+          type: 'line'})
+        sysChart.unload({ids: ['CPU Usage', 'Memory Load', 'CPU Temperature']})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   $(".cpuTemp").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    sysChart.axis.labels({y : 'CPU Temperature'})
-    sysChart.load({columns: [['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]]})
-    sysChart.unload({ids: ['cpuUsage']})
+    $.ajax({
+      url: '/getCpuTemp',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        sysChart.axis.labels({y : 'CPU Temperature'})
+        //sysChart.transform('bar');
+        sysChart.load({
+          columns: $.parseJSON(response), 
+          type: 'line'})
+        sysChart.unload({ids: ['CPU Usage', 'Memory Load', 'Network Traffic']})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   // button clicks of Database Status Chart
@@ -185,12 +225,17 @@ $(document).ready(function() {
       url: '/getImgStorage',
       type: 'POST',
       success: function(response) {
-        console.log(response);
+        console.log(response)
         // convert JSON object into javascript array
-        imgStorageChart($.parseJSON(response));
+        //sysChart.transform('bar');
+        dbChart.transform('pie')
+        dbChart.load({
+          columns: $.parseJSON(response), 
+          type: 'pie'})
+        dbChart.unload({ids: ['Database I/O Traffic', 'Database Queries']})
       },
       error: function(error) {
-        console.log(error);
+        console.log(error)
       }
     })
   })
@@ -198,12 +243,50 @@ $(document).ready(function() {
   $(".dbIO").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     //dbChart.axis.labels({y : 'I/O Traffic'})
-    dbIOChart();
+    $.ajax({
+      url: '/getDBIO',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        dbChartConfig.axis.y.tick = { format : function (d) { return d + "queries/second"; } }
+        dbChart.transform('line')
+        dbChart.load({
+          columns: $.parseJSON(response), 
+          type: 'line'})
+        dbChart.axis.labels({ y : 'Database I/O Traffic'})
+        dbChart.unload({ids: ['mattress', 'sofa', 'tv-monitor', 'Database Queries']})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   $(".dbQuery").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     //dbChart.axis.labels({y : 'Database Queries'})
+    $.ajax({
+      url: '/getDBQuery',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        dbChartConfig.axis.y.tick = { format : function (d) { return d + "queries"; } }
+        dbChart = c3.generate(dbChartConfig)
+        dbChart.transform('line')
+        dbChart.load({
+          columns: $.parseJSON(response),
+          type: 'line'})
+        dbChart.axis.labels({ y : 'Database Queries'})
+        dbChart.unload({ids: ['mattress', 'sofa', 'tv-monitor', 'Database I/O Traffic']})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   // button clicks of Neural Network Status Chart

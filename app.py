@@ -64,6 +64,58 @@ def getImageStats():
 
         json_str = json.dumps(imagedata_stats_arr)
         return json_str
+#########################   C3 Chart AJAX   #############################
+@app.route("/getCpuUsage", methods=['POST'])
+def getCpuUsage():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+          ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+          ['CPU Usage', 0.46, 0.78, 0.88, 0.72, 0.98, 0.88]
+        ])
+    except Exception:
+        return traceback.format_exc()
+
+@app.route("/getMemLoad", methods=['POST'])
+def getMemLoad():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+          ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+          ['Memory Load', 0.46, 0.78, 0.88, 0.72, 0.98, 0.88]
+        ])
+    except Exception:
+        return traceback.format_exc()
+
+@app.route("/getNetTraff", methods=['POST'])
+def getNetTraff():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+          ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+          ['Network Traffic', 0.46, 0.78, 0.88, 0.72, 0.98, 0.88]
+        ])
+    except Exception:
+        return traceback.format_exc()
+
+@app.route("/getCpuTemp", methods=['POST'])
+def getCpuTemp():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+          ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+          ['CPU Temperature', 0.46, 0.78, 0.88, 0.72, 0.98, 0.88]
+        ])
+    except Exception:
+        return traceback.format_exc()
 
 @app.route("/getImgStorage", methods=['POST'])
 def getImgStorage():
@@ -71,9 +123,38 @@ def getImgStorage():
     Function to get the image storage status from the database
     """
     try:
-        return json.dumps([['mattress', 376], ['sofa', 456], ['tv-monitor', 231]])
+        return json.dumps([
+            ['mattress', 376], ['sofa', 456], ['tv-monitor', 231]
+        ])
     except Exception:
         return traceback.format_exc()
+
+@app.route("/getDBIO", methods=['POST'])
+def getDBIO():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            ['Database I/O Traffic', 20, 30, 88, 72, 98, 88]
+        ])
+    except Exception:
+        return traceback.format_exc()
+
+@app.route("/getDBQuery", methods=['POST'])
+def getDBQuery():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            ['Database Queries', 200, 300, 880, 720, 980, 880]
+        ])
+    except Exception:
+        return traceback.format_exc()
+#########################   C3 Chart AJAX   #############################
 
 @app.route("/getClassificationStats", methods=['POST'])
 def getClassifiactionStats():
