@@ -108,8 +108,7 @@ $(document).ready(function() {
       x : 'x',
       columns: [
         ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
-        ['mattress', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
-        ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
+        ['Completed Tasks', 12, 35, 25, 12, 7, 0],
       ]
     },
     axis: {
@@ -125,7 +124,7 @@ $(document).ready(function() {
           position: 'outer-middle'
         },
         tick: {
-          format: d3.format(",%") // ADD
+          format: d3.format("") // ADD
         }
       }
     }
@@ -311,7 +310,6 @@ $(document).ready(function() {
         //sysChart.transform('bar');
         nnChartConfig.axis.y.tick = { format : function (d) { return d + "%"; } }
         nnChartConfig.data = {
-          x : 'x',
           columns: $.parseJSON(response),
           type: 'line'
         }
@@ -335,7 +333,6 @@ $(document).ready(function() {
         //sysChart.transform('bar');
         nnChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
         nnChartConfig.data = {
-          x : 'x',
           columns: $.parseJSON(response),
           groups: [['mattress', 'sofa', 'tv-monitor']],
           type: 'bar'
@@ -361,7 +358,6 @@ $(document).ready(function() {
         //sysChart.transform('bar');
         nnChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
         nnChartConfig.data = {
-          x : 'x',
           columns: $.parseJSON(response),
           groups: [['mattress', 'sofa', 'tv-monitor']],
           type: 'bar'
@@ -379,16 +375,78 @@ $(document).ready(function() {
   // button clicks of Client Usage Status Chart
   $(".completedTasks").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    cuChart.axis.labels({y : 'Completed Tasks'})
+    $.ajax({
+      url: '/getCompletedTasks',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        cuChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
+        cuChartConfig.data = {
+          x : 'x',
+          columns: $.parseJSON(response),
+          type: 'line'
+        }
+        cuChart = c3.generate(cuChartConfig)
+        //nnChart.transform('bar')
+        cuChart.axis.labels({ y : 'Completed Tasks'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   $(".supDec").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    cuChart.axis.labels({y : 'Supervision Decisions'})
+    $.ajax({
+      url: '/getSupDec',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        cuChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
+        cuChartConfig.data = {
+          x : 'x',
+          columns: $.parseJSON(response),
+          groups: [['mattress', 'sofa', 'tv-monitor']],
+          type: 'bar'
+        }
+        cuChart = c3.generate(cuChartConfig)
+        //nnChart.transform('bar')
+        cuChart.axis.labels({ y : 'Supervision Decisions'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 
   $(".upImg").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    cuChart.axis.labels({y : 'Upload Images'})
+    $.ajax({
+      url: '/getUpImg',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        cuChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
+        cuChartConfig.data = {
+          x : 'x',
+          columns: $.parseJSON(response),
+          groups: [['mattress', 'sofa', 'tv-monitor']],
+          type: 'bar'
+        }
+        cuChart = c3.generate(cuChartConfig)
+        //nnChart.transform('bar')
+        cuChart.axis.labels({ y : 'Uploaded Images'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   })
 })
