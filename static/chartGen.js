@@ -37,7 +37,7 @@ $(document).ready(function() {
     bindto: '.dbChart',
     data: {
       x : 'x',
-      columns: [['x', 0], ['mattress', 298], ['sofa', 276], ['tv-monitor', 198]],
+      columns: [['x', 0], ['mattress', 298], ['couch', 276], ['tv-monitor', 198]],
       type : 'pie'
     },
     pie: {
@@ -75,7 +75,7 @@ $(document).ready(function() {
       columns: [
         ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
         ['mattress', 55, 80, 70, 68, 98, 88],
-        ['sofa', 76, 85, 96, 97, 86, 78],
+        ['couch', 76, 85, 96, 97, 86, 78],
         ['tv-monitor', 45, 55, 63, 75, 80, 92]
       ],
       groups: []
@@ -109,7 +109,7 @@ $(document).ready(function() {
       columns: [
         ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
         ['mattress', 0.55, 0.80, 0.70, 0.68, 0.98, 0.88],
-        ['sofa', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
+        ['couch', 0.76, 0.85, 0.96, 0.97, 0.86, 0.78]
       ]
     },
     axis: {
@@ -262,7 +262,7 @@ $(document).ready(function() {
         dbChartConfig.data = {
           x : 'x',
           columns: $.parseJSON(response),
-          groups: [['mattress', 'sofa', 'tv-monitor']],
+          groups: [['mattress', 'couch', 'tv-monitor']],
           type: 'bar'
         }
         dbChart = c3.generate(dbChartConfig)
@@ -288,7 +288,7 @@ $(document).ready(function() {
         dbChartConfig.data = {
           x : 'x',
           columns: $.parseJSON(response),
-          groups: [['mattress', 'sofa', 'tv-monitor']],
+          groups: [['mattress', 'couch', 'tv-monitor']],
           type: 'bar'
         }
         dbChart = c3.generate(dbChartConfig)
@@ -314,7 +314,7 @@ $(document).ready(function() {
         dbChartConfig.data = {
           x : 'x',
           columns: $.parseJSON(response),
-          groups: [['mattress', 'sofa', 'tv-monitor']],
+          groups: [['mattress', 'couch', 'tv-monitor']],
           type: 'bar'
         }
         dbChart = c3.generate(dbChartConfig)
@@ -344,7 +344,7 @@ $(document).ready(function() {
           columns: $.parseJSON(response), 
           type: 'line'})
         dbChart.axis.labels({ y : 'Database I/O Traffic'})
-        dbChart.unload({ids: ['mattress', 'sofa', 'tv-monitor', 'Database Queries']})
+        dbChart.unload({ids: ['mattress', 'couch', 'tv-monitor', 'Database Queries']})
       },
       error: function(error) {
         console.log(error)
@@ -369,7 +369,7 @@ $(document).ready(function() {
           columns: $.parseJSON(response),
           type: 'line'})
         dbChart.axis.labels({ y : 'Database Queries'})
-        dbChart.unload({ids: ['mattress', 'sofa', 'tv-monitor', 'Database I/O Traffic']})
+        dbChart.unload({ids: ['mattress', 'couch', 'tv-monitor', 'Database I/O Traffic']})
       },
       error: function(error) {
         console.log(error)
@@ -415,7 +415,7 @@ $(document).ready(function() {
         nnChartConfig.data = {
           x : 'x',
           columns: $.parseJSON(response),
-          groups: [['mattress', 'sofa', 'tv-monitor']],
+          groups: [['mattress', 'couch', 'tv-monitor']],
           type: 'bar'
         }
         nnChart = c3.generate(nnChartConfig)

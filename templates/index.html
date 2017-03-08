@@ -96,8 +96,14 @@
               <!--    li: button.VGG16(ng-click="VGG16()") VGG16-->
               <!--    li: button.ZF(ng-click="ZF()") ZF-->
               <!--    li: button.VGG_CNN_M_1024(ng-click="VGG_CNN_M_1024()") VGG_CNN_M_1024-->
-              <div class="realTime-trainingTime"><span style="color:#008CBA">Training Time of Current Dataset: </span><span my-current-time style="color:#ff4000"></span></div>
-              <div class="realTime-dataset"><span style="color:#008CBA">Dataset Size of Current Training:</span><span my-current-dataset style="color:#ff4000"></span></div>
+              <!--<div class="realTime-trainingTime"><span style="color:#008CBA">Training Time of Current Dataset: </span><span my-current-time style="color:#ff4000"></span></div>-->
+              <div class="realTime-dataset"><span style="color:#008CBA">Dataset Size of Current Training Process:</span>
+              <br>
+              Mattress: <span my-current-dataset style="color:#ff4000"></span>
+              <br>
+              Couch: <span my-current-dataset style="color:#ff4000"></span>
+              <br>
+              TV-Monitor: <span my-current-dataset style="color:#ff4000"></span></div>
             </div>
           </div>
           <div class="left-half-2">
@@ -108,7 +114,7 @@
               <div class="remainImg"><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length}}</span><span style="margin-left:5px">images waiting for supervision</span></div>
               <div class="btn-group">
                 <button ng-click="removePhoto()" class="deleteImg"> <span>Submit</span></button>
-                <button ng-click="findSofa()" class="findSofa">Sofa</button>
+                <button ng-click="findSofa()" class="findSofa">Couch</button>
                 <button ng-click="findMattress()" class="findMattress">Mattress</button>
                 <button ng-click="findTvMonitor()" style="font-size:10px" class="findTvMonitor">TV Monitor</button>
               </div>
