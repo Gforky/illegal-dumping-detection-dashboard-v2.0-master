@@ -193,7 +193,9 @@ button {
 
 .findSofa,
 .findMattress,
-.findTvMonitor {
+.findTvMonitor,
+.findFridge,
+.findChair {
   height: 20px;
   width: 70px;
   margin-right: 1%;

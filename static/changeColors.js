@@ -6,12 +6,17 @@ $(document).ready(function() {
 	$('.cpuUsage').toggleClass('chosenColor');
 	$('.imgStorage').toggleClass('chosenColor');
 	$('.AP').toggleClass('chosenColor');
-	$('.completedTasks').toggleClass('chosenColor');
 	// js to change Supervision buttons' colors
 	$('.findSofa').click(function() {
 	  	$(this).toggleClass('chosenColor');
 	})
 	$('.findMattress').click(function() {
+	  	$(this).toggleClass('chosenColor');
+	})
+	$('.findFridge').click(function() {
+	  	$(this).toggleClass('chosenColor');
+	})
+	$('.findChair').click(function() {
 	  	$(this).toggleClass('chosenColor');
 	})
 	$('.findTvMonitor').click(function() {
@@ -21,6 +26,8 @@ $(document).ready(function() {
 	$('.deleteImg').click(function() {
 		$('.findSofa').toggleClass('chosenColor', false);
 		$('.findMattress').toggleClass('chosenColor', false);
+		$('.findFridge').toggleClass('chosenColor', false);
+		$('.findChair').toggleClass('chosenColor', false);
 		$('.findTvMonitor').toggleClass('chosenColor', false);
 	})
 })

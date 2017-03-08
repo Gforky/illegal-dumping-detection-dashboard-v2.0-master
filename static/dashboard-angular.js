@@ -113,6 +113,12 @@ app.controller('todoCtrl', function($scope) {
   $scope.findTvMonitor = function() {
 
   }
+  $scope.findFridge = function() {
+
+  }
+  $scope.findChair = function() {
+
+  }
 })
 
 // Register the 'myCurrentTime' directive factory method.
