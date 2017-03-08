@@ -155,23 +155,38 @@ def getDBQuery():
     except Exception:
         return traceback.format_exc()
 
-@app.route("/getAP", methods=['POST'])
-def getAP():
+@app.route("/getDatasetSize", methods=['POST'])
+def getDatasetSize():
     """
     Function to get the image storage status from the database
     """
     try:
         return json.dumps([
             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['mattress', 76, 80, 88, 90, 92, 96],
-            ['sofa', 56, 66, 76, 86, 90, 96],
-            ['tv-monitor', 55, 67, 73, 85, 89, 97]
+            ['mattress', 176, 180, 188, 190, 192, 196],
+            ['sofa', 156, 166, 276, 286, 390, 396],
+            ['tv-monitor', 55, 167, 173, 285, 389, 197]
         ])
     except Exception:
         return traceback.format_exc()
 
-@app.route("/getDatasetSize", methods=['POST'])
-def getDatasetSize():
+@app.route("/getImgConf", methods=['POST'])
+def getImgConf():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            ['mattress', 176, 180, 188, 190, 192, 196],
+            ['sofa', 156, 166, 276, 286, 390, 396],
+            ['tv-monitor', 55, 167, 173, 285, 389, 197]
+        ])
+    except Exception:
+        return traceback.format_exc()
+
+@app.route("/getUpImg", methods=['POST'])
+def getUpImg():
     """
     Function to get the image storage status from the database
     """
@@ -196,6 +211,21 @@ def getDetectedObj():
             ['mattress', 26, 20, 18, 19, 19, 16],
             ['sofa', 15, 16, 26, 26, 39, 36],
             ['tv-monitor', 55, 17, 13, 25, 39, 19]
+        ])
+    except Exception:
+        return traceback.format_exc()
+
+@app.route("/getAP", methods=['POST'])
+def getAP():
+    """
+    Function to get the image storage status from the database
+    """
+    try:
+        return json.dumps([
+            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            ['mattress', 76, 80, 88, 90, 92, 96],
+            ['sofa', 56, 66, 76, 86, 90, 96],
+            ['tv-monitor', 55, 67, 73, 85, 89, 97]
         ])
     except Exception:
         return traceback.format_exc()

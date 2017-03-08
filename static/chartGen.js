@@ -249,6 +249,84 @@ $(document).ready(function() {
     })
   })
 
+  $(".datasetSize").click(function() {
+    //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
+    $.ajax({
+      url: '/getDatasetSize',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        dbChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
+        dbChartConfig.data = {
+          x : 'x',
+          columns: $.parseJSON(response),
+          groups: [['mattress', 'sofa', 'tv-monitor']],
+          type: 'bar'
+        }
+        dbChart = c3.generate(dbChartConfig)
+        //nnChart.transform('bar')
+        dbChart.axis.labels({ y : 'Dataset Size'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
+  })
+
+  $(".imgConf").click(function() {
+    //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
+    $.ajax({
+      url: '/getImgConf',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        dbChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
+        dbChartConfig.data = {
+          x : 'x',
+          columns: $.parseJSON(response),
+          groups: [['mattress', 'sofa', 'tv-monitor']],
+          type: 'bar'
+        }
+        dbChart = c3.generate(dbChartConfig)
+        //nnChart.transform('bar')
+        dbChart.axis.labels({ y : 'Images Confirmed'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
+  })
+
+  $(".upImg").click(function() {
+    //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
+    $.ajax({
+      url: '/getUpImg',
+      type: 'POST',
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        dbChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
+        dbChartConfig.data = {
+          x : 'x',
+          columns: $.parseJSON(response),
+          groups: [['mattress', 'sofa', 'tv-monitor']],
+          type: 'bar'
+        }
+        dbChart = c3.generate(dbChartConfig)
+        //nnChart.transform('bar')
+        dbChart.axis.labels({ y : 'Images Uploaded'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
+  })
+
   $(".dbIO").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     //dbChart.axis.labels({y : 'I/O Traffic'})
@@ -324,32 +402,6 @@ $(document).ready(function() {
     })
   })
 
-  $(".datasetSize").click(function() {
-    //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    $.ajax({
-      url: '/getDatasetSize',
-      type: 'POST',
-      success: function(response) {
-        console.log(response)
-        // convert JSON object into javascript array
-        //sysChart.transform('bar');
-        nnChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
-        nnChartConfig.data = {
-          x : 'x',
-          columns: $.parseJSON(response),
-          groups: [['mattress', 'sofa', 'tv-monitor']],
-          type: 'bar'
-        }
-        nnChart = c3.generate(nnChartConfig)
-        //nnChart.transform('bar')
-        nnChart.axis.labels({ y : 'Dataset Size'})
-      },
-      error: function(error) {
-        console.log(error)
-      }
-    })
-  })
-
   $(".detectedObjects").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     $.ajax({
@@ -374,21 +426,5 @@ $(document).ready(function() {
         console.log(error)
       }
     })
-  })
-
-  // button clicks of Client Usage Status Chart
-  $(".completedTasks").click(function() {
-    //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    cuChart.axis.labels({y : 'Completed Tasks'})
-  })
-
-  $(".supDec").click(function() {
-    //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    cuChart.axis.labels({y : 'Supervision Decisions'})
-  })
-
-  $(".upImg").click(function() {
-    //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
-    cuChart.axis.labels({y : 'Upload Images'})
   })
 })

@@ -166,8 +166,7 @@ button {
 .imgStorage,
 .dbIO,
 .dbQuery,
-.completedTasks,
-.supDec,
+.imgConf,
 .upImg {
   border: none;
   text-align: center;
