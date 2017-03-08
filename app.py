@@ -215,56 +215,17 @@ def getDetectedObj():
     except Exception:
         return traceback.format_exc()
 
-<<<<<<< HEAD
 @app.route("/getAP", methods=['POST'])
 def getAP():
-=======
-@app.route("/getCompletedTasks", methods=['POST'])
-def getCompletedTasks():
->>>>>>> origin/master
     """
     Function to get the image storage status from the database
     """
     try:
         return json.dumps([
             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-<<<<<<< HEAD
             ['mattress', 76, 80, 88, 90, 92, 96],
             ['sofa', 56, 66, 76, 86, 90, 96],
             ['tv-monitor', 55, 67, 73, 85, 89, 97]
-=======
-            ['Completed Tasks', 26, 20, 18, 19, 19, 16]
-        ])
-    except Exception:
-        return traceback.format_exc()
-
-@app.route("/getSupDec", methods=['POST'])
-def getSupDec():
-    """
-    Function to get the image storage status from the database
-    """
-    try:
-        return json.dumps([
-            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['mattress', 26, 20, 18, 19, 19, 16],
-            ['sofa', 15, 16, 26, 26, 39, 36],
-            ['tv-monitor', 55, 17, 13, 25, 39, 19]
-        ])
-    except Exception:
-        return traceback.format_exc()
-
-@app.route("/getUpImg", methods=['POST'])
-def getUpImg():
-    """
-    Function to get the image storage status from the database
-    """
-    try:
-        return json.dumps([
-            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['mattress', 26, 20, 18, 19, 19, 16],
-            ['sofa', 15, 16, 26, 26, 39, 36],
-            ['tv-monitor', 55, 17, 13, 25, 39, 19]
->>>>>>> origin/master
         ])
     except Exception:
         return traceback.format_exc()
