@@ -1,5 +1,11 @@
 var app = angular.module('dashboard', ['ngAnimate', 'ngTouch'])
 
+var hasMattress = false
+var hasSofa = false
+var hasTvMonitor = false
+var hasFridge = false
+var hasChair = false
+
 app.controller('trainCtrl', function($scope) {
 // add the function to dynamically display the cnn traning process outputs
 
@@ -100,24 +106,47 @@ app.controller('todoCtrl', function($scope) {
   }
   // delete image and shift to next image
   $scope.removePhoto = function() {
-    $scope.photos.splice($scope._Index, 1);
-    $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+    var myData = {"hasSofa" : hasSofa, "hasMattress" : hasMattress, 
+                "hasTvMonitor" : hasTvMonitor, "hasFridge" : hasFridge, "hasChair" : hasChair,
+                "imgSrc" : $scope.photos[$scope._Index].src
+                }
+    $.ajax({
+      url: '/imgConfirmation',
+      type: 'POST',
+      contentType: 'application/json',
+      dataType: 'json',
+      data: JSON.stringify(myData),
+      success: function(response) {
+        console.log(response)
+        // convert JSON object into javascript array
+        hasSofa = false;
+        hasMattress = false;
+        hasTvMonitor = false;
+        hasFridge = false;
+        hasChair = false;
+        $scope.photos.splice($scope._Index, 1);
+        $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   }
   // functions handling object decisions
   $scope.findSofa = function() {
-
+    hasSofa = !hasSofa;
   }
   $scope.findMattress = function() {
-
+    hasMattress = !hasMattress;
   }
   $scope.findTvMonitor = function() {
-
+    hasTvMonitor = !hasTvMonitor;
   }
   $scope.findFridge = function() {
-
+    hasFridge = !hasFridge;
   }
   $scope.findChair = function() {
-
+    hasChair = !hasChair;
   }
 })
 

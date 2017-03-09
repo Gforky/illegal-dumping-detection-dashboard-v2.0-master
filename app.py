@@ -64,6 +64,21 @@ def getImageStats():
 
         json_str = json.dumps(imagedata_stats_arr)
         return json_str
+
+#########################   Image Confirmation  #########################
+@app.route("/imgConfirmation", methods=['POST'])
+def imgConfirmation():
+    '''
+    Function to move the images from tempory folder to the new dataset folder
+    '''
+    try:
+        imgInfo = request.get_json()
+        print("Current Image Source is " + imgInfo["imgSrc"])
+        return json.dumps("POST Successfully")
+    except Exception:
+        return traceback.format_exc()
+#########################   Image Confirmation  #########################
+
 #########################   C3 Chart AJAX   #############################
 @app.route("/getCpuUsage", methods=['POST'])
 def getCpuUsage():
