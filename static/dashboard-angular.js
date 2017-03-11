@@ -142,7 +142,8 @@ app.controller('todoCtrl', function($scope) {
       }
       $scope.photos.splice($scope._Index, 1)
       $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0
-    } else {
+    }
+    if($scope.photos.length === 0) {
       $scope.classificationResult = "";
     }
   }
