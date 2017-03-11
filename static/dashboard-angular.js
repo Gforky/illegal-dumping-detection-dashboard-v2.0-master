@@ -1,10 +1,10 @@
 var app = angular.module('dashboard', ['ngAnimate', 'ngTouch'])
 
-var hasMattress = false
-var hasSofa = false
-var hasTvMonitor = false
-var hasFridge = false
-var hasChair = false
+var confirmationList = []
+var objectList = ['mattress', 'sofa', 'tvmonitor', 'fridge', 'chair']
+for(index = 0; index < objectList.length; ++index) {
+  confirmationList.push(false)
+}
 
 app.controller('trainCtrl', function($scope) {
 // add the function to dynamically display the cnn traning process outputs
@@ -90,6 +90,11 @@ app.controller('todoCtrl', function($scope) {
   $scope._Index = 0;
   // if current image is the same as requested image
   $scope.isActive = function(index) {
+    if($scope.photos[$scope._Index]) {
+      $scope.classificationResult = $scope.photos[$scope._Index].desc;
+    } else {
+      $scope.classificationResult = "";
+    }
     return $scope._Index === index;
   }
   // show prev image
@@ -109,8 +114,13 @@ app.controller('todoCtrl', function($scope) {
       // image labels and the image source info
     console.log($scope._Index)
     if($scope.photos[$scope._Index]) { // check if any images waitting for confirmation
-      var myData = {"hasSofa" : hasSofa, "hasMattress" : hasMattress, 
-                    "hasTvMonitor" : hasTvMonitor, "hasFridge" : hasFridge, "hasChair" : hasChair,
+      var labels = []
+      for(index = 0; index < objectList.length; ++index) {
+        if(confirmationList[index]) {
+          labels.push(index)
+        }
+      }
+      var myData = {"labels" : labels,
                     "imgSrc" : $scope.photos[$scope._Index].src
                     }
       $.ajax({
@@ -127,30 +137,35 @@ app.controller('todoCtrl', function($scope) {
           console.log(error)
         }
       })
-      hasSofa = false
-      hasMattress = false
-      hasTvMonitor = false
-      hasFridge = false
-      hasChair = false
+      for(index = 0; index < confirmationList.length; ++index) {
+        confirmationList[index] = false;
+      }
       $scope.photos.splice($scope._Index, 1)
       $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0
+    } else {
+      $scope.classificationResult = "";
     }
   }
   // functions handling object decisions
   $scope.findSofa = function() {
-    hasSofa = !hasSofa;
+    var hasSofa = confirmationList[0];
+    confirmationList[0] = !hasSofa;
   }
   $scope.findMattress = function() {
-    hasMattress = !hasMattress;
+    var hasMattress = confirmationList[1];
+    confirmationList[1] = !hasMattress;
   }
   $scope.findTvMonitor = function() {
-    hasTvMonitor = !hasTvMonitor;
+    var hasTvMonitor = confirmationList[2];
+    confirmationList[2] = !hasTvMonitor;
   }
   $scope.findFridge = function() {
-    hasFridge = !hasFridge;
+    var hasFridge = confirmationList[3];
+    confirmationList[3] = !hasFridge;
   }
   $scope.findChair = function() {
-    hasChair = !hasChair;
+    var hasChair = confirmationList[4];
+    confirmationList[4] = !hasChair;
   }
 })
 

@@ -74,6 +74,7 @@ def imgConfirmation():
     try:
         imgInfo = request.get_json()
         print("Current Image Source is " + imgInfo["imgSrc"])
+        print(imgInfo["labels"])
         return json.dumps("POST Successfully")
     except Exception:
         return traceback.format_exc()
