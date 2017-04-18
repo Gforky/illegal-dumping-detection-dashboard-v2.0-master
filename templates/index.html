@@ -130,7 +130,7 @@
           </div>
         </div>
         <div class="right-half">
-          <div class="trainingLogView">
+          <!--<div class="trainingLogView">
             <div class="logButtons">
               <h5 style="color:#0055A2">Training Log</h5>
               <button class="button trainingLogRefresh">Manually refresh log</button>
@@ -139,7 +139,7 @@
             <div ng-controller="trainCtrl" class="train">
               <p class="trainingLog"></p>
             </div>
-          </div>
+          </div>-->
           <div class="detectionLogView">
             <div class="logButtons">
               <h5 style="color:#0055A2">Detection Log</h5>
@@ -161,13 +161,13 @@
             <button onclick="setChartButtonsVisualbility([&quot;.datasetSize&quot;, &quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.dbQuery&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button datasetSize">Images automatically<br>rejected by the algorithm</button>
             <button onclick="setChartButtonsVisualbility([&quot;.imgConf&quot;, &quot;.upImg&quot;, &quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.dbQuery&quot;])" class="button imgConf">Images Confirmed by Administrators</button>
             <button onclick="setChartButtonsVisualbility([&quot;.upImg&quot;, &quot;.imgConf&quot;, &quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.dbQuery&quot;])" class="button upImg">Uploaded Images</button>
-            <button onclick="setChartButtonsVisualbility([&quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.imgStorage&quot;, &quot;.dbQuery&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button dbIO">I/O Traffic</button>
-            <button onclick="setChartButtonsVisualbility([&quot;.dbQuery&quot;, &quot;.datasetSize&quot;, &quot;.dbIO&quot;, &quot;.imgStorage&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button dbQuery">Database Queries</button>
+            <!--<button onclick="setChartButtonsVisualbility([&quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.imgStorage&quot;, &quot;.dbQuery&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button dbIO">I/O Traffic</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.dbQuery&quot;, &quot;.datasetSize&quot;, &quot;.dbIO&quot;, &quot;.imgStorage&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button dbQuery">Database Queries</button>-->
           </div>
           <div ng-controller="chartCtrl" class="dbChart"></div>
         </div>
         
-        <div class="sysStat">
+        <!--<div class="sysStat">
           <h2>System Status</h2>
           <div class="chartButtons">
             <button onclick="setChartButtonsVisualbility([&quot;.cpuUsage&quot;, &quot;.memLoad&quot;, &quot;.netTraff&quot;, &quot;.cpuTemp&quot;])" class="button cpuUsage">CPU Usage</button>
@@ -176,7 +176,7 @@
             <button onclick="setChartButtonsVisualbility([&quot;.cpuTemp&quot;, &quot;.memLoad&quot;, &quot;.netTraff&quot;, &quot;.cpuUsage&quot;])" class="button cpuTemp">CPU Temprature</button>
           </div>
           <div ng-controller="chartCtrl" class="sysChart"></div>
-        </div>
+        </div>-->
         
         <div class="nnStat">
           <h2>Neural Network Status</h2>

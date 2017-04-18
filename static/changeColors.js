@@ -3,7 +3,7 @@ $(document).ready(function() {
 	var blue = "#0055A2";
 	document.getElementsByClassName("dataViews")[0].style.display = "none";
 	$('.sysOpsButton').toggleClass('chosenColor');
-	$('.cpuUsage').toggleClass('chosenColor');
+	//$('.cpuUsage').toggleClass('chosenColor');
 	$('.imgStorage').toggleClass('chosenColor');
 	$('.AP').toggleClass('chosenColor');
 	// js to change Supervision buttons' colors

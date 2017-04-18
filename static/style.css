@@ -142,18 +142,18 @@ button {
 }
 .detectionLogView {
   margin-top: 20px;
-  height: 50%;
+  height: 100%;
   border: 1px solid var(--blue);
 }
 .train,
 .detection {
   display: block;
-  height:85%;
+  height:92%;
   overflow: scroll;
 }
 .logButtons {
   border-bottom: 1px solid var(--blue);
-  height: 15%;
+  height: 8%;
 }
 
 .AP,
