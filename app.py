@@ -9,17 +9,27 @@ from models import Base, ImageCategory, ImageConfirmation, AlertImage
 from werkzeug import secure_filename
 from flask import json
 import os
+from sqlalchemy.sql import select
 
 app = Flask(__name__)
-UPLOAD_FOLDER = 'imgFolders/'
+UPLOAD_FOLDER = 'tempFolders/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 ALLOWED_FILE_EXTENSIONS = set(['tar', 'zip'])
 
+#connect db
+db = SQLAlchemy(app)
+engine = create_engine('postgresql://localhost:5433/cmpe295')
+Base.metadata.create_all(engine)
+#new
+conn = engine.connect()
+
+Session = sessionmaker(bind=engine)
+session = Session()
 #web services API
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return "Hello cmpe295 group!"
 
 @app.route("/index")
 def index():
@@ -248,7 +258,7 @@ def getAP():
         return traceback.format_exc()
 #########################   C3 Chart AJAX   #############################
 
-@app.route("/getClassificationStats", methods=['POST'])
+@app.route("/getConfirmationStats", methods=['POST'])
 def getClassifiactionStats():
     """
     This is function for API of getting classification stats
@@ -261,20 +271,35 @@ def getClassifiactionStats():
     TODO: use piechart to show the result
     """
     if request.method == 'POST':
-        classfication_stats_arr = []
-        counterUnknown, counter1, counter2, counter3, denominator = 0, 0, 0, 0, 0
-        for data in session.query(ClassificationResult).all():
-            print(data.classification_id)
-            denominator += 1
-            if data.category_id == 9999: # count knowon image
-                counterUnknown += 1
-            if data.category_id == 1:
-                counter1 += 1
-            if data.category_id == 2:
-                counter2 += 1
-            if data.category_id == 3:
-                counter3 += 1
-        classfication_stats_arr = [counter1, counter2, counter3, counterUnknown, denominator]
+        confirmation_arr, time_stamp = [], []
+        # counterUnknown, counter1, counter2, counter3, denominator = 0, 0, 0, 0, 0
+        count, count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean, count_unidentified = 0, 0, 0, 0, 0, 0, 0, 0, 0
+        s = select([ImageCategory, ImageConfirmation, AlertImage]).where(ImageConfirmation.alert_id == AlertImage.alert_id ).\
+            where(ImageCategory.category_id == ImageConfirmation.confirmation_id).\
+            order_by(ImageConfirmation.classification_datetime.desc())
+        result = conn.execute(s)
+        for row in result:
+            print(row[1])
+            if row[1]== 'tv-monitor':
+                count_tv += 1
+            if row[1] == 'couch':
+                count_couch += 1
+            if row[1] == 'mattress':
+                count_mattress += 1
+            if row[1] == 'chair':
+                count_chair += 1
+            if row[1] == 'refrigerator':
+                count_refrigerator += 1
+            if row[1] == 'shopping-cart':
+                count_cart += 1
+            if row[1] == 'clean':
+                count_clean += 1
+            if row[1] == 'unidentified':
+                count_unidentified += 1
+            count += 1
+            print(row)
+
+        classfication_stats_arr = [count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean, count_unidentified, count]
 
         json_str = json.dumps(classfication_stats_arr)
         return json_str
