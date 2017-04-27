@@ -1,7 +1,7 @@
 $(document).ready(function() {
   var blue = "#0055A2", gold = "#E5A823", white = "#ffffff";
 // chart of system status
-  var sysChartConfig = {
+  /*var sysChartConfig = {
     bindto: '.sysChart',
     data: {
       x : 'x',
@@ -30,42 +30,56 @@ $(document).ready(function() {
     }
   }
 
-  var sysChart = c3.generate(sysChartConfig)
+  var sysChart = c3.generate(sysChartConfig)*/
 
 // chart of database status
-  var dbChartConfig = {
-    bindto: '.dbChart',
-    data: {
-      x : 'x',
-      columns: [['x', 0], ['mattress', 298], ['couch', 276], ['tv-monitor', 198]],
-      type : 'pie'
-    },
-    pie: {
-      label: {
-        format: function (value, ratio, id) {
-          return d3.format('')(value);
-        }
-      }
-    },
-    axis: {
-      x: {
-        type: 'timeseries',
-        tick: {
-            format: '%Y-%m-%d'
-        }
-      },
-      y: {
-        label: { // ADD
-          position: 'outer-middle'
-        },
-        tick: {
-          // ADD
-        }
-      }
-    }
-  }
+  var dbChartConfig
+  var dbChart
 
-  var dbChart = c3.generate(dbChartConfig)
+  $.ajax({
+    url: '/getConfirmationStats',
+    type: 'POST',
+    success: function(response) {
+      var data = $.parseJSON(response)
+      data.splice(0, 0, ['x', 0])
+      dbChartConfig = {
+        bindto: '.dbChart',
+        data: {
+          x : 'x',
+          columns: data,
+          type : 'pie'
+        },
+        pie: {
+          label: {
+            format: function (value, ratio, id) {
+              return d3.format('')(value);
+            }
+          }
+        },
+        axis: {
+          x: {
+            type: 'timeseries',
+            tick: {
+                format: '%Y-%m-%d'
+            }
+          },
+          y: {
+            label: { // ADD
+              position: 'outer-middle'
+            },
+            tick: {
+              // ADD
+            }
+          }
+        }
+      }
+
+      dbChart = c3.generate(dbChartConfig)
+    },
+    error: function(error) {
+      console.log(error)
+    }
+  })
 
   // chart of neural network status
   var nnChartConfig = {
@@ -102,7 +116,7 @@ $(document).ready(function() {
   var nnChart = c3.generate(nnChartConfig)
 
   // chart of client usage status
-  var cuChartConfig = {
+  /*var cuChartConfig = {
     bindto: '.cuChart',
     data: {
       x : 'x',
@@ -131,10 +145,10 @@ $(document).ready(function() {
     }
   }
 
-  var cuChart = c3.generate(cuChartConfig)
+  var cuChart = c3.generate(cuChartConfig)*/
   
   // button clicks of System Status Chart
-  $(".cpuUsage").click(function() {
+  /*$(".cpuUsage").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     $.ajax({
       url: '/getCpuUsage',
@@ -224,14 +238,14 @@ $(document).ready(function() {
         console.log(error)
       }
     })
-  })
+  })*/
 
   // button clicks of Database Status Chart
   $(".imgStorage").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     //dbChart.axis.labels({y : 'Image Storage'})
     $.ajax({
-      url: '/getImgStorage',
+      url: '/getConfirmationStats',
       type: 'POST',
       success: function(response) {
         console.log(response)
@@ -327,7 +341,7 @@ $(document).ready(function() {
     })
   })
 
-  $(".dbIO").click(function() {
+  /*$(".dbIO").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     //dbChart.axis.labels({y : 'I/O Traffic'})
     $.ajax({
@@ -375,7 +389,7 @@ $(document).ready(function() {
         console.log(error)
       }
     })
-  })
+  })*/
 
   // button clicks of Neural Network Status Chart
   $(".AP").click(function() {

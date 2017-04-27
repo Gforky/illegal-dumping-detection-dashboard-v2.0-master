@@ -46,36 +46,6 @@ def uploadfile():
 			return 'sucessfully upload'
 	return 'not successfully upload'
 
-
-@app.route("/getTrainingImageStats", methods=['POST'])
-def getImageStats():
-    """
-    This is function for API of getting image stats
-
-    Returns: json arr [category_1 count, category_2 count, category_3 count, total count]
-
-    ---
-    TODO: can use bar chart to show the result
-    """
-    if request.method == 'POST':
-        imagedata_stats_arr = []
-        counter, counter1, counter2, counter3 = 0, 0, 0, 0
-        for data in session.query(ImageData.category_id == 1).all():
-            counter1 += 1
-        imagedata_stats_arr.append(counter1)
-        for data in session.query(ImageData.category_id == 2).all():
-            counter2 += 1
-        imagedata_stats_arr.append(counter2)
-        for data in session.query(ImageData.category_id == 3).all():
-            counter3 += 1
-
-        imagedata_stats_arr.append(counter3)
-        counter = counter1 + counter2 + counter3
-        imagedata_stats_arr.append(counter)
-
-        json_str = json.dumps(imagedata_stats_arr)
-        return json_str
-
 #########################   Image Confirmation  #########################
 @app.route("/imgConfirmation", methods=['POST'])
 def imgConfirmation():
@@ -273,7 +243,7 @@ def getClassifiactionStats():
     if request.method == 'POST':
         confirmation_arr, time_stamp = [], []
         # counterUnknown, counter1, counter2, counter3, denominator = 0, 0, 0, 0, 0
-        count, count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean, count_unidentified = 0, 0, 0, 0, 0, 0, 0, 0, 0
+        count, count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean = 0, 0, 0, 0, 0, 0, 0, 0
         s = select([ImageCategory, ImageConfirmation, AlertImage]).where(ImageConfirmation.alert_id == AlertImage.alert_id ).\
             where(ImageCategory.category_id == ImageConfirmation.confirmation_id).\
             order_by(ImageConfirmation.classification_datetime.desc())
@@ -292,14 +262,18 @@ def getClassifiactionStats():
                 count_refrigerator += 1
             if row[1] == 'shopping-cart':
                 count_cart += 1
-            if row[1] == 'clean':
+            if row[1] == 'clean-street':
                 count_clean += 1
-            if row[1] == 'unidentified':
-                count_unidentified += 1
             count += 1
             print(row)
 
-        classfication_stats_arr = [count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean, count_unidentified, count]
+        classfication_stats_arr = [['tv-monitor', count_tv], 
+                                   ['mattress', count_mattress], 
+                                   ['couch', count_couch], 
+                                   ['chair', count_chair], 
+                                   ['refrigerator', count_refrigerator], 
+                                   ['shopping-cart', count_cart], 
+                                   ['clean-street', count_clean]]
 
         json_str = json.dumps(classfication_stats_arr)
         return json_str

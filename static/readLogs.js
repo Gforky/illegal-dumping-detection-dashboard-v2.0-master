@@ -19,13 +19,13 @@ $(document).ready(function monitorTraining() {
   })
 
   // check if divs are scrolled to bottom
-  $(".train").scroll(function() {
+  /*$(".train").scroll(function() {
     if(($(this)[0].scrollTop + $(this).height()) >= $(this)[0].scrollHeight) {
       atTrainBottom = 1;
     } else {
       atTrainBottom = 0;
     }
-  })
+  })*/
   $(".detection").scroll(function() {
     if(($(this)[0].scrollTop + $(this).height()) >= $(this)[0].scrollHeight) {
       atDetectBottom = 1;
@@ -39,9 +39,9 @@ $(document).ready(function monitorTraining() {
     $("p.trainingLog").append("This is a training output " + testNum +  "<br />")
     $("p.detectionLog").append("This is a detection output " + testNum +  "<br />")
     // jquery function to automatically scroll down to bottom of div
-    if(atTrainBottom === 1) {
+    /*if(atTrainBottom === 1) {
       $(".train").scrollTop($(".train")[0].scrollHeight)
-    }
+    }*/
     if(atDetectBottom === 1) {
       $(".detection").scrollTop($(".detection")[0].scrollHeight)
     }

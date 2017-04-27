@@ -215,15 +215,30 @@ return function(scope, element) {
 app.directive('myCurrentDataset', ['$interval', function($interval) {
 // return the directive link function. (compile function not needed)
 return function(scope, element) {
-  var datasetSize = 0, // dataset size
-  stopTime; // so that we can cancel the time updates
+  var stopTime; // so that we can cancel the time updates
 
   // used to update the UI
   function updateSize() {
-    datasetSize += 1;
-    element.text(datasetSize);
+    $.ajax({
+      url: '/getConfirmationStats',
+      type: 'POST',
+      success: function(response) {
+        //console.log(response)
+        // convert JSON object into javascript array
+        var data = $.parseJSON(response);
+        var datasetSize = "";
+        for(var index = 0; index < data.length; ++index) {
+          datasetSize = datasetSize + "<b style='color:#E5A823'>" + data[index][0] + "</b>" + " : " + data[index][1] + "<br>";
+        }
+        element.html(datasetSize);
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   }
 
+  // update per hour
   stopTime = $interval(updateSize, 1000);
 
   // listen on DOM destroy (removal) event, and cancel the next UI update
