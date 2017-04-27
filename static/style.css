@@ -113,6 +113,7 @@ button {
 }
 
 .left-half-2 {
+  margin-top: 50px;
   height:70%;
 }
 
@@ -141,8 +142,7 @@ button {
   border: 1px solid var(--blue);
 }
 .detectionLogView {
-  margin-top: 20px;
-  height: 100%;
+  height: 108%;
   border: 1px solid var(--blue);
 }
 .train,
@@ -195,7 +195,9 @@ button {
 .findMattress,
 .findTvMonitor,
 .findFridge,
-.findChair {
+.findChair,
+.findCleanStreet,
+.findShoppingCart {
   height: 20px;
   width: 70px;
   margin-right: 1%;
@@ -206,7 +208,8 @@ button {
   border: 1px solid var(--blue);
 }
 
-.deleteImg {
+.deleteImg,
+.refreshConfirmationImageList {
   cursor: pointer;
   padding: 10px 15px;
   font-size: 15px;
@@ -217,13 +220,15 @@ button {
   color: var(--gold);
   box-shadow: 0 3px #999;
 }
-.deleteImg span {
+.deleteImg span,
+.refreshConfirmationImageList span {
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.5s;
 }
-.deleteImg span:after {
+.deleteImg span:after,
+.refreshConfirmationImageList span:after {
   content: '\00bb';
   position: absolute;
   opacity: 0;
@@ -231,14 +236,17 @@ button {
   right: -20px;
   transition: 0.5s;
 }
-.deleteImg:hover span {
+.deleteImg:hover span,
+.refreshConfirmationImageList:hover span {
   padding-right: 25px;
 }
-.deleteImg:hover span:after {
+.deleteImg:hover span:after,
+.refreshConfirmationImageList:hover span:after {
   opacity: 1;
   right: 0;
 }
-.deleteImg:active {
+.deleteImg:active,
+.refreshConfirmationImageList:active {
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }

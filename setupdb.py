@@ -10,7 +10,7 @@ from models import Base, ImageCategory, ImageConfirmation, AlertImage
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
-engine = create_engine('postgresql:///illegaldumpingdb')
+engine = create_engine('postgresql://localhost:5432/cmpe295')
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()

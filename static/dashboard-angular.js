@@ -1,7 +1,7 @@
 var app = angular.module('dashboard', ['ngAnimate', 'ngTouch'])
 
 var confirmationList = []
-var objectList = ['mattress', 'sofa', 'tvmonitor', 'fridge', 'chair']
+var objectList = ['mattress', 'sofa', 'tvmonitor', 'fridge', 'chair', 'shoppingcart', 'cleanstreet']
 for(index = 0; index < objectList.length; ++index) {
   confirmationList.push(false)
 }
@@ -147,6 +147,10 @@ app.controller('todoCtrl', function($scope) {
       $scope.classificationResult = "";
     }
   }
+  // refresh the image list in the slider
+  $scope.refreshConfirmationImageList = function() {
+    
+  }
   // functions handling object decisions
   $scope.findSofa = function() {
     var hasSofa = confirmationList[0];
@@ -167,6 +171,14 @@ app.controller('todoCtrl', function($scope) {
   $scope.findChair = function() {
     var hasChair = confirmationList[4];
     confirmationList[4] = !hasChair;
+  }
+  $scope.findShoppingCart = function() {
+    var hasShoppingCart = confirmationList[5];
+    confirmationList[5] = !hasShoppingCart;
+  }
+  $scope.findCleanStreet = function() {
+    var hasCleanStreet = confirmationList[6];
+    confirmationList[6] = !hasCleanStreet;
   }
 })
 

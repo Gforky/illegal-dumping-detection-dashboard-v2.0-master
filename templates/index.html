@@ -99,15 +99,19 @@
               <!--<div class="realTime-trainingTime"><span style="color:#008CBA">Training Time of Current Dataset: </span><span my-current-time style="color:#ff4000"></span></div>-->
               <div class="realTime-dataset"><span style="color:#008CBA">Dataset Size of Current Training Process:</span>
               <br>
-              Mattress: <span my-current-dataset style="color:#ff4000"></span>
+              <span style="font-size:14px;color:#E5A823">Mattress: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
               <br>
-              Couch: <span my-current-dataset style="color:#ff4000"></span>
+              <Mattress:  style="font-size:14px;color:#E5A823">Couch: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
               <br>
-              Fridge: <span my-current-dataset style="color:#ff4000"></span>
+              <span style="font-size:14px;color:#E5A823">Fridge: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
               <br>
-              Chair: <span my-current-dataset style="color:#ff4000"></span>
+              <Mattress:  style="font-size:14px;color:#E5A823">Chair: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
               <br>
-              TV-Monitor: <span my-current-dataset style="color:#ff4000"></span></div>
+              <Mattress:  style="font-size:14px;color:#E5A823">TV Monitor: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
+               <br>
+              <Mattress:  style="font-size:14px;color:#E5A823">Shopping Cart: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
+               <br>
+              <Mattress:  style="font-size:14px;color:#E5A823">Clean Street: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span></div>
             </div>
           </div>
           <div class="left-half-2">
@@ -118,12 +122,15 @@
               <div class="remainImg"><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length}}</span><span style="margin-left:5px">images waiting for supervision</span><br><span>Trash in current image: </span><span style="color:#ff4000">{{classificationResult}}</span></div>
               <br>
               <div class="btn-group">
+                <button ng-click="refreshConfirmationImageList()" class="refreshConfirmationImageList"><span>Refresh Image Slider</span></button>
                 <button ng-click="removePhoto()" class="deleteImg"> <span>Submit</span></button>
                 <button ng-click="findSofa()" class="findSofa">Couch</button>
                 <button ng-click="findMattress()" class="findMattress">Mattress</button>
                 <button ng-click="findFridge()" class="findFridge">Fridge</button>
                 <button ng-click="findChair()" class="findChair">Chair</button>
                 <button ng-click="findTvMonitor()" style="font-size:10px" class="findTvMonitor">TV Monitor</button>
+                <button ng-click="findShoppingCart()" style="font-size:8px" class="findShoppingCart">Shopping Cart</button>
+                <button ng-click="findCleanStreet()" style="font-size:10px" class="findCleanStreet">Clean Street</button>
               </div>
             </div>
             {% endraw %}

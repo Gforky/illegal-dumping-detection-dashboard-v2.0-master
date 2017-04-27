@@ -22,6 +22,12 @@ $(document).ready(function() {
 	$('.findTvMonitor').click(function() {
 	  	$(this).toggleClass('chosenColor');
 	})
+	$('.findShoppingCart').click(function() {
+	  	$(this).toggleClass('chosenColor');
+	})
+	$('.findCleanStreet').click(function() {
+	  	$(this).toggleClass('chosenColor');
+	})
 
 	$('.deleteImg').click(function() {
 		$('.findSofa').toggleClass('chosenColor', false);
@@ -29,5 +35,7 @@ $(document).ready(function() {
 		$('.findFridge').toggleClass('chosenColor', false);
 		$('.findChair').toggleClass('chosenColor', false);
 		$('.findTvMonitor').toggleClass('chosenColor', false);
+		$('.findShoppingCart').toggleClass('chosenColor', false);
+		$('.findCleanStreet').toggleClass('chosenColor', false);
 	})
 })
