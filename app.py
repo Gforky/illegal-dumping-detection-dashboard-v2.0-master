@@ -9,8 +9,9 @@ from models import Base, ImageCategory, ImageConfirmation, AlertImage
 from werkzeug import secure_filename
 from flask import json
 import os
+from os.path import isfile, join
 from sqlalchemy.sql import select
-
+import zipfile
 app = Flask(__name__)
 UPLOAD_FOLDER = 'tempFolders/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -38,13 +39,19 @@ def index():
 
 @app.route("/upload-files", methods=['GET', 'POST'])
 def uploadfile():
-	if request.method == 'POST':
-		imgFile = request.files['file']
-		if imgFile and allowed_file_type(imgFile.filename):
-			filename = secure_filename(imgFile.filename)
-			imgFile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			return 'sucessfully upload'
-	return 'not successfully upload'
+    if request.method == 'POST':
+        imgFile = request.files['file']
+        if imgFile:
+            filename = secure_filename(imgFile.filename)
+            imgFile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            typename = filename.split('.')[0]
+            folderPath = os.path.join(app.config['UPLOAD_FOLDER'])
+            if filename.endswith('.zip'):
+                zip_file = zipfile.ZipFile(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'r')
+                zip_file.extractall(folderPath)
+                zip_file.close()
+        return 'sucessfully upload'
+    return 'not successfully upload'
 
 #########################   Image Confirmation  #########################
 @app.route("/imgConfirmation", methods=['POST'])
@@ -278,10 +285,28 @@ def getClassifiactionStats():
         json_str = json.dumps(classfication_stats_arr)
         return json_str
 
+@app.route("/check_temp_folder_classify", methods=['POST'])
+def check_temp_folder_classify():
+    folderPath = os.path.join(app.config['UPLOAD_FOLDER'])
+    folder_file, folder_arr = [], []
+    for file in os.listdir(folderPath):
+        if not isfile(join(folderPath, file)) and str(file) == 'car':
+            folder_arr.append(file)
+
+    for folder in folder_arr:
+        folder_file.append(folder)
+
+    image_inFolder = []
+    for filename in folder_file:
+        # print(os.listdir(os.path.join(folderPath, filename)))
+        for file in os.listdir(os.path.join(folderPath, filename)):
+            image_inFolder.append(os.path.abspath(os.path.join(folderPath, file)))
+
+    json_str = json.dumps([folder_arr, image_inFolder])
+    return json_str
 #helper function
 def allowed_file_type(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_FILE_EXTENSIONS
 
-
 if __name__ == "__main__":
-	app.run(debug=True)
+    app.run(debug=True)
