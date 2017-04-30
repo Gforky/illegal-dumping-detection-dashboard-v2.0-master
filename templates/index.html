@@ -113,6 +113,9 @@
                  <br>
                 <Mattress:  style="font-size:14px;color:#E5A823">Clean Street: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>-->
               </div>
+              <div ng-controller="manuallyRetrain" class="manually-retrain">
+                <button ng-click="retrain()" class="retrain"><span>Retrain the model</span></button>
+              </div>
             </div>
           </div>
           <div class="left-half-2">
@@ -120,7 +123,7 @@
             <div ng-controller="todoCtrl" class="slider"><a ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" href="/static{{photo.src}}" class="slide zb"><img ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" ng-src="/static{{photo.src}}" class="slide"></a>
               <div ng-click="showPrev()" class="arrow prev"></div>
               <div ng-click="showNext()" class="arrow next"></div>
-              <div class="remainImg"><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length}}</span><span style="margin-left:5px">images waiting for supervision</span><br><span>Trash in current image: </span><span style="color:#ff4000">{{classificationResult}}</span></div>
+              <div class="remainImg"><span style="margin-left:5px">Number of images awaiting manual classifications: </span><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length}}</span><br><span>Predicted class: </span><span style="color:#ff4000">{{classificationResult}}</span><span> Predicted probability: </span><span style="color:#ff4000">{{accuracy}}</span></div>
               <br>
               <div class="btn-group">
                 <button ng-click="refreshConfirmationImageList()" class="refreshConfirmationImageList"><span>Refresh</span></button>

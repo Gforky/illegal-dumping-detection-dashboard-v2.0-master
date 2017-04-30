@@ -73,7 +73,7 @@ button {
 }
 .footer {
   margin: 50px auto;
-  margin-top: 200px;
+  margin-top: 300px;
   max-width: 600px;
   border-top: 1px solid #444;
   padding: 20px 0;
@@ -81,6 +81,7 @@ button {
 .footer p {
   color: #444;
   font-size: 12px;
+  text-align: center;
 }
 
 .dashboard {
@@ -113,7 +114,7 @@ button {
 }
 
 .left-half-2 {
-  margin-top: 50px;
+  margin-top: 100px;
   height:70%;
 }
 
@@ -142,7 +143,7 @@ button {
   border: 1px solid var(--blue);
 }
 .detectionLogView {
-  height: 108%;
+  height: 117%;
   border: 1px solid var(--blue);
 }
 .train,
@@ -209,7 +210,8 @@ button {
 }
 
 .deleteImg,
-.refreshConfirmationImageList {
+.refreshConfirmationImageList,
+.retrain {
   cursor: pointer;
   padding: 10px 15px;
   font-size: 15px;
@@ -221,14 +223,16 @@ button {
   box-shadow: 0 3px #999;
 }
 .deleteImg span,
-.refreshConfirmationImageList span {
+.refreshConfirmationImageList span,
+.retrain span {
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.5s;
 }
 .deleteImg span:after,
-.refreshConfirmationImageList span:after {
+.refreshConfirmationImageList span:after,
+.retrain span:after {
   content: '\00bb';
   position: absolute;
   opacity: 0;
@@ -237,16 +241,19 @@ button {
   transition: 0.5s;
 }
 .deleteImg:hover span,
-.refreshConfirmationImageList:hover span {
+.refreshConfirmationImageList:hover span,
+.retrain:hover span {
   padding-right: 25px;
 }
 .deleteImg:hover span:after,
-.refreshConfirmationImageList:hover span:after {
+.refreshConfirmationImageList:hover span:after,
+.retrain:hover span:after {
   opacity: 1;
   right: 0;
 }
 .deleteImg:active,
-.refreshConfirmationImageList:active {
+.refreshConfirmationImageList:active,
+.retrain:active {
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }

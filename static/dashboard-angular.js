@@ -48,6 +48,12 @@ app.controller('realTimeTrainingCtrl', function($scope) {
 
 })
 
+app.controller('manuallyRetrain', function($scope) {
+  $scope.retrain = function() {
+    
+  }
+})
+
 //app.controller('todoCtrl', ['$scope', '$interval', function($scope, $interval) {
 // controller for to-do list of trash collections
 //  $scope.tasks = [];
@@ -73,17 +79,17 @@ app.controller('realTimeTrainingCtrl', function($scope) {
 
 app.controller('todoCtrl', function($scope) {
   $scope.photos = [
-    {src: '/images/tv-monitor/345361872_9e7aff54f5_b.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/501173063_6e1b3775e5_b.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/6197024779_31371d2b4b_b.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/computer-monitor-in-front-of-a-full-skip-or-dumpster-with-unwanted-achk1e.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/16627981590_c605c940ac_b.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/EP-160139853.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/1.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/3.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/8.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/160424-analog-tv-set-recycle-yh-0754a_160bd0ae9c2c95d18a1102fed4884ec3.nbcnews-fp-1200-800.jpg', desc: 'tv-monitor'},
-    {src: '/images/tv-monitor/802263183_cb915bcfd3_b.jpg', desc: 'tv-monitor'}
+    {src: '/images/tv-monitor/345361872_9e7aff54f5_b.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/501173063_6e1b3775e5_b.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/6197024779_31371d2b4b_b.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/computer-monitor-in-front-of-a-full-skip-or-dumpster-with-unwanted-achk1e.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/16627981590_c605c940ac_b.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/EP-160139853.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/1.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/3.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/8.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/160424-analog-tv-set-recycle-yh-0754a_160bd0ae9c2c95d18a1102fed4884ec3.nbcnews-fp-1200-800.jpg', class: 'tv-monitor', accuracy: '0.82'},
+    {src: '/images/tv-monitor/802263183_cb915bcfd3_b.jpg', class: 'tv-monitor', accuracy: '0.82'}
   ];
 
   // initial image index
@@ -91,9 +97,11 @@ app.controller('todoCtrl', function($scope) {
   // if current image is the same as requested image
   $scope.isActive = function(index) {
     if($scope.photos[$scope._Index]) {
-      $scope.classificationResult = $scope.photos[$scope._Index].desc;
+      $scope.classificationResult = $scope.photos[$scope._Index].class;
+      $scope.accuracy = $scope.photos[$scope._Index].accuracy;
     } else {
       $scope.classificationResult = "";
+      $scope.accuracy = "";
     }
     return $scope._Index === index;
   }
@@ -120,17 +128,18 @@ app.controller('todoCtrl', function($scope) {
           labels.push(index)
         }
       }
-      var myData = {"labels" : labels,
-                    "imgSrc" : $scope.photos[$scope._Index].src
+      var myData =  {
+                      'labels' : labels, 
+                      'img_path' : $scope.photos[$scope._Index].src
                     }
       $.ajax({
         url: '/imgConfirmation',
-        type: 'POST',
         contentType: 'application/json',
         dataType: 'json',
+        type: 'POST',
         data: JSON.stringify(myData),
         success: function(response) {
-          console.log(response)
+          //console.log($.parseJSON(response))
           // convert JSON object into javascript array
         },
         error: function(error) {
@@ -145,6 +154,7 @@ app.controller('todoCtrl', function($scope) {
     }
     if($scope.photos.length === 0) {
       $scope.classificationResult = "";
+      $scope.accuracy = "";
     }
   }
   // refresh the image list in the slider
@@ -153,8 +163,25 @@ app.controller('todoCtrl', function($scope) {
         url: '/trigger_detect',
         type: 'POST',
         success: function(response) {
-          console.log($.parseJSON(response))
           // convert JSON object into javascript array
+          var data = $.parseJSON(response)
+          var img_path = data[0]
+          var labels = data[1]
+          var accuracies = data[2]
+
+          var labels_length = labels.length
+          for(var index = 0; index < labels_length; ++index) {
+            var temp = labels[index]
+            labels[index] = temp.slice(2, -3)
+          }
+
+          img_path = img_path.slice(6, )
+          //console.log(img_path)
+          //console.log(labels)
+          //console.log(accuracies)
+
+          var entry = {src: img_path, class: labels[0], accuracy: accuracies[0]}
+          $scope.photos.push(entry)
         },
         error: function(error) {
           console.log(error)

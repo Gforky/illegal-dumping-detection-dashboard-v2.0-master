@@ -65,10 +65,12 @@ def imgConfirmation():
     Function to move the images from tempory folder to the new dataset folder
     '''
     try:
-        imgInfo = request.get_json()
-        print("Current Image Source is " + imgInfo["imgSrc"])
-        print(imgInfo["labels"])
-        return json.dumps("POST Successfully")
+        data = request.get_json()
+        print(data['img_path'])
+        print(data['labels'])
+        #print("Current Image Source is " + imgInfo["imgSrc"])
+        #print(imgInfo["labels"])
+        return json.dumps([{'msg' : 'successfully transfered'}])
     except Exception:
         return traceback.format_exc()
 #########################   Image Confirmation  #########################
@@ -315,7 +317,7 @@ def trigger_detect():
     Session = sessionmaker(bind=engine)
     session = Session()
     result = []
-    result = subprocess.check_output('python3 detection-componenet/classify.py --image_dir detection-componenet/alert_image/mattress3.jpg --model_dir detection-componenet/output_graph.pb --label_dir detection-componenet/output_labels.txt', shell=True)
+    result = subprocess.check_output('python3 static/detection-componenet/classify.py --image_dir static/detection-componenet/alert_image/mattress_7.jpg --model_dir static/detection-componenet/output_graph.pb --label_dir static/detection-componenet/output_labels.txt', shell=True)
 
     with open('result.pickle', 'rb') as f:
         unpickled_result = pickle.load(f)
