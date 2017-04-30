@@ -12,10 +12,15 @@ import os
 from os.path import isfile, join
 from sqlalchemy.sql import select
 import zipfile
+import subprocess
+import re
+import pickle
+from models import Base, ImageCategory, ImageConfirmation, AlertImage
 app = Flask(__name__)
 UPLOAD_FOLDER = 'tempFolders/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['current_path'] = os.getcwd()
 ALLOWED_FILE_EXTENSIONS = set(['tar', 'zip'])
 
 #connect db
@@ -274,12 +279,12 @@ def getClassifiactionStats():
             count += 1
             print(row)
 
-        classfication_stats_arr = [['tv-monitor', count_tv], 
-                                   ['mattress', count_mattress], 
-                                   ['couch', count_couch], 
-                                   ['chair', count_chair], 
-                                   ['refrigerator', count_refrigerator], 
-                                   ['shopping-cart', count_cart], 
+        classfication_stats_arr = [['tv-monitor', count_tv],
+                                   ['mattress', count_mattress],
+                                   ['couch', count_couch],
+                                   ['chair', count_chair],
+                                   ['refrigerator', count_refrigerator],
+                                   ['shopping-cart', count_cart],
                                    ['clean-street', count_clean]]
 
         json_str = json.dumps(classfication_stats_arr)
@@ -298,15 +303,43 @@ def check_temp_folder_classify():
 
     image_inFolder = []
     for filename in folder_file:
-        # print(os.listdir(os.path.join(folderPath, filename)))
         for file in os.listdir(os.path.join(folderPath, filename)):
             image_inFolder.append(os.path.abspath(os.path.join(folderPath, file)))
 
     json_str = json.dumps([folder_arr, image_inFolder])
     return json_str
+
+@app.route("/trigger_detect", methods=['POST'])
+def trigger_detect():
+    engine = create_engine('postgresql://localhost:5433/cmpe295')
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    result = []
+    result = subprocess.check_output('python3 detection-componenet/classify.py --image_dir detection-componenet/alert_image/mattress3.jpg --model_dir detection-componenet/output_graph.pb --label_dir detection-componenet/output_labels.txt', shell=True)
+
+    with open('result.pickle', 'rb') as f:
+        unpickled_result = pickle.load(f)
+
+    result_pickle = (unpickled_result)
+    result_imagepath = unpickled_result['imagepath']
+    result_top3labels = unpickled_result['top3labels']
+    result_top3accuracies = unpickled_result['top3accuracies']
+    print(result_imagepath)
+    print(result_top3accuracies)
+    if result_top3accuracies[0] > 0.7:
+        alert_image1 = AlertImage(image_name=result_imagepath)
+        # session.add(alert_image1)
+        # session.commit()
+
+    os.remove("result.pickle")
+    engine.dispose()
+    json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
+    return json_str
+
 #helper function
 def allowed_file_type(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_FILE_EXTENSIONS
+
 
 if __name__ == "__main__":
     app.run(debug=True)
