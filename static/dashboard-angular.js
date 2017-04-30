@@ -149,7 +149,17 @@ app.controller('todoCtrl', function($scope) {
   }
   // refresh the image list in the slider
   $scope.refreshConfirmationImageList = function() {
-    
+    $.ajax({
+        url: '/trigger_detect',
+        type: 'POST',
+        success: function(response) {
+          console.log($.parseJSON(response))
+          // convert JSON object into javascript array
+        },
+        error: function(error) {
+          console.log(error)
+        }
+      })
   }
   // functions handling object decisions
   $scope.findSofa = function() {
