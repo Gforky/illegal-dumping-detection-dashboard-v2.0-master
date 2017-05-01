@@ -371,9 +371,9 @@ def trigger_detect():
     #
     # #if over than threshold add into db directly
         if result_top3accuracies[0] < 0.7:
-            confirmation_image = ImageConfirmation(category_id='2', alert_id='1')
-            session.add(confirmation_image)
-            session.commit()
+            # confirmation_image = ImageConfirmation(category_id='2', alert_id='1')
+            # session.add(confirmation_image)
+            # session.commit()
 
         else:
             # alert_image1 = AlertImage(image_name=result_imagepath)
