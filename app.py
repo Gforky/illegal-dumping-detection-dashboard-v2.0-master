@@ -5,7 +5,6 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 import models
-from models import Base, ImageCategory, ImageConfirmation, AlertImage
 from werkzeug import secure_filename
 from flask import json
 import os
@@ -15,14 +14,24 @@ import zipfile
 import subprocess
 import re
 import pickle
-from models import Base, ImageCategory, ImageConfirmation, AlertImage
+from models import Base, ImageCategory, ImageConfirmation
+from flask_pymongo import PyMongo
+import datetime
+from pymongo import MongoClient
+from random import randint
+
+
 app = Flask(__name__)
-UPLOAD_FOLDER = 'tempFolders/'
+UPLOAD_FOLDER = 'static/detection-component/alert_image'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['current_path'] = os.getcwd()
-ALLOWED_FILE_EXTENSIONS = set(['tar', 'zip'])
+ALLOWED_FILE_EXTENSIONS = set(['png', 'jpg'])
 
+#connect mongodb
+client = MongoClient()
+mongodb = client.illegaldumpingdb
+# mongo = PyMongo(app)
 #connect db
 db = SQLAlchemy(app)
 engine = create_engine('postgresql://localhost:5433/cmpe295')
@@ -49,12 +58,20 @@ def uploadfile():
         if imgFile:
             filename = secure_filename(imgFile.filename)
             imgFile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            #for mongodb
+            waiting_id = randint(0, 100000)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            isAlerted = False
+            upload_list = mongodb.upload_lists
+            upload_list.insert({'waiting_id': waiting_id, 'image_path': image_path, 'isAlerted': isAlerted, 'datetime': datetime.datetime.utcnow()})
+
             typename = filename.split('.')[0]
             folderPath = os.path.join(app.config['UPLOAD_FOLDER'])
-            if filename.endswith('.zip'):
-                zip_file = zipfile.ZipFile(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'r')
-                zip_file.extractall(folderPath)
-                zip_file.close()
+
+            # if filename.endswith('.zip'):
+            #     zip_file = zipfile.ZipFile(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'r')
+            #     zip_file.extractall(folderPath)
+            #     zip_file.close()
         return 'sucessfully upload'
     return 'not successfully upload'
 
@@ -64,12 +81,26 @@ def imgConfirmation():
     '''
     Function to move the images from tempory folder to the new dataset folder
     '''
+    #['mattress','sofa','tvmonitor',fridge,'chair','shoppingcart', 'cleanstreet']
+    engine = create_engine('postgresql://localhost:5433/cmpe295')
+    Session = sessionmaker(bind=engine)
+    session = Session()
     try:
         data = request.get_json()
         print(data['img_path'])
         print(data['labels'])
-        #print("Current Image Source is " + imgInfo["imgSrc"])
-        #print(imgInfo["labels"])
+        confirmation1 = ImageConfirmation(category_id= int(data['labels']), image_path= str(data['img_path']))
+        session.add(confirmation1)
+        session.commit()
+
+        update_list = []
+        # #get monogodb data
+        for upload_list in upload_lists.find({"image_path": data['img_path']}, {"_id":0}):
+            update_list.append(upload_list)
+        # update mongodb
+        for elem in update_list:
+            upload_lists.update_one({"waiting_id": int(elem['waiting_id'])},{"$set":{"isAlerted": True}})
+
         return json.dumps([{'msg' : 'successfully transfered'}])
     except Exception:
         return traceback.format_exc()
@@ -258,7 +289,7 @@ def getClassifiactionStats():
         confirmation_arr, time_stamp = [], []
         # counterUnknown, counter1, counter2, counter3, denominator = 0, 0, 0, 0, 0
         count, count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean = 0, 0, 0, 0, 0, 0, 0, 0
-        s = select([ImageCategory, ImageConfirmation, AlertImage]).where(ImageConfirmation.alert_id == AlertImage.alert_id ).\
+        s = select([ImageCategory, ImageConfirmation]).\
             where(ImageCategory.category_id == ImageConfirmation.confirmation_id).\
             order_by(ImageConfirmation.classification_datetime.desc())
         result = conn.execute(s)
@@ -316,26 +347,46 @@ def trigger_detect():
     engine = create_engine('postgresql://localhost:5433/cmpe295')
     Session = sessionmaker(bind=engine)
     session = Session()
+
+    upload_lists = mongodb.upload_lists
     result = []
-    result = subprocess.check_output('python3 static/detection-componenet/classify.py --image_dir static/detection-componenet/alert_image/mattress_7.jpg --model_dir static/detection-componenet/output_graph.pb --label_dir static/detection-componenet/output_labels.txt', shell=True)
+    wait_list = []
+    problem_list = []
+    for upload_list in upload_lists.find({"isAlerted": False}, {"_id":0}):
+        wait_list.append(upload_list)
 
-    with open('result.pickle', 'rb') as f:
-        unpickled_result = pickle.load(f)
 
-    result_pickle = (unpickled_result)
-    result_imagepath = unpickled_result['imagepath']
-    result_top3labels = unpickled_result['top3labels']
-    result_top3accuracies = unpickled_result['top3accuracies']
-    print(result_imagepath)
-    print(result_top3accuracies)
-    if result_top3accuracies[0] > 0.7:
-        alert_image1 = AlertImage(image_name=result_imagepath)
-        # session.add(alert_image1)
-        # session.commit()
+    for elem in wait_list:
+        elem_path = elem['image_path']
+        print(elem_path)
+        #static/detection-component/alert_image/mattress3.jpg
+        result = subprocess.check_output('python3 static/detection-component/classify.py --image_dir '+ elem_path +' --model_dir static/detection-component/output_graph.pb --label_dir static/detection-component/output_labels.txt', shell=True)
+        with open('result.pickle', 'rb') as f:
+            unpickled_result = pickle.load(f)
 
-    os.remove("result.pickle")
+        result_pickle = (unpickled_result)
+        result_imagepath = unpickled_result['imagepath']
+        result_top3labels = unpickled_result['top3labels']
+        result_top3accuracies = unpickled_result['top3accuracies']
+    #
+    # #if over than threshold add into db directly
+        if result_top3accuracies[0] < 0.7:
+            confirmation_image = ImageConfirmation(category_id='2', alert_id='1')
+            session.add(confirmation_image)
+            session.commit()
+
+        else:
+            # alert_image1 = AlertImage(image_name=result_imagepath)
+            # session.add(alert_image1)
+            # session.commit()
+            problem_list.append([result_imagepath, result_top3labels, result_top3accuracies])
+
+        os.remove("result.pickle")
+
+
     engine.dispose()
-    json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
+    # json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
+    json_str = json.dumps([problem_list])
     return json_str
 
 #helper function
