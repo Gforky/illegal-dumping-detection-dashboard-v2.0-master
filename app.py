@@ -31,7 +31,7 @@ ALLOWED_FILE_EXTENSIONS = set(['png', 'jpg'])
 #connect mongodb
 client = MongoClient()
 mongodb = client.illegaldumpingdb
-# mongo = PyMongo(app)
+
 #connect db
 db = SQLAlchemy(app)
 engine = create_engine('postgresql://localhost:5433/cmpe295')
@@ -166,7 +166,7 @@ def getImgStorage():
     """
     try:
         return json.dumps([
-            ['mattress', 376], ['couch', 456], ['tv-monitor', 231]
+            ['mattress', 376], ['couch', 456], ['tv-monitor', 231], ['clean-street', 231]
         ])
     except Exception:
         return traceback.format_exc()
@@ -203,6 +203,8 @@ def getDatasetSize():
     Function to get the image storage status from the database
     """
     try:
+
+
         return json.dumps([
             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             ['mattress', 176, 180, 188, 190, 192, 196],
@@ -218,6 +220,7 @@ def getImgConf():
     Function to get the image storage status from the database
     """
     try:
+
         return json.dumps([
             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             ['mattress', 176, 180, 188, 190, 192, 196],
@@ -238,6 +241,7 @@ def getUpImg():
             ['mattress', 176, 180, 188, 190, 192, 196],
             ['couch', 156, 166, 276, 286, 390, 396],
             ['tv-monitor', 55, 167, 173, 285, 389, 197]
+            ['clean-street', 55, 67, 73, 85, 89, 97]
         ])
     except Exception:
         return traceback.format_exc()
@@ -246,16 +250,49 @@ def getUpImg():
 def getDetectedObj():
     """
     Function to get the image storage status from the database
+
+    update:
+          get potential dupming image status based on uplaod image or remote send pictures
     """
     try:
-        return json.dumps([
-            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['mattress', 26, 20, 18, 19, 19, 16],
-            ['couch', 15, 16, 26, 26, 39, 36],
-            ['tv-monitor', 55, 17, 13, 25, 39, 19]
-        ])
+        upload_lists = mongodb.upload_lists
+        result_potential = ['potential_dumping']
+        result_date = ['x']
+        count = 0
+        prevDate = None
+        index = 0
+        for upload_list in upload_lists.find({"isAlerted": False}, {"_id":0}):
+            if index > 6:
+                break
+
+            datetime = str(upload_list['datetime']).split(',', 1)
+            date = str(datetime)[2:12]
+
+            if date == prevDate:
+                count += 1
+
+            else:
+                if count != 0:
+                    result_potential.append(count)
+                prevDate = date
+                result_date.append(date)
+                index += 1
+                count = 1
+
+        if count != 0:
+            result_potential.append(count)
+
+        json_str = json.dumps([result_date, result_potential])
+        return json_str
+        # return json.dumps([
+        #     ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+        #     ['mattress', 26, 20, 18, 19, 19, 16],
+        #     ['couch', 15, 16, 26, 26, 39, 36],
+        #     ['tv-monitor', 55, 17, 13, 25, 39, 19],
+        #     ['clean-street', 55, 67, 73, 85, 89, 97]
+        # ])
     except Exception:
-        return traceback.format_exc()
+        return 'error'
 
 @app.route("/getAP", methods=['POST'])
 def getAP():
@@ -267,14 +304,15 @@ def getAP():
             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             ['mattress', 76, 80, 88, 90, 92, 96],
             ['couch', 56, 66, 76, 86, 90, 96],
-            ['tv-monitor', 55, 67, 73, 85, 89, 97]
+            ['tv-monitor', 55, 67, 73, 85, 89, 97],
+            ['clean-street', 55, 67, 73, 85, 89, 97]
         ])
     except Exception:
         return traceback.format_exc()
 #########################   C3 Chart AJAX   #############################
 
 @app.route("/getConfirmationStats", methods=['POST'])
-def getClassifiactionStats():
+def getConfirmationStats():
     """
     This is function for API of getting classification stats
 
@@ -290,11 +328,12 @@ def getClassifiactionStats():
         # counterUnknown, counter1, counter2, counter3, denominator = 0, 0, 0, 0, 0
         count, count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean = 0, 0, 0, 0, 0, 0, 0, 0
         s = select([ImageCategory, ImageConfirmation]).\
-            where(ImageCategory.category_id == ImageConfirmation.confirmation_id).\
+            where(ImageCategory.category_id == ImageConfirmation.category_id).\
             order_by(ImageConfirmation.classification_datetime.desc())
         result = conn.execute(s)
+
         for row in result:
-            print(row[1])
+            print(row)
             if row[1]== 'tv-monitor':
                 count_tv += 1
             if row[1] == 'couch':
@@ -310,7 +349,6 @@ def getClassifiactionStats():
             if row[1] == 'clean-street':
                 count_clean += 1
             count += 1
-            print(row)
 
         classfication_stats_arr = [['tv-monitor', count_tv],
                                    ['mattress', count_mattress],
