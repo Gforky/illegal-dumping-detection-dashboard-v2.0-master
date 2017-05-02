@@ -306,11 +306,39 @@ def getAP():
     """
     try:
         detected_lists = mongodb.detected_lists
-        result = []
+        result_accuracy, result_time, index = ['average_accuracy'], ['x'], 0
+        prevTime = None
+        total_accuracy = 0
+        count = 0
         for detected_list in detected_lists.find({},{'_id':0}):
-            result.append(detected_list)
+            if index > 6:
+                break
 
-        return json.dumps([result
+            detected_datetime, detected_top3_accuracies, detected_top3_labels = str(detected_list['datetime']).split(',', 1), detected_list['top3_accuracies'], detected_list['top3_labels']
+            date = str(detected_datetime)[2:12]
+            print(date)
+            if prevTime == None:
+                result_time.append(date)
+                prevTime = date
+                index += 1
+
+            if date == prevTime:
+                total_accuracy += detected_top3_accuracies[0]
+                count += 1
+                prevTime = date
+            else:
+                result_time.append(date)
+                total_accuracy /= count
+                result_accuracy.append(total_accuracy)
+                count = 1
+                total_accuracy = detected_top3_accuracies[0]
+                index += 1
+
+
+        if total_accuracy:
+            result_accuracy.append(total_accuracy/count)
+
+        return json.dumps([result_time, result_accuracy
             # ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             # ['mattress', 76, 80, 88, 90, 92, 96],
             # ['couch', 56, 66, 76, 86, 90, 96],
@@ -318,7 +346,7 @@ def getAP():
             # ['clean-street', 55, 67, 73, 85, 89, 97]
         ])
     except Exception:
-        return traceback.format_exc()
+        return 'error'
 #########################   C3 Chart AJAX   #############################
 
 @app.route("/getConfirmationStats", methods=['POST'])
@@ -401,9 +429,9 @@ def trigger_detect():
     result = []
     wait_list = []
     problem_list = []
+
     for upload_list in upload_lists.find({"isAlerted": False}, {"_id":0}):
         wait_list.append(upload_list)
-
 
     for elem in wait_list:
         elem_path = elem['image_path']
@@ -417,11 +445,11 @@ def trigger_detect():
         result_imagepath = unpickled_result['imagepath']
         result_top3labels = unpickled_result['top3labels']
         result_top3accuracies = unpickled_result['top3accuracies']
-    #
 
         detected_id = randint(0, 100000)
 
-        if not result_imagepath in detected_list.find({'image_path': result_imagepath}, {"_id":0}):
+        #save detection result
+        if result_imagepath not in detected_list.find({'image_path': result_imagepath}, {"_id":0}):
             detected_list.insert({'detected_id': detected_id,
                                 'image_path': result_imagepath,
                                 'top3_labels': result_top3labels,
