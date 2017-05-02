@@ -96,14 +96,15 @@ def imgConfirmation():
         update_list = []
         # #get monogodb data
         for upload_list in upload_lists.find({"image_path": data['img_path']}, {"_id":0}):
-            update_list.append(upload_list)
-        # update mongodb
+            update_list.append(upload_list['waiting_id'])
+        # # update mongodb
         for elem in update_list:
-            upload_lists.update_one({"waiting_id": int(elem['waiting_id'])},{"$set":{"isAlerted": True}})
+            upload_lists.update_one({"waiting_id": int(elem)},{"$set":{"isAlerted": True}})
 
         return json.dumps([{'msg' : 'successfully transfered'}])
+        # return json.dumps([data])
     except Exception:
-        return traceback.format_exc()
+        return 'no new image'
 #########################   Image Confirmation  #########################
 
 #########################   C3 Chart AJAX   #############################
@@ -387,6 +388,7 @@ def trigger_detect():
     session = Session()
 
     upload_lists = mongodb.upload_lists
+    detected_list = mongodb.detected_lists
     result = []
     wait_list = []
     problem_list = []
@@ -407,7 +409,17 @@ def trigger_detect():
         result_top3labels = unpickled_result['top3labels']
         result_top3accuracies = unpickled_result['top3accuracies']
     #
-    # #if over than threshold add into db directly
+
+        detected_id = randint(0, 100000)
+
+        if not result_imagepath in detected_list.find({'image_path': result_imagepath}, {"_id":0}):
+            detected_list.insert({'detected_id': detected_id,
+                                'image_path': result_imagepath,
+                                'top3_labels': result_top3labels,
+                                'top3_accuracies': result_top3accuracies,
+                                'datetime':datetime.datetime.utcnow()})
+
+        #if over than threshold add into db directly
         if result_top3accuracies[0] < 0.7:
             # confirmation_image = ImageConfirmation(category_id='2', alert_id='1')
             # session.add(confirmation_image)
@@ -426,6 +438,7 @@ def trigger_detect():
     # json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
     json_str = json.dumps([problem_list])
     return json_str
+
 
 #helper function
 def allowed_file_type(filename):
