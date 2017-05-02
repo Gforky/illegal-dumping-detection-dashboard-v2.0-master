@@ -343,7 +343,7 @@ $(document).ready(function() {
         dbChartConfig.data = {
           x : 'x',
           columns: $.parseJSON(response),
-          groups: [['mattress', 'couch', 'tv-monitor']],
+          groups: [['mattress', 'couch', 'tv-monitor', 'refrigerator', 'chair', 'shopping-cart', 'clean-street']],
           type: 'bar'
         }
         dbChart = c3.generate(dbChartConfig)

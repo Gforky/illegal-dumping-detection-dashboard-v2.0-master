@@ -206,8 +206,6 @@ def getDatasetSize():
     Function to get the image storage status from the database
     """
     try:
-
-
         return json.dumps([
             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             ['mattress', 176, 180, 188, 190, 192, 196],
@@ -304,7 +302,6 @@ def getUpImg():
             ['mattress', 176, 180, 188, 190, 192, 196],
             ['couch', 156, 166, 276, 286, 390, 396],
             ['tv-monitor', 55, 167, 173, 285, 389, 197]
-            ['clean-street', 55, 67, 73, 85, 89, 97]
         ])
     except Exception:
         return traceback.format_exc()

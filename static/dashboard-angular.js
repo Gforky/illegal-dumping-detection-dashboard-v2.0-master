@@ -122,7 +122,7 @@ app.controller('todoCtrl', function($scope) {
     $scope._Index = index;
   }
 
-  $.ajax({
+  /*$.ajax({
     url: '/trigger_detect',
     type: 'POST',
     success: function(response) {
@@ -144,9 +144,9 @@ app.controller('todoCtrl', function($scope) {
 
         img_path = img_path.slice(6, )
     
-        /*console.log(img_path)
-        console.log(labels[0])
-        console.log(accuracies[0])*/
+        //console.log(img_path)
+        //console.log(labels[0])
+        //console.log(accuracies[0])
 
         var entry = {src: img_path, class: labels[0], accuracy: accuracies[0]}
         $scope.photos.push(entry)
@@ -159,7 +159,7 @@ app.controller('todoCtrl', function($scope) {
     error: function(error) {
       console.log(error)
     }
-  })
+  })*/
 
   // delete image and shift to next image
   $scope.removePhoto = function() {
