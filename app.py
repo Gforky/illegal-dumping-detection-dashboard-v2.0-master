@@ -221,17 +221,77 @@ def getDatasetSize():
 def getImgConf():
     """
     Function to get the image storage status from the database
+    get total detected object
     """
     try:
+        detected_lists = mongodb.detected_lists
+        result = {}
+        result_date = ['x']
+        result_mattress, result_couch, result_tvmonitor, result_refri, result_chair, result_shopping, result_clean \
+        = ['mattress'], ['couch'], ['tv-monitor'], ['refrigerator'], ['chair'], ['shopping-cart'], ['clean-street']
+        prevDate = None
+        for detected_list in detected_lists.find():
+            detected_datetime, detected_top3_accuracies, detected_top3_labels = str(detected_list['datetime']).split(',', 1), detected_list['top3_accuracies'], detected_list['top3_labels']
+            date = str(detected_datetime)[2:12]
+
+            if prevDate == None:
+                prevDate = date
+                result_date.append(date)
+                result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                = 0, 0, 0, 0, 0, 0, 0
+
+            if date != prevDate:
+                result_mattress.append(result['mattress'])
+                result_couch.append(result['couch'])
+                result_tvmonitor.append(result['tv-monitor'])
+                result_refri.append(result['refrigerator'])
+                result_chair.append(result['chair'])
+                result_shopping.append(result['shopping-cart'])
+                result_clean.append(result['clean-street'])
+                result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                = 0, 0, 0, 0, 0, 0, 0
+                prevDate = date
+                result_date.append(date)
+        #modify here
+            print(detected_top3_labels[0])
+            if detected_top3_labels[0] == 'mattress':
+                result['mattress'] += 1
+            if detected_top3_labels[0] == 'couch':
+                result['couch'] += 1
+            if detected_top3_labels[0] == 'tv-monitor':
+                result['tv-monitor'] += 1
+            if detected_top3_labels[0] == 'refrigerator':
+                result['refrigerator'] += 1
+            if detected_top3_labels[0] == 'chair':
+                result['chair'] += 1
+            if detected_top3_labels[0] == 'shopping cart':
+                result['shopping-cart'] += 1
+            if detected_top3_labels[0] == 'clean':
+                result['clean-street'] += 1
+
+        result_mattress.append(result['mattress'])
+        result_couch.append(result['couch'])
+        result_tvmonitor.append(result['tv-monitor'])
+        result_refri.append(result['refrigerator'])
+        result_chair.append(result['chair'])
+        result_shopping.append(result['shopping-cart'])
+        result_clean.append(result['clean-street'])
+        result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+        = 0, 0, 0, 0, 0, 0, 0
+
 
         return json.dumps([
-            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['mattress', 176, 180, 188, 190, 192, 196],
-            ['couch', 156, 166, 276, 286, 390, 396],
-            ['tv-monitor', 55, 167, 173, 285, 389, 197]
+            result_date,
+            result_mattress,
+            result_couch,
+            result_tvmonitor,
+            result_refri,
+            result_chair,
+            result_shopping,
+            result_clean
         ])
     except Exception:
-        return traceback.format_exc()
+        return 'error'
 
 @app.route("/getUpImg", methods=['POST'])
 def getUpImg():
