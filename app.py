@@ -89,7 +89,7 @@ def imgConfirmation():
         data = request.get_json()
         print(data['img_path'])
         print(data['labels'])
-        confirmation1 = ImageConfirmation(category_id= int(data['labels']), image_path= str(data['img_path']))
+        confirmation1 = ImageConfirmation(category_id= int(data['labels'][0]), image_path= str(data['img_path']))
         session.add(confirmation1)
         session.commit()
 
@@ -299,14 +299,21 @@ def getDetectedObj():
 def getAP():
     """
     Function to get the image storage status from the database
+
+    mean accuracy
     """
     try:
-        return json.dumps([
-            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['mattress', 76, 80, 88, 90, 92, 96],
-            ['couch', 56, 66, 76, 86, 90, 96],
-            ['tv-monitor', 55, 67, 73, 85, 89, 97],
-            ['clean-street', 55, 67, 73, 85, 89, 97]
+        detected_lists = mongodb.detected_lists
+        result = []
+        for detected_list in detected_lists.find({},{'_id':0}):
+            result.append(detected_list)
+
+        return json.dumps([result
+            # ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            # ['mattress', 76, 80, 88, 90, 92, 96],
+            # ['couch', 56, 66, 76, 86, 90, 96],
+            # ['tv-monitor', 55, 67, 73, 85, 89, 97],
+            # ['clean-street', 55, 67, 73, 85, 89, 97]
         ])
     except Exception:
         return traceback.format_exc()
