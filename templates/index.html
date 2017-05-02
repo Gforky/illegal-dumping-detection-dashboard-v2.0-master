@@ -99,7 +99,7 @@
               <!--<div class="realTime-trainingTime"><span style="color:#008CBA">Training Time of Current Dataset: </span><span my-current-time style="color:#ff4000"></span></div>-->
               <div class="realTime-dataset"><span style="color:#008CBA">Dataset Size of Current Training Process:</span>
                 <br>
-                <span my-current-dataset style="font-size:16px;color:#ff4000"></span>
+                <!--<span my-current-dataset style="font-size:16px;color:#ff4000"></span>-->
                 <!--<br>
                 <Mattress:  style="font-size:14px;color:#E5A823">Couch: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
                 <br>
@@ -120,10 +120,10 @@
           </div>
           <div class="left-half-2">
             {% raw %}
-            <div ng-controller="todoCtrl" class="slider"><a ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" href="/static{{photo.src}}" class="slide zb"><img ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" ng-src="/static{{photo.src}}" class="slide"></a>
+            <div ng-controller="todoCtrl" class="slider"><a ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" href="/static{{photo.src}}" ng-click="showPhoto($index)" class="slide zb"><img ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" ng-src="/static{{photo.src}}" class="slide"></a>
               <div ng-click="showPrev()" class="arrow prev"></div>
               <div ng-click="showNext()" class="arrow next"></div>
-              <div class="remainImg"><span style="margin-left:5px">Number of images awaiting manual classifications: </span><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length}}</span><br><span>Predicted class: </span><span style="color:#ff4000">{{classificationResult}}</span><span> Predicted probability: </span><span style="color:#ff4000">{{accuracy}}</span></div>
+              <div class="remainImg"><span style="margin-left:5px">Number of images awaiting manual classifications: </span><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length - 1}}</span><br><span>Predicted class: </span><span style="color:#ff4000">{{classificationResult}}</span><span> Predicted probability: </span><span style="color:#ff4000">{{accuracy}}</span></div>
               <br>
               <div class="btn-group">
                 <button ng-click="refreshConfirmationImageList()" class="refreshConfirmationImageList"><span>Refresh</span></button>
@@ -154,7 +154,7 @@
           <div class="detectionLogView">
             <div class="logButtons">
               <h5 style="color:#0055A2">Detection Log</h5>
-              <button class="button detectionLogRefresh">Manually refresh log</button>
+              <!--<button class="button detectionLogRefresh">Manually refresh log</button>-->
               <button class="button detectionLogReset">Reset Log</button>
             </div>
             <div ng-controller="detectCtrl" class="detection">

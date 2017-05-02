@@ -89,13 +89,14 @@ def imgConfirmation():
         data = request.get_json()
         print(data['img_path'])
         print(data['labels'])
-        confirmation1 = ImageConfirmation(category_id= int(data['labels'][0]), image_path= str(data['img_path']))
+        confirmation1 = ImageConfirmation(category_id= int(data['labels'][0] + 1), image_path= str(data['img_path']))
         session.add(confirmation1)
         session.commit()
 
         update_list = []
+        upload_lists = mongodb.upload_lists
         # #get monogodb data
-        for upload_list in upload_lists.find({"image_path": data['img_path']}, {"_id":0}):
+        for upload_list in upload_lists.find({"image_path": 'static' + data['img_path']}):
             update_list.append(upload_list['waiting_id'])
         # # update mongodb
         for elem in update_list:
@@ -103,6 +104,7 @@ def imgConfirmation():
 
         return json.dumps([{'msg' : 'successfully transfered'}])
         # return json.dumps([data])
+        #return json.dumps([{'msg' : 'successfully transfered'}])
     except Exception:
         return 'no new image'
 #########################   Image Confirmation  #########################
@@ -443,7 +445,8 @@ def trigger_detect():
 
     engine.dispose()
     # json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
-    json_str = json.dumps([problem_list])
+    print(problem_list)
+    json_str = json.dumps(problem_list)
     return json_str
 
 

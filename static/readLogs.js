@@ -34,18 +34,18 @@ $(document).ready(function monitorTraining() {
     }
   })
   // this function will repeatedly check the updates of logs
-  var checker = function() {
+  /*var checker = function() {
     testNum++;
     $("p.trainingLog").append("This is a training output " + testNum +  "<br />")
     $("p.detectionLog").append("This is a detection output " + testNum +  "<br />")
     // jquery function to automatically scroll down to bottom of div
-    /*if(atTrainBottom === 1) {
-      $(".train").scrollTop($(".train")[0].scrollHeight)
-    }*/
+    //if(atTrainBottom === 1) {
+      //$(".train").scrollTop($(".train")[0].scrollHeight)
+    //}
     if(atDetectBottom === 1) {
       $(".detection").scrollTop($(".detection")[0].scrollHeight)
     }
     //clearInternal(timer)
   }
-  timer = setInterval(checker, 500)
+  timer = setInterval(checker, 500)*/
 })
