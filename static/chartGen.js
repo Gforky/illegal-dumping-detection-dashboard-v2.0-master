@@ -82,7 +82,48 @@ $(document).ready(function() {
   })
 
   // chart of neural network status
-  var nnChartConfig = {
+  var nnChartConfig
+  var nnChart
+
+  $.ajax({
+    url: '/getAP',
+    type: 'POST',
+    success: function(response) {
+      var data = $.parseJSON(response)
+      //data.splice(0, 0, ['x', 0])
+      nnChartConfig = {
+        bindto: '.nnChart',
+        data: {
+          x : 'x',
+          columns: data
+        },
+        axis: {
+          x: {
+            type: 'timeseries',
+            tick: {
+                format: '%Y-%m-%d'
+            }
+          },
+          y: {
+            label: { // ADD
+              text: 'Average Precisions',
+              position: 'outer-middle'
+            },
+            tick: {
+              format: d3.format(",%") // ADD
+            }
+          }
+        }
+      }
+
+      nnChart = c3.generate(nnChartConfig)
+    },
+    error: function(error) {
+      console.log(error)
+    }
+  })
+
+  /*var nnChartConfig = {
     bindto: '.nnChart',
     data: {
       x : 'x',
@@ -113,7 +154,7 @@ $(document).ready(function() {
     }
   }
 
-  var nnChart = c3.generate(nnChartConfig)
+  var nnChart = c3.generate(nnChartConfig)*/
 
   // chart of client usage status
   /*var cuChartConfig = {
