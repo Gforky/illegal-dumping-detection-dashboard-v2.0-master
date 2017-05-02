@@ -429,7 +429,7 @@ $(document).ready(function() {
         nnChartConfig.data = {
           x : 'x',
           columns: $.parseJSON(response),
-          groups: [['mattress', 'couch', 'tv-monitor']],
+          //groups: [['mattress', 'couch', 'tv-monitor']],
           type: 'bar'
         }
         nnChart = c3.generate(nnChartConfig)
