@@ -52,7 +52,7 @@ def index():
 
 
 @app.route("/upload-files", methods=['GET', 'POST'])
-def uploadfile():
+def uploadfile(): #299 * 299, jpg
     if request.method == 'POST':
         imgFile = request.files['file']
         if imgFile:
@@ -422,30 +422,50 @@ def getConfirmationStats():
         confirmation_arr, time_stamp = [], []
         # counterUnknown, counter1, counter2, counter3, denominator = 0, 0, 0, 0, 0
         count, count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean = 0, 0, 0, 0, 0, 0, 0, 0
-        s = select([ImageCategory, ImageConfirmation]).\
-            where(ImageCategory.category_id == ImageConfirmation.category_id).\
-            order_by(ImageConfirmation.classification_datetime.desc())
-        result = conn.execute(s)
-
-        for row in result:
-            print(row)
-            if row[1]== 'tv-monitor':
+        confirmation_lists = mongodb.confirmation_lists
+        result = []
+        for confirmation_list in confirmation_lists.find({},{'_id':0}):
+            print(confirmation_list)
+            result.append(confirmation_list)
+            if confirmation_list['category'] == 'tv-monitor':
                 count_tv += 1
-            if row[1] == 'couch':
+            if confirmation_list['category'] == 'couch':
                 count_couch += 1
-            if row[1] == 'mattress':
+            if confirmation_list['category'] == 'mattress':
                 count_mattress += 1
-            if row[1] == 'chair':
+            if confirmation_list['category'] == 'chair':
                 count_chair += 1
-            if row[1] == 'refrigerator':
+            if confirmation_list['category'] == 'refrigerator':
                 count_refrigerator += 1
-            if row[1] == 'shopping-cart':
+            if confirmation_list['category'] == 'shopping-cart':
                 count_cart += 1
-            if row[1] == 'clean-street':
+            if confirmation_list['category'] == 'clean-street':
                 count_clean += 1
             count += 1
+        # s = select([ImageCategory, ImageConfirmation]).\
+        #     where(ImageCategory.category_id == ImageConfirmation.category_id).\
+        #     order_by(ImageConfirmation.classification_datetime.desc())
+        # result = conn.execute(s)
 
-        classfication_stats_arr = [['tv-monitor', count_tv],
+        # for row in result:
+        #     print(row)
+        #     if row[1]== 'tv-monitor':
+        #         count_tv += 1
+        #     if row[1] == 'couch':
+        #         count_couch += 1
+        #     if row[1] == 'mattress':
+        #         count_mattress += 1
+        #     if row[1] == 'chair':
+        #         count_chair += 1
+        #     if row[1] == 'refrigerator':
+        #         count_refrigerator += 1
+        #     if row[1] == 'shopping-cart':
+        #         count_cart += 1
+        #     if row[1] == 'clean-street':
+        #         count_clean += 1
+        #     count += 1
+
+        confirmation_stats_arr = [['tv-monitor', count_tv],
                                    ['mattress', count_mattress],
                                    ['couch', count_couch],
                                    ['chair', count_chair],
@@ -453,7 +473,7 @@ def getConfirmationStats():
                                    ['shopping-cart', count_cart],
                                    ['clean-street', count_clean]]
 
-        json_str = json.dumps(classfication_stats_arr)
+        json_str = json.dumps(confirmation_stats_arr)
         return json_str
 
 @app.route("/check_temp_folder_classify", methods=['POST'])
