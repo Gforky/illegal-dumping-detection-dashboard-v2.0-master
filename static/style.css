@@ -98,7 +98,6 @@ button {
   display: block;
   padding:25px;
   width: 100%;
-  height: 600px;
 }
 
 .left-half, 
@@ -119,11 +118,13 @@ button {
 }
 
 .upload-files {
-  float:left;
-  width:50%;
-  height:100%;
+  width: 260px;
+  height:200px;
+  margin-left: auto;
+  margin-right: auto;
   overflow: scroll;
-  padding: 1%;
+  text-align: center;
+  border: 2px dotted rgba(0, 140, 186, 0.8);
 }
 
 .realTime-training {
@@ -143,7 +144,9 @@ button {
   border: 1px solid var(--blue);
 }
 .detectionLogView {
-  height: 117%;
+  float: right;
+  height: 500px;
+  width: 50%;
   border: 1px solid var(--blue);
 }
 .train,
@@ -180,18 +183,22 @@ button {
 }
 
 .remainImg {
-  width: 100%;
+  margin-top: 20%;
+  margin-left: 5%;
+  width: 90%;
   height: 30px;
-  margin-top: 380px;
   position: absolute;
+  text-align: center;
 }
 .btn-group {
-  width: 100%;
-  height: 30px;
-  margin-top: 400px;
-  position: absolute;
-}
 
+}
+.confirmArea {
+  float: right;
+  width: 49%;
+  height: 100px;
+  position: relative;
+}
 .findSofa,
 .findMattress,
 .findTvMonitor,
@@ -202,15 +209,18 @@ button {
   height: 20px;
   width: 70px;
   margin-right: 1%;
-  margin-top: 15px;
+  margin-top: 35%;
   display: inline-block;
   text-align: center;
   float: right;
   border: 1px solid var(--blue);
 }
 
+.findSofa {
+  margin-right: 5%;
+}
+
 .deleteImg,
-.refreshConfirmationImageList,
 .retrain {
   cursor: pointer;
   padding: 10px 15px;
@@ -221,6 +231,22 @@ button {
   background-color: var(--blue);
   color: var(--gold);
   box-shadow: 0 3px #999;
+}
+.retrain {
+  float: left;
+}
+.refreshConfirmationImageList {
+  cursor: pointer;
+  padding: 10px 15px;
+  font-size: 15px;
+  border-radius: 15px;
+  background-color: var(--blue);
+  color: var(--gold);
+  box-shadow: 0 3px #999;
+}
+.deleteImg {
+  margin-top: 15px;
+  margin-right: 50px;
 }
 .deleteImg span,
 .refreshConfirmationImageList span,
@@ -256,6 +282,16 @@ button {
 .retrain:active {
   box-shadow: 0 5px #666;
   transform: translateY(4px);
+}
+
+.oneTimeClassify {
+  width: 500px;
+  height: 110px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .detectLocations {
@@ -356,17 +392,16 @@ button {
   cursor: pointer;
   display: block;
   height: 64px;
-  margin-top: -35px;
   outline: medium none;
   position: absolute;
-  top: 50%;
+  top: 95%;
   width: 64px;
   z-index: 5;
 }
 
 .arrow.prev {
   background-image: url("../static/images/prev.png");
-  left: 20px;
+  left: 3%;
   opacity: 0.2;
   transition: all 0.2s linear 0s;
 }
@@ -374,7 +409,7 @@ button {
 .arrow.next {
   background-image: url("../static/images/next.png");
   opacity: 0.2;
-  right: 20px;
+  left: 44%;
   transition: all 0.2s linear 0s;
 }
 
@@ -425,16 +460,18 @@ width: 80%;
 }
 
 .slider {
-  border: 5px solid #FFFFFF;
-  height: 100%;
-  margin: 20px auto;
-  position: relative;
+  border: 1px solid;
+  height: 400px;
   width: 100%;
 }
 
 .slide {
-  position: absolute;
+  border-right: 1px solid black;
+  position: relative;
   left: 0;
-  width: 100%;
+  width: 50%;
   height: 100%;
+}
+.slide.zb.ng-scope {
+  border-right: none;
 }

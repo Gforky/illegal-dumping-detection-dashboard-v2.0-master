@@ -77,6 +77,11 @@ app.controller('manuallyRetrain', function($scope) {
 //  })
 //}])
 
+app.controller('classifyCtrl', function($scope) {
+  var todoCtrl = angular.element(document.getElementById('slider')).scope()
+
+})
+
 app.controller('todoCtrl', function($scope) {
   /*$scope.photos = [
     {src: '/images/tv-monitor/345361872_9e7aff54f5_b.jpg', class: 'tv-monitor', accuracy: '0.82'},
@@ -92,11 +97,15 @@ app.controller('todoCtrl', function($scope) {
     {src: '/images/tv-monitor/802263183_cb915bcfd3_b.jpg', class: 'tv-monitor', accuracy: '0.82'}
   ];*/
   $scope.photos = [
-                    {src: '/images/welcome.jpg', class: 'N/A', accuracy: 'N/A'}
+                    {src: '/images/welcome.jpg', class: 'N/A', accuracy: 'N/A'}                  
                   ];
 
   // initial image index
   $scope._Index = 0;
+  var photo = $scope.photos[0]
+  photo.show = true
+  $scope.classificationResult = "N/A";
+  $scope.accuracy = "N/A";
 
   // if current image is the same as requested image
   $scope.isActive = function(index) {
@@ -111,11 +120,17 @@ app.controller('todoCtrl', function($scope) {
   }
   // show prev image
   $scope.showPrev = function() {
+    var original_index = $scope._Index
     $scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
+    $scope.photos[original_index].show = false
+    $scope.photos[$scope._Index].show = true
   }
   // show next image
   $scope.showNext = function() {
+    var original_index = $scope._Index
     $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+    $scope.photos[original_index].show = false
+    $scope.photos[$scope._Index].show = true
   }
   // show a specific image
   $scope.showPhoto = function(index) {
@@ -164,7 +179,8 @@ app.controller('todoCtrl', function($scope) {
   // delete image and shift to next image
   $scope.removePhoto = function() {
       // image labels and the image source info
-    if($scope._Index != 0) {
+    $("b.oneTimeClassificationResult").replaceWith("<b class='oneTimeClassificationResult'>Waiting for classification result</b>")
+    /*if($scope._Index != 0) {
       console.log($scope._Index)
       if($scope.photos[$scope._Index]) { // check if any images waitting for confirmation
         var labels = []
@@ -195,22 +211,56 @@ app.controller('todoCtrl', function($scope) {
           confirmationList[index] = false;
         }
         $scope.photos.splice($scope._Index, 1)
+        $scope._Index = 0
         //$scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0
+        if($scope.photos.length === 0) {
+          $scope.classificationResult = "";
+          $scope.accuracy = "";
+        }
       }
-      if($scope.photos.length === 0) {
-        $scope.classificationResult = "";
-        $scope.accuracy = "";
+    }*/
+    if($("img.slide").attr("src") != 'static/images/welcome.jpg') { // check if any images waitting for confirmation
+        var labels = []
+        for(index = 0; index < objectList.length; ++index) {
+          if(confirmationList[index]) {
+            labels.push(index)
+          }
+        }
+        var myData =  {
+                        'labels' : labels, 
+                        'img_path' : $scope.photos[$scope._Index].src
+                      }
+        $.ajax({
+          url: '/imgConfirmation',
+          contentType: 'application/json',
+          dataType: 'json',
+          type: 'POST',
+          data: JSON.stringify(myData),
+          success: function(response) {
+            //console.log($.parseJSON(response))
+            // convert JSON object into javascript array
+          },
+          error: function(error) {
+            console.log(error)
+          }
+        })
+        for(index = 0; index < confirmationList.length; ++index) {
+          confirmationList[index] = false;
+        }
+        $("img.slide").replaceWith("<img class='slide' src='static/images/welcome.jpg'>")
+        $("span.classificationResult").replaceWith("<span style='color:#ff4000' class='classificationResult'>N/A</span>")
+        $("span.accuracy").replaceWith("<span style='color:#ff4000' class='accuracy'>N/A</span>")
       }
-    }
   }
   // refresh the image list in the slider
   $scope.refreshConfirmationImageList = function() {
+    var threshold = $("input.accuracyThreshold").val() / 100
+    console.log(threshold)
     $.ajax({
       url: '/trigger_detect',
       type: 'POST',
       success: function(response) {
         // convert JSON object into javascript array
-        $scope.photos = [{src: '/images/welcome.jpg', class: 'N/A', accuracy: 'N/A'}]
         var problem_list = $.parseJSON(response)
         var arr_length = problem_list.length
         for(var i = 0; i < arr_length; ++i) {
@@ -233,10 +283,13 @@ app.controller('todoCtrl', function($scope) {
           console.log(accuracies[0])*/
 
           var entry = {src: img_path, class: labels[0], accuracy: accuracies[0]}
-          $("p.detectionLog").append("<div style='border-bottom:1px solid'>Detected <b style='color:#0055A2'>" + labels[0] + "</b> in image <a href='/static" + img_path + "'><img src='/static" + img_path + "'></a> with accuracy: <b style='color:#0055A2'>" + accuracies[0] + "</b></div>")
-          $scope.photos.push(entry)
+          $("p.detectionLog").append("<div style='border-bottom:1px solid'>Detected <b style='color:#0055A2'>" + labels[0] + "</b> in image <a href='/static" + img_path + "'><img height='100' width='100' src='/static" + img_path + "'></a> with accuracy: <b style='color:#0055A2'>" + accuracies[0] + "</b></div>")
+          $("b.oneTimeClassificationResult").replaceWith("<b class='oneTimeClassificationResult'>Detected <b style='color:#0055A2'>" + labels[0] + "</b> with accuracy: <b style='color:#0055A2'>" + accuracies[0] + "</b></b>")
+          //$scope.photos.push(entry)
+          $("img.slide").replaceWith("<img class='slide' src='static" + img_path + "'>")
+          $("span.classificationResult").replaceWith("<span style='color:#ff4000' class='classificationResult'>" + labels[0] + "</span>")
+          $("span.accuracy").replaceWith("<span style='color:#ff4000' class='accuracy'>" + accuracies[0] + "</span>")
         }
-        $scope._Index = 1;
       },
       error: function(error) {
         console.log(error)

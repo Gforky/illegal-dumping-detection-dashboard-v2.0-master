@@ -37,7 +37,7 @@
     <!-- load js app to read logs from back-end-->
     <script src="{{ url_for('static', filename='readLogs.js') }}"></script>
     <!-- load js app to fix the switchViewButtons at top-->
-    <script src="{{ url_for('static', filename='scrollANDfix.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='scrollANDfix.js') }}"></script>-->
     <!-- load fancybox on load-->
     <script>
       /*$(document).ready(function() {
@@ -49,19 +49,23 @@
     </script>
     <!-- js function to dynamically set display parameter of div-->
     <script>
-      var setVisibility = function(classNames) {
+      /*var setVisibility = function(classNames) {
         document.getElementsByClassName(classNames[0])[0].style.display = "inline-block";
         $('.' + classNames[0] + "Button").toggleClass('chosenColor', true);
         for (index = 1; index < classNames.length; ++index) {
           document.getElementsByClassName(classNames[index])[0].style.display = "none";
           $('.' + classNames[index] + "Button").toggleClass('chosenColor', false);
         }
-      }
+      }*/
       var setChartButtonsVisualbility = function(classNames) {
         $(classNames[0]).toggleClass('chosenColor', true);
         for (index = 1; index < classNames.length; ++index) {
           $(classNames[index]).toggleClass('chosenColor', false);
         }
+      }
+
+      var showValue = function(newValue)  {
+        document.getElementById("range").innerHTML=(newValue/100);
       }
     </script>
   </head>
@@ -70,78 +74,29 @@
     <div class="header">
       <h1 class="page-title">Illegal Dumping Detection System Dashboard</h1>
     </div>
-    <div class="switchViewButtons">
+    <!--<div class="switchViewButtons">
       <button onclick="setVisibility([&quot;sysOps&quot;, &quot;dataViews&quot;])" class="button sysOpsButton">System Operations</button>
       <button onclick="setVisibility([&quot;dataViews&quot;, &quot;sysOps&quot;])" class="button dataViewsButton">Data Visualization</button>
-    </div>
+    </div>-->
     <div ng-app="dashboard" class="dashboard">
       <!-- system opertations webpage-->
       <div class="sysOps">
-        <div class="left-half">
-          <div class="left-half-1">
+        <!--<div class="left-half">
+          <div class="left-half-1">-->
+            <div style='width:260px;margin-left: auto;margin-right: auto;text-align: center'>
+              <strong style="color:#E5A823">STEP 1(Drag the image)</strong>
+            </div>
             <div class="upload-files">
               <form action="/upload-files" class="dropzone dz-clickable">
-                <div class="dz-message">Drop files here or click to upload.
+                <div class="dz-message">Drop files here to upload.
                   <!--br-->
                   <!--span.note (This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)-->
                 </div>
               </form>
             </div>
-            <div ng-controller="realTimeTrainingCtrl" class="realTime-training">
-              <!--div.search(ng-controller="searchCtrl")-->
-              <!--  input(type="text", ng-model="imgName")-->
-              <!--  button(ng-click="searchButton()") Search Image-->
-              <!--div.model(ng-controller="modelCtrl")-->
-              <!--  ul.nav-->
-              <!--    li: button.VGG16(ng-click="VGG16()") VGG16-->
-              <!--    li: button.ZF(ng-click="ZF()") ZF-->
-              <!--    li: button.VGG_CNN_M_1024(ng-click="VGG_CNN_M_1024()") VGG_CNN_M_1024-->
-              <!--<div class="realTime-trainingTime"><span style="color:#008CBA">Training Time of Current Dataset: </span><span my-current-time style="color:#ff4000"></span></div>-->
-              <div class="realTime-dataset"><span style="color:#008CBA">Dataset Size of Current Training Process:</span>
-                <br>
-                <span my-current-dataset style="font-size:16px;color:#ff4000"></span>
-                <!--<br>
-                <Mattress:  style="font-size:14px;color:#E5A823">Couch: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
-                <br>
-                <span style="font-size:14px;color:#E5A823">Fridge: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
-                <br>
-                <Mattress:  style="font-size:14px;color:#E5A823">Chair: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
-                <br>
-                <Mattress:  style="font-size:14px;color:#E5A823">TV Monitor: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
-                 <br>
-                <Mattress:  style="font-size:14px;color:#E5A823">Shopping Cart: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
-                 <br>
-                <Mattress:  style="font-size:14px;color:#E5A823">Clean Street: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>-->
-              </div>
-              <div ng-controller="manuallyRetrain" class="manually-retrain">
-                <button ng-click="retrain()" class="retrain"><span>Retrain the model</span></button>
-              </div>
-            </div>
-          </div>
-          <div class="left-half-2">
-            {% raw %}
-            <div ng-controller="todoCtrl" class="slider"><a ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" href="/static{{photo.src}}" ng-click="showPhoto($index)" class="slide zb"><img ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="isActive($index)" ng-src="/static{{photo.src}}" class="slide"></a>
-              <div ng-click="showPrev()" class="arrow prev"></div>
-              <div ng-click="showNext()" class="arrow next"></div>
-              <div class="remainImg"><span style="margin-left:5px">Number of images awaiting manual classifications: </span><span style="color:#ff4000" class="imgToBeSupervised">{{photos.length - 1}}</span><br><span>Predicted class: </span><span style="color:#ff4000">{{classificationResult}}</span><span> Predicted probability: </span><span style="color:#ff4000">{{accuracy}}</span></div>
-              <br>
-              <div class="btn-group">
-                <button ng-click="refreshConfirmationImageList()" class="refreshConfirmationImageList"><span>Refresh</span></button>
-                <button ng-click="removePhoto()" class="deleteImg"> <span>Submit</span></button>
-                <button ng-click="findSofa()" class="findSofa">Couch</button>
-                <button ng-click="findMattress()" class="findMattress">Mattress</button>
-                <button ng-click="findFridge()" class="findFridge">Fridge</button>
-                <button ng-click="findChair()" class="findChair">Chair</button>
-                <button ng-click="findTvMonitor()" style="font-size:10px" class="findTvMonitor">TV Monitor</button>
-                <button ng-click="findShoppingCart()" style="font-size:8px" class="findShoppingCart">Shopping Cart</button>
-                <button ng-click="findCleanStreet()" style="font-size:10px" class="findCleanStreet">Clean Street</button>
-              </div>
-            </div>
-            {% endraw %}
-          </div>
-        </div>
-        <div class="right-half">
-          <!--<div class="trainingLogView">
+            
+        <!--<div class="right-half">
+          <div class="trainingLogView">
             <div class="logButtons">
               <h5 style="color:#0055A2">Training Log</h5>
               <button class="button trainingLogRefresh">Manually refresh log</button>
@@ -150,21 +105,104 @@
             <div ng-controller="trainCtrl" class="train">
               <p class="trainingLog"></p>
             </div>
-          </div>-->
+          </div>
+        </div>-->
+
+        <div ng-controller="todoCtrl">
+          <div class="oneTimeClassify">
+            <strong style="color:#E5A823">STEP 2(Classify the image)</strong><br>
+            <p>Slide the bar to set the accuracy threshold</p>
+            <input type="range" class="accuracyThreshold" min="0" max="100" value="70" onchange="showValue(this.value)" />
+            <span id="range">0.7</span>
+            <button ng-click="refreshConfirmationImageList()" class="refreshConfirmationImageList"><span>Classify</span></button><br>
+            <div style="margin-top: 10px;">
+              <b class="oneTimeClassificationResult">Waiting for classification result</b>
+            </div>
+          </div>
+
+          <div style='width:400px;margin-left: auto;margin-right: auto;text-align: center'>
+            <strong style="color:#E5A823">STEP 3(Manually confirm the image with accuracy under threshold)</strong>
+          </div>
+          {% raw %}
+            <div class="slider" id="slider"><!--<img ng-repeat="photo in photos" ng-swipe-right="showPrev()" ng-swipe-left="showNext()" ng-show="photo.show" ng-src="/static{{photo.src}}" class="slide">-->
+              <!--<div ng-click="showPrev()" class="arrow prev"></div>
+              <div ng-click="showNext()" class="arrow next"></div>-->
+              <img src="static/images/welcome.jpg" class="slide" height="100" width="100">
+              <div class="confirmArea">
+                <div class="remainImg">
+                  <!--<span style="margin-left:5px">Number of images awaiting manual classifications: </span>
+                  <span style="color:#ff4000" class="imgToBeSupervised">{{photos.length - 1}}</span><br>-->
+                  <span>Predicted class: </span>
+                  <span style="color:#ff4000" class="classificationResult">{{classificationResult}}</span><br>
+                  <span> Predicted probability: </span>
+                  <span style="color:#ff4000" class="accuracy">{{accuracy}}</span>
+                </div>
+                <div class="btn-group">
+                  <button ng-click="findSofa()" class="findSofa">Couch</button>
+                  <button ng-click="findMattress()" class="findMattress">Mattress</button>
+                  <button ng-click="findFridge()" class="findFridge">Fridge</button>
+                  <button ng-click="findChair()" class="findChair">Chair</button>
+                  <button ng-click="findTvMonitor()" style="font-size:10px" class="findTvMonitor">TV Monitor</button>
+                  <button ng-click="findShoppingCart()" style="font-size:8px" class="findShoppingCart">Shopping Cart</button>
+                  <button ng-click="findCleanStreet()" style="font-size:10px" class="findCleanStreet">Clean Street</button>
+                </div>
+                <button ng-click="removePhoto()" class="deleteImg"> <span>Confirm</span></button>
+              </div>
+            </div>
+          {% endraw %}
+        </div>
+      </div>
+
+      <!-- data visualization webpage-->
+      <div class="dataViews">
+        <div style="height:600px;">
+          <div ng-controller="realTimeTrainingCtrl" class="realTime-training">
+            <!--div.search(ng-controller="searchCtrl")-->
+            <!--  input(type="text", ng-model="imgName")-->
+            <!--  button(ng-click="searchButton()") Search Image-->
+            <!--div.model(ng-controller="modelCtrl")-->
+            <!--  ul.nav-->
+            <!--    li: button.VGG16(ng-click="VGG16()") VGG16-->
+            <!--    li: button.ZF(ng-click="ZF()") ZF-->
+            <!--    li: button.VGG_CNN_M_1024(ng-click="VGG_CNN_M_1024()") VGG_CNN_M_1024-->
+            <!--<div class="realTime-trainingTime"><span style="color:#008CBA">Training Time of Current Dataset: </span><span my-current-time style="color:#ff4000"></span></div>-->
+            <div class="realTime-dataset"><span style="color:#008CBA">Dataset Size of Current Training Process:</span>
+              <br>
+              <span my-current-dataset style="font-size:16px;color:#ff4000"></span>
+              <!--<br>
+              <Mattress:  style="font-size:14px;color:#E5A823">Couch: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
+              <br>
+              <span style="font-size:14px;color:#E5A823">Fridge: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
+              <br>
+              <Mattress:  style="font-size:14px;color:#E5A823">Chair: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
+              <br>
+              <Mattress:  style="font-size:14px;color:#E5A823">TV Monitor: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
+               <br>
+              <Mattress:  style="font-size:14px;color:#E5A823">Shopping Cart: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>
+               <br>
+              <Mattress:  style="font-size:14px;color:#E5A823">Clean Street: </span><span my-current-dataset style="font-size:14px;color:#ff4000"></span>-->
+            </div>
+            <div ng-controller="manuallyRetrain" class="manually-retrain">
+              <button ng-click="retrain()" class="retrain"><span>Retrain the model</span></button>
+            </div>
+          <!--</div>
+        </div>-->
+        <!--<div class="left-half-2">
+          
+        </div>-->
+          </div>
+
           <div class="detectionLogView">
             <div class="logButtons">
-              <h5 style="color:#0055A2">Detection Log</h5>
+              <h5 style="color:#0055A2">Classification History</h5>
               <!--<button class="button detectionLogRefresh">Manually refresh log</button>-->
-              <button class="button detectionLogReset">Reset Log</button>
+              <button class="button detectionLogReset">Reset History</button>
             </div>
             <div ng-controller="detectCtrl" class="detection">
               <p class="detectionLog"></p>
             </div>
           </div>
         </div>
-      </div>
-      <!-- data visualization webpage-->
-      <div class="dataViews">
         <div class="dbStat">
           <h2>Database Status</h2>
           <div class="chartButtons">
@@ -203,3 +241,5 @@
     <div class="footer">
       <p>Copyright © 2016 Wendy Boo, Alan Chen, Luwen Miao, Xiaoming Chuang</p>
     </div>
+  </body>
+</html>

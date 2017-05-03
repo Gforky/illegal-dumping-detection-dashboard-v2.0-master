@@ -26,7 +26,7 @@ UPLOAD_FOLDER = 'static/detection-component/alert_image'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['current_path'] = os.getcwd()
-ALLOWED_FILE_EXTENSIONS = set(['png', 'jpg'])
+ALLOWED_FILE_EXTENSIONS = set(['jpg'])
 
 #connect mongodb
 client = MongoClient()
@@ -321,7 +321,7 @@ def getDetectedObj():
         count = 0
         prevDate = None
         index = 0
-        for upload_list in upload_lists.find({"isAlerted": False}, {"_id":0}):
+        for upload_list in upload_lists.find({"isAlerted": True}, {"_id":0}):
             if index > 6:
                 break
 
@@ -557,7 +557,7 @@ def trigger_detect():
 
 #helper function
 def allowed_file_type(filename):
-	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_FILE_EXTENSIONS
+	return '.' in filename and filename.rsplit('.', 1)[-1] in ALLOWED_FILE_EXTENSIONS
 
 
 if __name__ == "__main__":
