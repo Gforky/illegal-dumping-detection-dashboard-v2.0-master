@@ -67,6 +67,31 @@
       var showValue = function(newValue)  {
         document.getElementById("range").innerHTML=(newValue/100);
       }
+
+      $(document).ready(function() {
+        function setRepeatedMouseDown(el, callback) {
+          var timer;
+
+          $(el).on('mousedown', function() {
+            callback();
+            timer = setInterval(callback, 500);
+          }).on('mouseleave mouseup', function() {
+            clearInterval(timer);
+          });
+
+        }
+
+        setRepeatedMouseDown('#plus', function() {
+          $('.accuracyThreshold').val(function(i, val) {
+            return +val + 1;
+          }).change();
+        });
+        setRepeatedMouseDown('#minus', function() {
+          $('.accuracyThreshold').val(function(i, val) {
+            return +val - 1;
+          }).change();
+        });
+      })
     </script>
   </head>
   <title>Illegal Dumping Detection System Dashboard</title>
@@ -112,7 +137,9 @@
           <div class="oneTimeClassify">
             <strong style="color:#E5A823">STEP 2(Classify the image)</strong><br>
             <p>Slide the bar to set the accuracy threshold</p>
-            <input type="range" class="accuracyThreshold" min="0" max="100" value="70" onchange="showValue(this.value)" />
+            <input type="range" class="accuracyThreshold" min="0" max="100" value="70" onchange="showValue(this.value)" step="1"/>
+            <input type="button" id="plus" value="+" />
+            <input type="button" id="minus" value="-" />
             <span id="range">0.7</span>
             <button ng-click="refreshConfirmationImageList()" class="refreshConfirmationImageList"><span>Classify</span></button><br>
             <div style="margin-top: 10px;">
