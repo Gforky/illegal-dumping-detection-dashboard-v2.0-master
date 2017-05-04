@@ -1,24 +1,19 @@
 from flask import Flask
 from flask import render_template, request
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 import models
 from werkzeug import secure_filename
 from flask import json
 import os
 from os.path import isfile, join
-from sqlalchemy.sql import select
 import zipfile
 import subprocess
 import re
 import pickle
-from models import Base, ImageCategory, ImageConfirmation
 from flask_pymongo import PyMongo
 import datetime
 from pymongo import MongoClient
 from random import randint
+import shutil
 
 
 app = Flask(__name__)
@@ -32,15 +27,6 @@ ALLOWED_FILE_EXTENSIONS = set(['jpg'])
 client = MongoClient()
 mongodb = client.illegaldumpingdb
 
-#connect db
-db = SQLAlchemy(app)
-engine = create_engine('postgresql://localhost:5433/cmpe295')
-Base.metadata.create_all(engine)
-#new
-conn = engine.connect()
-
-Session = sessionmaker(bind=engine)
-session = Session()
 #web services API
 @app.route("/")
 def hello():
@@ -52,9 +38,20 @@ def index():
 
 @app.route("/retrain-model", methods=['POST'])
 def retrainmodel():
-    # result = subprocess.check_output('python3 static/detection-component/classify.py --image_dir '+ elem_path +' --model_dir static/detection-component/output_graph.pb --label_dir static/detection-component/output_labels.txt', shell=True)
+    result = []
+    confirmation_lists = mongodb.confirmation_lists
+    for confirmation_list in confirmation_lists.find({}, {'_id': 0}):
+        category = confirmation_list['category']
+        imagePath = confirmation_list['image_path']
+        datetime = str(confirmation_list['datetime']).split(',', 1)
+        date = str(datetime)[2:12]
 
-    return []
+        result.append([category, imagePath, date])
+        #move folder
+        destination = shutil.move('static/detection-component/alert_image/' + imagePath, 'tensorflow/tensorflow/retrain_image/' + category +'/' + imagePath)
+    # result = subprocess.check_output('bazel build tensorflow/examples/image_retraining:retrain', shell=True)
+    json_str = json.dumps(result)
+    return json_str
 
 @app.route("/upload-files", methods=['GET', 'POST'])
 def uploadfile(): #299 * 299, jpg
@@ -63,6 +60,7 @@ def uploadfile(): #299 * 299, jpg
         if imgFile:
             filename = secure_filename(imgFile.filename)
             imgFile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
             #for mongodb
             waiting_id = randint(0, 100000)
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -109,8 +107,7 @@ def imgConfirmation():
             upload_lists.update_one({"waiting_id": int(elem)},{"$set":{"isAlerted": True}})
 
         return json.dumps([{'msg' : 'successfully transfered'}])
-        # return json.dumps([data])
-        #return json.dumps([{'msg' : 'successfully transfered'}])
+
     except Exception:
         return 'no new image'
 #########################   Image Confirmation  #########################
@@ -283,7 +280,6 @@ def getImgConf():
         result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
         = 0, 0, 0, 0, 0, 0, 0
 
-
         return json.dumps([
             result_date,
             result_mattress,
@@ -389,6 +385,7 @@ def getAP():
                 total_accuracy += detected_top3_accuracies[0]
                 count += 1
                 prevTime = date
+
             else:
                 result_time.append(date)
                 total_accuracy /= count
@@ -426,7 +423,6 @@ def getConfirmationStats():
     """
     if request.method == 'POST':
         confirmation_arr, time_stamp = [], []
-        # counterUnknown, counter1, counter2, counter3, denominator = 0, 0, 0, 0, 0
         count, count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean = 0, 0, 0, 0, 0, 0, 0, 0
         confirmation_lists = mongodb.confirmation_lists
         result = []
@@ -448,50 +444,6 @@ def getConfirmationStats():
             if confirmation_list['category'] == 'clean-street':
                 count_clean += 1
             count += 1
-        # s = select([ImageCategory, ImageConfirmation]).\
-        #     where(ImageCategory.category_id == ImageConfirmation.category_id).\
-        #     order_by(ImageConfirmation.classification_datetime.desc())
-        # result = conn.execute(s)
-
-        # for row in result:
-        #     print(row)
-        #     if row[1]== 'tv monitor':
-        #         count_tv += 1
-        #     if row[1] == 'couch':
-        #         count_couch += 1
-        #     if row[1] == 'mattress':
-        #         count_mattress += 1
-        #     if row[1] == 'chair':
-        #         count_chair += 1
-        #     if row[1] == 'refrigerator':
-        #         count_refrigerator += 1
-        #     if row[1] == 'shopping-cart':
-        #         count_cart += 1
-        #     if row[1] == 'clean-street':
-        #         count_clean += 1
-        #     count += 1
-        # s = select([ImageCategory, ImageConfirmation]).\
-        #     where(ImageCategory.category_id == ImageConfirmation.category_id).\
-        #     order_by(ImageConfirmation.classification_datetime.desc())
-        # result = conn.execute(s)
-
-        # for row in result:
-        #     print(row)
-        #     if row[1]== 'tv-monitor':
-        #         count_tv += 1
-        #     if row[1] == 'couch':
-        #         count_couch += 1
-        #     if row[1] == 'mattress':
-        #         count_mattress += 1
-        #     if row[1] == 'chair':
-        #         count_chair += 1
-        #     if row[1] == 'refrigerator':
-        #         count_refrigerator += 1
-        #     if row[1] == 'shopping-cart':
-        #         count_cart += 1
-        #     if row[1] == 'clean-street':
-        #         count_clean += 1
-        #     count += 1
 
         confirmation_stats_arr = [['tv monitor', count_tv],
                                    ['mattress', count_mattress],
@@ -504,105 +456,96 @@ def getConfirmationStats():
         json_str = json.dumps(confirmation_stats_arr)
         return json_str
 
-@app.route("/check_temp_folder_classify", methods=['POST'])
-def check_temp_folder_classify():
-    folderPath = os.path.join(app.config['UPLOAD_FOLDER'])
-    folder_file, folder_arr = [], []
-    for file in os.listdir(folderPath):
-        if not isfile(join(folderPath, file)) and str(file) == 'car':
-            folder_arr.append(file)
-
-    for folder in folder_arr:
-        folder_file.append(folder)
-
-    image_inFolder = []
-    for filename in folder_file:
-        for file in os.listdir(os.path.join(folderPath, filename)):
-            image_inFolder.append(os.path.abspath(os.path.join(folderPath, file)))
-
-    json_str = json.dumps([folder_arr, image_inFolder])
-    return json_str
+# @app.route("/check_temp_folder_classify", methods=['POST'])
+# def check_temp_folder_classify():
+#     folderPath = os.path.join(app.config['UPLOAD_FOLDER'])
+#     folder_file, folder_arr = [], []
+#     for file in os.listdir(folderPath):
+#         if not isfile(join(folderPath, file)) and str(file) == 'car':
+#             folder_arr.append(file)
+#
+#     for folder in folder_arr:
+#         folder_file.append(folder)
+#
+#     image_inFolder = []
+#     for filename in folder_file:
+#         for file in os.listdir(os.path.join(folderPath, filename)):
+#             image_inFolder.append(os.path.abspath(os.path.join(folderPath, file)))
+#
+#     json_str = json.dumps([folder_arr, image_inFolder])
+#     return json_str
 
 @app.route("/trigger_detect", methods=['POST'])
 def trigger_detect():
     upload_lists = mongodb.upload_lists
-    detected_list = mongodb.detected_lists
-    result = []
-    wait_list = []
-    problem_list = []
+    detected_lists = mongodb.detected_lists
+    low_accuracy_lists = mongodb.low_accuracy_lists
+    result, wait_list, problem_list = [], [], []
     data = request.get_json()
     threshold = data['threshold']
     labelIndex = {'mattress' : 1, 'couch' : 2, 'tv monitor' : 3, 'refrigerator' : 4, 'chair' : 5, 'shopping-cart' : 6, 'clean-street' : 7}
 
-    for upload_list in upload_lists.find({"isAlerted": False}, {"_id":0}):
-        wait_list.append(upload_list)
+    try:
+        for upload_list in upload_lists.find({"isAlerted": False}, {"_id":0}):
+            wait_list.append(upload_list)
 
-    for elem in wait_list:
-        elem_path = elem['image_path']
-        print(elem_path)
-        #static/detection-component/alert_image/mattress3.jpg
-        result = subprocess.check_output('python3 static/detection-component/classify.py --image_dir '+ elem_path +' --model_dir static/detection-component/output_graph.pb --label_dir static/detection-component/output_labels.txt', shell=True)
-        with open('result.pickle', 'rb') as f:
-            unpickled_result = pickle.load(f)
+        for elem in wait_list:
+            elem_path = elem['image_path']
+            #static/detection-component/alert_image/mattress3.jpg
+            result = subprocess.check_output('python3 static/detection-component/classify.py --image_dir '+ elem_path +' --model_dir static/detection-component/output_graph.pb --label_dir static/detection-component/output_labels.txt', shell=True)
+            with open('result.pickle', 'rb') as f:
+                unpickled_result = pickle.load(f)
 
-        result_pickle = (unpickled_result)
-        result_imagepath = unpickled_result['imagepath']
-        result_top3labels = unpickled_result['top3labels']
-        result_top3accuracies = unpickled_result['top3accuracies']
+            result_pickle = (unpickled_result)
+            result_imagepath = unpickled_result['imagepath']
+            result_top3labels = unpickled_result['top3labels']
+            result_top3accuracies = unpickled_result['top3accuracies']
+            detected_id, low_accuracy_id = randint(0, 100000), randint(0, 100000)
 
-        detected_id = randint(0, 100000)
+            #save detection result if not in the detected_lists
+            detected_object = detected_lists.find_one({'image_path': result_imagepath}, {"_id":0})
+            if not detected_object:
+                detected_lists.insert({'detected_id': detected_id,
+                                    'image_path': result_imagepath,
+                                    'top3_labels': result_top3labels,
+                                    'top3_accuracies': result_top3accuracies,
+                                    'datetime':datetime.datetime.utcnow()})
 
-        #save detection result
-        if result_imagepath not in detected_list.find({'image_path': result_imagepath}, {"_id":0}):
-            detected_list.insert({'detected_id': detected_id,
-                                'image_path': result_imagepath,
-                                'top3_labels': result_top3labels,
-                                'top3_accuracies': result_top3accuracies,
-                                'datetime':datetime.datetime.utcnow()})
+            #add into probelm list waiting for return
+            problem_list.append([result_imagepath, result_top3labels, result_top3accuracies])
 
-        problem_list.append([result_imagepath, result_top3labels, result_top3accuracies])
-
-
-        print(result_top3accuracies[0])
-        print(result_imagepath)
-        #if over than threshold add into db directly
-        if result_top3accuracies[0] >= threshold:
-
-            #print('test')
-            try:
-                confirmation1 = ImageConfirmation(category_id= labelIndex[result_top3labels[0][2:-3]], image_path= result_imagepath[8:])
-                session.add(confirmation1)
-                session.commit()
-
-                confirmation_id = randint(0, 100000)
-                confirmation_lists = mongodb.confirmation_lists
-                confirmation_lists.insert({'confirmation_id':confirmation_id, 'image_path': result_imagepath[8:], 'category':result_top3labels[0][2:-3], 'datetime': datetime.datetime.utcnow()})
-
-                #print('Success here')
+            #if accuracy more than threshold set isAlerted true directly
+            if result_top3accuracies[0] >= threshold:
                 update_list = []
-                upload_lists = mongodb.upload_lists
-                # #get monogodb data
-                for upload_list in upload_lists.find({"image_path": result_imagepath}):
+                #get monogodb data
+                for upload_list in upload_lists.find({"image_path": result_imagepath}, {'_id': 0}):
                     update_list.append(upload_list['waiting_id'])
-                # # update mongodb
+
+                # update mongodb
                 for elem in update_list:
                     upload_lists.update_one({"waiting_id": int(elem)},{"$set":{"isAlerted": True}})
-                # return json.dumps([data])
-            except Exception as e:
-                engine.dispose()
-                # json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
-                print(str(e))
-                json_str = json.dumps(problem_list)
-                return json_str
 
-        os.remove("result.pickle")
+            #if low accuracy, write into db, waiting for future examination
+            else:
+                #TO-DO: still working on this part
+                #get monogodb data
+                # detected_object = detected_lists.find_one({"image_path": result_imagepath}, {'_id': 0})
+                low_accuracy_object = low_accuracy_lists.find_one({"image_path": result_imagepath}, {'_id': 0})
+                #prevent duplicate
+                if low_accuracy_object:
+                    continue
 
+                else:
+                    low_accuracy_lists.insert({'low_accuracy_id': low_accuracy_id, 'category': result_top3labels[0], 'threshold': threshold, 'image_path': result_imagepath, 'datetime': datetime.datetime.utcnow()})
 
-    engine.dispose()
-    # json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
-    print(problem_list)
-    json_str = json.dumps(problem_list)
-    return json_str
+            os.remove("result.pickle")
+
+        # json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
+        json_str = json.dumps(problem_list)
+        return json_str
+
+    except Exception:
+        return 'Error'
 
 
 #helper function
