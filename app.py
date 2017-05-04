@@ -50,6 +50,11 @@ def hello():
 def index():
 	return render_template('index.html')
 
+@app.route("/retrain-model", methods=['POST'])
+def retrainmodel():
+    # result = subprocess.check_output('python3 static/detection-component/classify.py --image_dir '+ elem_path +' --model_dir static/detection-component/output_graph.pb --label_dir static/detection-component/output_labels.txt', shell=True)
+
+    return []
 
 @app.route("/upload-files", methods=['GET', 'POST'])
 def uploadfile(): #299 * 299, jpg
@@ -82,16 +87,16 @@ def imgConfirmation():
     Function to move the images from tempory folder to the new dataset folder
     '''
     #['mattress','sofa','tvmonitor',fridge,'chair','shoppingcart', 'cleanstreet']
-    engine = create_engine('postgresql://localhost:5433/cmpe295')
-    Session = sessionmaker(bind=engine)
-    session = Session()
+
     try:
         data = request.get_json()
-        print(data['img_path'])
-        print(data['labels'])
-        confirmation1 = ImageConfirmation(category_id= int(data['labels'][0] + 1), image_path= str(data['img_path']))
-        session.add(confirmation1)
-        session.commit()
+        # print(data['img_path'])
+        # print(data['labels'])
+
+        #mongod db insertion
+        confirmation_id = randint(0, 100000)
+        confirmation_lists = mongodb.confirmation_lists
+        confirmation_lists.insert({'confirmation_id':confirmation_id, 'image_path': data['img_path'], 'category':data['labels'], 'datetime': datetime.datetime.utcnow()})
 
         update_list = []
         upload_lists = mongodb.upload_lists
@@ -442,6 +447,7 @@ def getConfirmationStats():
             if confirmation_list['category'] == 'clean-street':
                 count_clean += 1
             count += 1
+<<<<<<< Updated upstream
         # s = select([ImageCategory, ImageConfirmation]).\
         #     where(ImageCategory.category_id == ImageConfirmation.category_id).\
         #     order_by(ImageConfirmation.classification_datetime.desc())
@@ -464,6 +470,31 @@ def getConfirmationStats():
         #     if row[1] == 'clean-street':
         #         count_clean += 1
         #     count += 1
+||||||| merged common ancestors
+        # s = select([ImageCategory, ImageConfirmation]).\
+        #     where(ImageCategory.category_id == ImageConfirmation.category_id).\
+        #     order_by(ImageConfirmation.classification_datetime.desc())
+        # result = conn.execute(s)
+
+        # for row in result:
+        #     print(row)
+        #     if row[1]== 'tv-monitor':
+        #         count_tv += 1
+        #     if row[1] == 'couch':
+        #         count_couch += 1
+        #     if row[1] == 'mattress':
+        #         count_mattress += 1
+        #     if row[1] == 'chair':
+        #         count_chair += 1
+        #     if row[1] == 'refrigerator':
+        #         count_refrigerator += 1
+        #     if row[1] == 'shopping-cart':
+        #         count_cart += 1
+        #     if row[1] == 'clean-street':
+        #         count_clean += 1
+        #     count += 1
+=======
+>>>>>>> Stashed changes
 
         confirmation_stats_arr = [['tv monitor', count_tv],
                                    ['mattress', count_mattress],
@@ -497,10 +528,6 @@ def check_temp_folder_classify():
 
 @app.route("/trigger_detect", methods=['POST'])
 def trigger_detect():
-    engine = create_engine('postgresql://localhost:5433/cmpe295')
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
     upload_lists = mongodb.upload_lists
     detected_list = mongodb.detected_lists
     result = []
@@ -543,9 +570,7 @@ def trigger_detect():
         print(result_imagepath)
         #if over than threshold add into db directly
         if result_top3accuracies[0] >= threshold:
-            # confirmation_image = ImageConfirmation(category_id='2', alert_id='1')
-            # session.add(confirmation_image)
-            # session.commit()
+
             #print('test')
             try:
                 confirmation1 = ImageConfirmation(category_id= labelIndex[result_top3labels[0][2:-3]], image_path= result_imagepath[8:])
@@ -568,9 +593,7 @@ def trigger_detect():
                 print(str(e))
                 json_str = json.dumps(problem_list)
                 return json_str
-            # alert_image1 = AlertImage(image_name=result_imagepath)
-            # session.add(alert_image1)
-            # session.commit()
+
         os.remove("result.pickle")
 
 
