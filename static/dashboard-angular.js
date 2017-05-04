@@ -257,6 +257,9 @@ app.controller('todoCtrl', function($scope) {
     var threshold = $("input.accuracyThreshold").val() / 100
     var myData = { 'threshold' : threshold}
     $("b.oneTimeClassificationResult").replaceWith("<b class='oneTimeClassificationResult'>Waiting for classification result</b>")
+    $("img.slide").replaceWith("<img class='slide' src='static/images/welcome.jpg'>")
+    $("span.classificationResult").replaceWith("<span style='color:#ff4000' class='classificationResult'>N/A</span>")
+    $("span.accuracy").replaceWith("<span style='color:#ff4000' class='accuracy'>N/A</span>")
     $.ajax({
       url: '/trigger_detect',
       type: 'POST',
@@ -266,7 +269,11 @@ app.controller('todoCtrl', function($scope) {
       success: function(response) {
         // convert JSON object into javascript array
         var problem_list = $.parseJSON(response)
+        console.log(problem_list[0])
         var arr_length = problem_list.length
+        if(arr_length == 0) {
+          alert("No Classification Result Returned\nPlease Check Your Image Format")
+        }
         for(var i = 0; i < arr_length; ++i) {
           //console.log("iteration: " + i)
           var data = problem_list[i]

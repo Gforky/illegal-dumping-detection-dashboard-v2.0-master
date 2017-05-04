@@ -169,7 +169,7 @@ def getImgStorage():
     """
     try:
         return json.dumps([
-            ['mattress', 376], ['couch', 456], ['tv-monitor', 231], ['clean-street', 231]
+            ['mattress', 376], ['couch', 456], ['tv monitor', 231], ['clean-street', 231]
         ])
     except Exception:
         return traceback.format_exc()
@@ -210,7 +210,7 @@ def getDatasetSize():
             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             ['mattress', 176, 180, 188, 190, 192, 196],
             ['couch', 156, 166, 276, 286, 390, 396],
-            ['tv-monitor', 55, 167, 173, 285, 389, 197]
+            ['tv monitor', 55, 167, 173, 285, 389, 197]
         ])
     except Exception:
         return traceback.format_exc()
@@ -226,7 +226,7 @@ def getImgConf():
         result = {}
         result_date = ['x']
         result_mattress, result_couch, result_tvmonitor, result_refri, result_chair, result_shopping, result_clean \
-        = ['mattress'], ['couch'], ['tv-monitor'], ['refrigerator'], ['chair'], ['shopping-cart'], ['clean-street']
+        = ['mattress'], ['couch'], ['tv monitor'], ['refrigerator'], ['chair'], ['shopping-cart'], ['clean-street']
         prevDate = None
         for detected_list in detected_lists.find():
             detected_datetime, detected_top3_accuracies, detected_top3_labels = str(detected_list['datetime']).split(',', 1), detected_list['top3_accuracies'], detected_list['top3_labels']
@@ -235,18 +235,18 @@ def getImgConf():
             if prevDate == None:
                 prevDate = date
                 result_date.append(date)
-                result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
                 = 0, 0, 0, 0, 0, 0, 0
 
             if date != prevDate:
                 result_mattress.append(result['mattress'])
                 result_couch.append(result['couch'])
-                result_tvmonitor.append(result['tv-monitor'])
+                result_tvmonitor.append(result['tv monitor'])
                 result_refri.append(result['refrigerator'])
                 result_chair.append(result['chair'])
                 result_shopping.append(result['shopping-cart'])
                 result_clean.append(result['clean-street'])
-                result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
                 = 0, 0, 0, 0, 0, 0, 0
                 prevDate = date
                 result_date.append(date)
@@ -256,8 +256,8 @@ def getImgConf():
                 result['mattress'] += 1
             if detected_top3_labels[0] == 'couch':
                 result['couch'] += 1
-            if detected_top3_labels[0] == 'tv-monitor':
-                result['tv-monitor'] += 1
+            if detected_top3_labels[0] == 'tv monitor':
+                result['tv monitor'] += 1
             if detected_top3_labels[0] == 'refrigerator':
                 result['refrigerator'] += 1
             if detected_top3_labels[0] == 'chair':
@@ -269,12 +269,12 @@ def getImgConf():
 
         result_mattress.append(result['mattress'])
         result_couch.append(result['couch'])
-        result_tvmonitor.append(result['tv-monitor'])
+        result_tvmonitor.append(result['tv monitor'])
         result_refri.append(result['refrigerator'])
         result_chair.append(result['chair'])
         result_shopping.append(result['shopping-cart'])
         result_clean.append(result['clean-street'])
-        result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+        result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
         = 0, 0, 0, 0, 0, 0, 0
 
 
@@ -301,7 +301,7 @@ def getUpImg():
             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             ['mattress', 176, 180, 188, 190, 192, 196],
             ['couch', 156, 166, 276, 286, 390, 396],
-            ['tv-monitor', 55, 167, 173, 285, 389, 197]
+            ['tv monitor', 55, 167, 173, 285, 389, 197]
         ])
     except Exception:
         return traceback.format_exc()
@@ -348,7 +348,7 @@ def getDetectedObj():
         #     ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
         #     ['mattress', 26, 20, 18, 19, 19, 16],
         #     ['couch', 15, 16, 26, 26, 39, 36],
-        #     ['tv-monitor', 55, 17, 13, 25, 39, 19],
+        #     ['tv monitor', 55, 17, 13, 25, 39, 19],
         #     ['clean-street', 55, 67, 73, 85, 89, 97]
         # ])
     except Exception:
@@ -399,7 +399,7 @@ def getAP():
             # ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             # ['mattress', 76, 80, 88, 90, 92, 96],
             # ['couch', 56, 66, 76, 86, 90, 96],
-            # ['tv-monitor', 55, 67, 73, 85, 89, 97],
+            # ['tv monitor', 55, 67, 73, 85, 89, 97],
             # ['clean-street', 55, 67, 73, 85, 89, 97]
         ])
     except Exception:
@@ -427,7 +427,7 @@ def getConfirmationStats():
         for confirmation_list in confirmation_lists.find({},{'_id':0}):
             print(confirmation_list)
             result.append(confirmation_list)
-            if confirmation_list['category'] == 'tv-monitor':
+            if confirmation_list['category'] == 'tv monitor':
                 count_tv += 1
             if confirmation_list['category'] == 'couch':
                 count_couch += 1
@@ -449,7 +449,7 @@ def getConfirmationStats():
 
         # for row in result:
         #     print(row)
-        #     if row[1]== 'tv-monitor':
+        #     if row[1]== 'tv monitor':
         #         count_tv += 1
         #     if row[1] == 'couch':
         #         count_couch += 1
@@ -465,7 +465,7 @@ def getConfirmationStats():
         #         count_clean += 1
         #     count += 1
 
-        confirmation_stats_arr = [['tv-monitor', count_tv],
+        confirmation_stats_arr = [['tv monitor', count_tv],
                                    ['mattress', count_mattress],
                                    ['couch', count_couch],
                                    ['chair', count_chair],
@@ -508,7 +508,7 @@ def trigger_detect():
     problem_list = []
     data = request.get_json()
     threshold = data['threshold']
-    labelIndex = {'mattress' : 1, 'couch' : 2, 'tv-monitor' : 3, 'refrigerator' : 4, 'chair' : 5, 'shopping-cart' : 6, 'clean-street' : 7}
+    labelIndex = {'mattress' : 1, 'couch' : 2, 'tv monitor' : 3, 'refrigerator' : 4, 'chair' : 5, 'shopping-cart' : 6, 'clean-street' : 7}
 
     for upload_list in upload_lists.find({"isAlerted": False}, {"_id":0}):
         wait_list.append(upload_list)
@@ -548,7 +548,7 @@ def trigger_detect():
             # session.commit()
             #print('test')
             try:
-                confirmation1 = ImageConfirmation(category_id= int(labelIndex[data['labels'][0]]), image_path= str(result_imagepath))
+                confirmation1 = ImageConfirmation(category_id= labelIndex[result_top3labels[0][2:-3]], image_path= result_imagepath[8:])
                 session.add(confirmation1)
                 session.commit()
 
@@ -562,10 +562,10 @@ def trigger_detect():
                 for elem in update_list:
                     upload_lists.update_one({"waiting_id": int(elem)},{"$set":{"isAlerted": True}})
                 # return json.dumps([data])
-            except Exception:
+            except Exception as e:
                 engine.dispose()
                 # json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
-                print("mongodb error ")
+                print(str(e))
                 json_str = json.dumps(problem_list)
                 return json_str
             # alert_image1 = AlertImage(image_name=result_imagepath)
