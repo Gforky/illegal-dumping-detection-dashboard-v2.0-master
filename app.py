@@ -101,7 +101,8 @@ def imgConfirmation():
         update_list = []
         upload_lists = mongodb.upload_lists
         # #get monogodb data
-        for upload_list in upload_lists.find({"image_path": 'static' + data['img_path']}):
+        for upload_list in upload_lists.find({"image_path": data['img_path']}):
+            #print("confima image : " + data['img_path'])
             update_list.append(upload_list['waiting_id'])
         # # update mongodb
         for elem in update_list:
@@ -447,7 +448,6 @@ def getConfirmationStats():
             if confirmation_list['category'] == 'clean-street':
                 count_clean += 1
             count += 1
-<<<<<<< Updated upstream
         # s = select([ImageCategory, ImageConfirmation]).\
         #     where(ImageCategory.category_id == ImageConfirmation.category_id).\
         #     order_by(ImageConfirmation.classification_datetime.desc())
@@ -470,7 +470,6 @@ def getConfirmationStats():
         #     if row[1] == 'clean-street':
         #         count_clean += 1
         #     count += 1
-||||||| merged common ancestors
         # s = select([ImageCategory, ImageConfirmation]).\
         #     where(ImageCategory.category_id == ImageConfirmation.category_id).\
         #     order_by(ImageConfirmation.classification_datetime.desc())
@@ -493,8 +492,6 @@ def getConfirmationStats():
         #     if row[1] == 'clean-street':
         #         count_clean += 1
         #     count += 1
-=======
->>>>>>> Stashed changes
 
         confirmation_stats_arr = [['tv monitor', count_tv],
                                    ['mattress', count_mattress],
@@ -577,7 +574,11 @@ def trigger_detect():
                 session.add(confirmation1)
                 session.commit()
 
-                print('Success here')
+                confirmation_id = randint(0, 100000)
+                confirmation_lists = mongodb.confirmation_lists
+                confirmation_lists.insert({'confirmation_id':confirmation_id, 'image_path': result_imagepath[8:], 'category':result_top3labels[0][2:-3], 'datetime': datetime.datetime.utcnow()})
+
+                #print('Success here')
                 update_list = []
                 upload_lists = mongodb.upload_lists
                 # #get monogodb data

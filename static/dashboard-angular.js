@@ -228,7 +228,7 @@ app.controller('todoCtrl', function($scope) {
         }
         var myData =  {
                         'labels' : labels, 
-                        'img_path' : $scope.photos[$scope._Index].src
+                        'img_path' : $("img.slide").attr("src")
                       }
         $.ajax({
           url: '/imgConfirmation',
