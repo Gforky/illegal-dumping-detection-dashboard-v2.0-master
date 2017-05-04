@@ -259,6 +259,7 @@ app.controller('todoCtrl', function($scope) {
     $.ajax({
       url: '/trigger_detect',
       type: 'POST',
+      data: threshold,
       success: function(response) {
         // convert JSON object into javascript array
         var problem_list = $.parseJSON(response)
