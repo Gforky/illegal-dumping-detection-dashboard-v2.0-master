@@ -233,11 +233,11 @@ app.controller('todoCtrl', function($scope) {
         $.ajax({
           url: '/imgConfirmation',
           contentType: 'application/json',
-          dataType: 'json',
+          dataType: 'text',
           type: 'POST',
           data: JSON.stringify(myData),
           success: function(response) {
-            //console.log($.parseJSON(response))
+            console.log($.parseJSON(response))
             // convert JSON object into javascript array
           },
           error: function(error) {
@@ -255,11 +255,14 @@ app.controller('todoCtrl', function($scope) {
   // refresh the image list in the slider
   $scope.refreshConfirmationImageList = function() {
     var threshold = $("input.accuracyThreshold").val() / 100
-    console.log(threshold)
+    var myData = { 'threshold' : threshold}
+    $("b.oneTimeClassificationResult").replaceWith("<b class='oneTimeClassificationResult'>Waiting for classification result</b>")
     $.ajax({
       url: '/trigger_detect',
       type: 'POST',
-      data: threshold,
+      contentType: 'application/json',
+      dataType: 'text',
+      data: JSON.stringify(myData),
       success: function(response) {
         // convert JSON object into javascript array
         var problem_list = $.parseJSON(response)
@@ -287,9 +290,11 @@ app.controller('todoCtrl', function($scope) {
           $("p.detectionLog").append("<div style='border-bottom:1px solid'>Detected <b style='color:#0055A2'>" + labels[0] + "</b> in image <a href='/static" + img_path + "'><img height='100' width='100' src='/static" + img_path + "'></a> with accuracy: <b style='color:#0055A2'>" + accuracies[0] + "</b></div>")
           $("b.oneTimeClassificationResult").replaceWith("<b class='oneTimeClassificationResult'>Detected <b style='color:#0055A2'>" + labels[0] + "</b> with accuracy: <b style='color:#0055A2'>" + accuracies[0] + "</b></b>")
           //$scope.photos.push(entry)
-          $("img.slide").replaceWith("<img class='slide' src='static" + img_path + "'>")
-          $("span.classificationResult").replaceWith("<span style='color:#ff4000' class='classificationResult'>" + labels[0] + "</span>")
-          $("span.accuracy").replaceWith("<span style='color:#ff4000' class='accuracy'>" + accuracies[0] + "</span>")
+          if(accuracies[0] < threshold) {
+            $("img.slide").replaceWith("<img class='slide' src='static" + img_path + "'>")
+            $("span.classificationResult").replaceWith("<span style='color:#ff4000' class='classificationResult'>" + labels[0] + "</span>")
+            $("span.accuracy").replaceWith("<span style='color:#ff4000' class='accuracy'>" + accuracies[0] + "</span>")
+          }
         }
       },
       error: function(error) {

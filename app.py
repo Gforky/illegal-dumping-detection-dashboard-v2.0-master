@@ -506,6 +506,9 @@ def trigger_detect():
     result = []
     wait_list = []
     problem_list = []
+    data = request.get_json()
+    threshold = data['threshold']
+    labelIndex = {'mattress' : 1, 'couch' : 2, 'tv-monitor' : 3, 'refrigerator' : 4, 'chair' : 5, 'shopping-cart' : 6, 'clean-street' : 7}
 
     for upload_list in upload_lists.find({"isAlerted": False}, {"_id":0}):
         wait_list.append(upload_list)
@@ -533,15 +536,38 @@ def trigger_detect():
                                 'top3_accuracies': result_top3accuracies,
                                 'datetime':datetime.datetime.utcnow()})
 
+        problem_list.append([result_imagepath, result_top3labels, result_top3accuracies])
+
+
+        print(result_top3accuracies[0])
+        print(result_imagepath)
         #if over than threshold add into db directly
-        if result_top3accuracies[0] < 0.7:
+        if result_top3accuracies[0] >= threshold:
             # confirmation_image = ImageConfirmation(category_id='2', alert_id='1')
             # session.add(confirmation_image)
             # session.commit()
-            print('test')
-        else:
-            problem_list.append([result_imagepath, result_top3labels, result_top3accuracies])
+            #print('test')
+            try:
+                confirmation1 = ImageConfirmation(category_id= int(labelIndex[data['labels'][0]]), image_path= str(result_imagepath))
+                session.add(confirmation1)
+                session.commit()
 
+                print('Success here')
+                update_list = []
+                upload_lists = mongodb.upload_lists
+                # #get monogodb data
+                for upload_list in upload_lists.find({"image_path": result_imagepath}):
+                    update_list.append(upload_list['waiting_id'])
+                # # update mongodb
+                for elem in update_list:
+                    upload_lists.update_one({"waiting_id": int(elem)},{"$set":{"isAlerted": True}})
+                # return json.dumps([data])
+            except Exception:
+                engine.dispose()
+                # json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
+                print("mongodb error ")
+                json_str = json.dumps(problem_list)
+                return json_str
             # alert_image1 = AlertImage(image_name=result_imagepath)
             # session.add(alert_image1)
             # session.commit()
