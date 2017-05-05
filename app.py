@@ -113,57 +113,6 @@ def imgConfirmation():
 #########################   Image Confirmation  #########################
 
 #########################   C3 Chart AJAX   #############################
-@app.route("/getCpuUsage", methods=['POST'])
-def getCpuUsage():
-    """
-    Function to get the image storage status from the database
-    """
-    try:
-        return json.dumps([
-          ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-          ['CPU Usage', 46, 78, 88, 72, 98, 88]
-        ])
-    except Exception:
-        return traceback.format_exc()
-
-@app.route("/getMemLoad", methods=['POST'])
-def getMemLoad():
-    """
-    Function to get the image storage status from the database
-    """
-    try:
-        return json.dumps([
-          ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-          ['Memory Load', 46, 78, 88, 72, 98, 88]
-        ])
-    except Exception:
-        return traceback.format_exc()
-
-@app.route("/getNetTraff", methods=['POST'])
-def getNetTraff():
-    """
-    Function to get the image storage status from the database
-    """
-    try:
-        return json.dumps([
-          ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-          ['Network Traffic', 100, 120, 130, 150, 120, 135]
-        ])
-    except Exception:
-        return traceback.format_exc()
-
-@app.route("/getCpuTemp", methods=['POST'])
-def getCpuTemp():
-    """
-    Function to get the image storage status from the database
-    """
-    try:
-        return json.dumps([
-          ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-          ['CPU Temperature', 46, 50, 65, 72, 78, 54]
-        ])
-    except Exception:
-        return traceback.format_exc()
 
 @app.route("/getImgStorage", methods=['POST'])
 def getImgStorage():
@@ -190,33 +139,71 @@ def getDBIO():
     except Exception:
         return traceback.format_exc()
 
-@app.route("/getDBQuery", methods=['POST'])
-def getDBQuery():
-    """
-    Function to get the image storage status from the database
-    """
-    try:
-        return json.dumps([
-            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['Database Queries', 200, 300, 880, 720, 980, 880]
-        ])
-    except Exception:
-        return traceback.format_exc()
+# @app.route("/getDBQuery", methods=['POST'])
+# def getDBQuery():
+#     """
+#     Function to get the image storage status from the database
+#     """
+#     try:
+#         return json.dumps([
+#             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+#             ['Database Queries', 200, 300, 880, 720, 980, 880]
+#         ])
+#     except Exception:
+#         return traceback.format_exc()
 
-@app.route("/getDatasetSize", methods=['POST'])
+@app.route("/getLowAccuracyData", methods=['POST'])
 def getDatasetSize():
     """
     Function to get the image storage status from the database
+    ### rename API
     """
     try:
-        return json.dumps([
-            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['mattress', 176, 180, 188, 190, 192, 196],
-            ['couch', 156, 166, 276, 286, 390, 396],
-            ['tv monitor', 55, 167, 173, 285, 389, 197]
+        low_accuracy_lists = mongodb.low_accuracy_lists
+        result, total_threshold = [], 0
+        count_tv, count_couch, count_mattress, count_chair, count_refrigerator, count_cart, count_clean, count = \
+        0, 0, 0, 0, 0, 0, 0, 0
+
+        for low_accuracy_list in low_accuracy_lists.find({}, {"_id": 0}):
+            result_category, result_threshold = label_transform(low_accuracy_list['category']), low_accuracy_list['threshold']
+            result.append([result_category, result_threshold])
+
+            if result_category == 'tv monitor':
+                count_tv += 1
+            if result_category == 'couch':
+                count_couch += 1
+            if result_category == 'mattress':
+                count_mattress += 1
+            if result_category == 'chair':
+                count_chair += 1
+            if result_category == 'refrigerator':
+                count_refrigerator += 1
+            if result_category == 'shopping-cart':
+                count_cart += 1
+            if result_category == 'clean-street':
+                count_clean += 1
+
+            total_threshold += result_threshold
+            count += 1
+
+        total_threshold /= count
+
+        result_count = [['tv monitor', count_tv],
+                                   ['mattress', count_mattress],
+                                   ['couch', count_couch],
+                                   ['chair', count_chair],
+                                   ['refrigerator', count_refrigerator],
+                                   ['shopping-cart', count_cart],
+                                   ['clean-street', count_clean]]
+
+        return json.dumps([result_count, total_threshold
+            # ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            # ['mattress', 176, 180, 188, 190, 192, 196],
+            # ['couch', 156, 166, 276, 286, 390, 396],
+            # ['tv monitor', 55, 167, 173, 285, 389, 197]
         ])
     except Exception:
-        return traceback.format_exc()
+        return 'error'
 
 @app.route("/getImgConf", methods=['POST'])
 def getImgConf():
