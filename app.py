@@ -88,13 +88,14 @@ def imgConfirmation():
 
     try:
         data = request.get_json()
+        index_to_label = {'1': 'mattress', '2':'couch', '3': 'tv monitor', '4': 'refrigerator', '5': 'chair', '6':  'shopping-cart', '7': 'clean-street'}
         # print(data['img_path'])
         # print(data['labels'])
 
         #mongod db insertion
         confirmation_id = randint(0, 100000)
         confirmation_lists = mongodb.confirmation_lists
-        confirmation_lists.insert({'confirmation_id':confirmation_id, 'image_path': data['img_path'], 'category':data['labels'], 'datetime': datetime.datetime.utcnow()})
+        confirmation_lists.insert({'confirmation_id':confirmation_id, 'image_path': data['img_path'], 'category':index_to_label[str(data['labels'][0])], 'datetime': datetime.datetime.utcnow()})
 
         update_list = []
         upload_lists = mongodb.upload_lists
@@ -126,31 +127,6 @@ def getImgStorage():
     except Exception:
         return traceback.format_exc()
 
-@app.route("/getDBIO", methods=['POST'])
-def getDBIO():
-    """
-    Function to get the image storage status from the database
-    """
-    try:
-        return json.dumps([
-            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['Database I/O Traffic', 20, 30, 88, 72, 98, 88]
-        ])
-    except Exception:
-        return traceback.format_exc()
-
-# @app.route("/getDBQuery", methods=['POST'])
-# def getDBQuery():
-#     """
-#     Function to get the image storage status from the database
-#     """
-#     try:
-#         return json.dumps([
-#             ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-#             ['Database Queries', 200, 300, 880, 720, 980, 880]
-#         ])
-#     except Exception:
-#         return traceback.format_exc()
 
 @app.route("/getLowAccuracyData", methods=['POST'])
 def getDatasetSize():
