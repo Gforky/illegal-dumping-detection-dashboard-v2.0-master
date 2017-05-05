@@ -17,7 +17,11 @@ import shutil
 
 
 app = Flask(__name__)
+parent_path = os.path.dirname(os.getcwd())
 UPLOAD_FOLDER = 'static/detection-component/alert_image'
+RETRAIN_FOLDER = parent_path + '/tensorflow/tensorflow/retrain_image'
+print(RETRAIN_FOLDER)
+app.config['RETRAIN_FOLDER'] = RETRAIN_FOLDER
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['current_path'] = os.getcwd()
@@ -38,20 +42,35 @@ def index():
 
 @app.route("/retrain-model", methods=['POST'])
 def retrainmodel():
-    result = []
+    """
+        Still working on this part...
+    """
+    result, count = [], 0
     confirmation_lists = mongodb.confirmation_lists
-    for confirmation_list in confirmation_lists.find({}, {'_id': 0}):
-        category = confirmation_list['category']
-        imagePath = confirmation_list['image_path']
-        datetime = str(confirmation_list['datetime']).split(',', 1)
-        date = str(datetime)[2:12]
+    retrain_lists = mongodb.retrain_lists
+    number_of_images = 0
+    try:
+        # for confirmation_list in confirmation_lists.find({}, {'_id': 0}):
+        #     category = confirmation_list['category']
+        #     imagePath = confirmation_list['image_path']
+        #     datetime = transform_time(confirmation_list['datetime'])
+        #
+        #     result.append([category, imagePath, date])
 
-        result.append([category, imagePath, date])
-        #move folder
-        destination = shutil.move('static/detection-component/alert_image/' + imagePath, 'tensorflow/tensorflow/retrain_image/' + category +'/' + imagePath)
-    # result = subprocess.check_output('bazel build tensorflow/examples/image_retraining:retrain', shell=True)
-    json_str = json.dumps(result)
-    return json_str
+            #retrain command
+            # result = subprocess.check_output('bazel build tensorflow/examples/image_retraining:retrain', shell=True)
+
+            #db insertion
+        retrain_id = randint(0, 100000)
+        retrain_info =  get_retrain_info()
+        retrain_lists.insert({'retrain_id': retrain_id, 'retrain_info': retrain_info , 'datetime': datetime.datetime.utcnow()})
+            #move folder
+            # destination = shutil.move('static/detection-component/alert_image/' + imagePath, 'tensorflow/tensorflow/retrain_image/' + category +'/' + imagePath)
+        json_str = json.dumps(retrain_info)
+        return json_str
+
+    except Exception:
+        return 'cannot retrain'
 
 @app.route("/upload-files", methods=['GET', 'POST'])
 def uploadfile(): #299 * 299, jpg
@@ -115,21 +134,58 @@ def imgConfirmation():
 
 #########################   C3 Chart AJAX   #############################
 
-@app.route("/getImgStorage", methods=['POST'])
+@app.route("/getRetrainData", methods=['POST'])
 def getImgStorage():
     """
     Function to get the image storage status from the database
     """
     try:
-        return json.dumps([
-            ['mattress', 376], ['couch', 456], ['tv monitor', 231], ['clean-street', 231]
-        ])
+        retrain_lists = mongodb.retrain_lists
+        count_tv, count_couch, count_mattress, count_chair, count_refrigerator, count_cart, count_clean, count = \
+        0, 0, 0, 0, 0, 0, 0, 0
+        result =[]
+
+        for retrain_list in retrain_lists.find({}, {"_id": 0}):
+            for category_list in retrain_list['retrain_info']:
+                category, category_count = category_list, retrain_list['retrain_info'][category_list]
+
+                if category == 'tv monitor':
+                    count_tv += category_count
+
+                if category == 'couch':
+                    count_couch += category_count
+
+                if category == 'mattress':
+                    count_mattress += category_count
+
+                if category == 'chair':
+                    count_chair += category_count
+
+                if category == 'refrigerator':
+                    count_refrigerator += category_count
+
+                if category == 'shopping-cart':
+                    count_cart += category_count
+                    
+                if category == 'clean':
+                    count_clean += category_count
+
+        result_count = [['tv monitor', count_tv],
+                                   ['mattress', count_mattress],
+                                   ['couch', count_couch],
+                                   ['chair', count_chair],
+                                   ['refrigerator', count_refrigerator],
+                                   ['shopping-cart', count_cart],
+                                   ['clean-street', count_clean]]
+
+        return json.dumps(result_count)
+
     except Exception:
         return traceback.format_exc()
 
 
 @app.route("/getLowAccuracyData", methods=['POST'])
-def getDatasetSize():
+def getLowAccuracyData():
     """
     Function to get the image storage status from the database
     ### rename API
@@ -304,32 +360,7 @@ def getDetectedObj():
           get potential dupming image status based on uplaod image or remote send pictures
     """
     try:
-        # detected_lists = mongodb.detected_lists
-        # result_potential = ['potential_dumping']
-        # result_date = ['x']
-        # count = 0
-        # prevDate = None
-        # index = 0
-        # for detected_list in detected_lists.find({}, {"_id":0}):
-        #     if index > 6:
-        #         break
-        #
-        #     datetime = str(detected_list['datetime']).split(',', 1)
-        #     date = str(datetime)[2:12]
-        #
-        #     if date == prevDate:
-        #         count += 1
-        #
-        #     else:
-        #         if count != 0:
-        #             result_potential.append(count)
-        #         prevDate = date
-        #         result_date.append(date)
-        #         index += 1
-        #         count = 1
-        #
-        # if count != 0:
-        #     result_potential.append(count)
+
         detected_lists = mongodb.detected_lists
         result, index = {}, 0
         result_date = ['x']
@@ -414,9 +445,9 @@ def getAP():
         for detected_list in detected_lists.find({},{'_id':0}):
             if index > 6:
                 break
-            #
+
             detected_datetime, detected_top3_accuracies, detected_top3_labels = time_transform(detected_list['datetime']), detected_list['top3_accuracies'], detected_list['top3_labels']
-            #
+
             if prevTime == None:
                 result_time.append(detected_datetime)
                 prevTime = detected_datetime
@@ -496,25 +527,6 @@ def getConfirmationStats():
 
         json_str = json.dumps(confirmation_stats_arr)
         return json_str
-
-# @app.route("/check_temp_folder_classify", methods=['POST'])
-# def check_temp_folder_classify():
-#     folderPath = os.path.join(app.config['UPLOAD_FOLDER'])
-#     folder_file, folder_arr = [], []
-#     for file in os.listdir(folderPath):
-#         if not isfile(join(folderPath, file)) and str(file) == 'car':
-#             folder_arr.append(file)
-#
-#     for folder in folder_arr:
-#         folder_file.append(folder)
-#
-#     image_inFolder = []
-#     for filename in folder_file:
-#         for file in os.listdir(os.path.join(folderPath, filename)):
-#             image_inFolder.append(os.path.abspath(os.path.join(folderPath, file)))
-#
-#     json_str = json.dumps([folder_arr, image_inFolder])
-#     return json_str
 
 @app.route("/trigger_detect", methods=['POST'])
 def trigger_detect():
@@ -601,6 +613,42 @@ def time_transform(transform_time):
 def label_transform(transform_label):
     label = str(transform_label)[2:-3]
     return label
+
+def get_retrain_info():
+    folderPath = os.path.join(RETRAIN_FOLDER)
+    result = {'mattress': 0, 'tv monitor': 0, 'shopping cart': 0, 'couch': 0, 'clean': 0, 'chair': 0, 'refrigerator': 0}
+    folder_file, folder_arr, count = [], [], 0
+    for folder in os.listdir(folderPath):
+        if not isfile(join(folderPath, folder)):
+            folder_arr.append(folder)
+
+    for folder in folder_arr:
+        for file in os.listdir(os.path.join(folderPath, folder)):
+            if folder == 'tv monitor':
+                result['tv monitor'] += 1
+
+            if folder == 'mattress':
+                result['mattress'] += 1
+
+            if folder == 'couch':
+                result['couch'] += 1
+
+            if folder == 'chair':
+                result['chair'] += 1
+
+            if folder == 'refrigerator':
+                result['refrigerator'] += 1
+
+            if folder == 'shopping-cart':
+                result['shopping-cart'] += 1
+
+            if folder == 'clean':
+                result['clean'] += 1
+
+            # folder_file.append(file)
+
+    # json_str = json.dumps([count])
+    return result
 
 
 if __name__ == "__main__":
