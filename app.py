@@ -223,6 +223,7 @@ def getImgConf():
     """
     Function to get the image storage status from the database
     get total detected object
+    #ask
     """
     try:
         detected_lists = mongodb.detected_lists
@@ -253,21 +254,21 @@ def getImgConf():
                 = 0, 0, 0, 0, 0, 0, 0
                 prevDate = date
                 result_date.append(date)
-        #modify here
-            print(detected_top3_labels[0])
-            if detected_top3_labels[0] == 'mattress':
+
+            label = label_transform(detected_top3_labels[0])
+            if label == 'mattress':
                 result['mattress'] += 1
-            if detected_top3_labels[0] == 'couch':
+            if label == 'couch':
                 result['couch'] += 1
-            if detected_top3_labels[0] == 'tv monitor':
+            if label == 'tv monitor':
                 result['tv monitor'] += 1
-            if detected_top3_labels[0] == 'refrigerator':
+            if label == 'refrigerator':
                 result['refrigerator'] += 1
-            if detected_top3_labels[0] == 'chair':
+            if label == 'chair':
                 result['chair'] += 1
-            if detected_top3_labels[0] == 'shopping cart':
+            if label == 'shopping cart':
                 result['shopping-cart'] += 1
-            if detected_top3_labels[0] == 'clean':
+            if label == 'clean':
                 result['clean-street'] += 1
 
         result_mattress.append(result['mattress'])
@@ -277,8 +278,8 @@ def getImgConf():
         result_chair.append(result['chair'])
         result_shopping.append(result['shopping-cart'])
         result_clean.append(result['clean-street'])
-        result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
-        = 0, 0, 0, 0, 0, 0, 0
+        # result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+        # = 0, 0, 0, 0, 0, 0, 0
 
         return json.dumps([
             result_date,
@@ -299,11 +300,34 @@ def getUpImg():
     Function to get the image storage status from the database
     """
     try:
-        return json.dumps([
-            ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-            ['mattress', 176, 180, 188, 190, 192, 196],
-            ['couch', 156, 166, 276, 286, 390, 396],
-            ['tv monitor', 55, 167, 173, 285, 389, 197]
+
+        upload_lists = mongodb.upload_lists
+        result_time, result_count = ['x'], ['upload_object']
+        prevTime, count = None, 0
+        for upload_list in upload_lists.find({}, {"_id": 0}):
+            time = time_transform(upload_list['datetime'])
+            if prevTime == None:
+                prevTime = time
+                result_time.append(time)
+                count = 1
+
+            if time == prevTime:
+                count += 1
+
+            else:
+                prevTime = time
+                result_count.append(count)
+                result_time.append(time)
+                count = 1
+
+        if count != 0:
+            result_count.append(count)
+
+        return json.dumps([ result_time, result_count
+            # ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
+            # ['mattress', 176, 180, 188, 190, 192, 196],
+            # ['couch', 156, 166, 276, 286, 390, 396],
+            # ['tv monitor', 55, 167, 173, 285, 389, 197]
         ])
     except Exception:
         return traceback.format_exc()
@@ -317,42 +341,98 @@ def getDetectedObj():
           get potential dupming image status based on uplaod image or remote send pictures
     """
     try:
-        upload_lists = mongodb.upload_lists
-        result_potential = ['potential_dumping']
+        # detected_lists = mongodb.detected_lists
+        # result_potential = ['potential_dumping']
+        # result_date = ['x']
+        # count = 0
+        # prevDate = None
+        # index = 0
+        # for detected_list in detected_lists.find({}, {"_id":0}):
+        #     if index > 6:
+        #         break
+        #
+        #     datetime = str(detected_list['datetime']).split(',', 1)
+        #     date = str(datetime)[2:12]
+        #
+        #     if date == prevDate:
+        #         count += 1
+        #
+        #     else:
+        #         if count != 0:
+        #             result_potential.append(count)
+        #         prevDate = date
+        #         result_date.append(date)
+        #         index += 1
+        #         count = 1
+        #
+        # if count != 0:
+        #     result_potential.append(count)
+        detected_lists = mongodb.detected_lists
+        result, index = {}, 0
         result_date = ['x']
-        count = 0
+        result_mattress, result_couch, result_tvmonitor, result_refri, result_chair, result_shopping, result_clean \
+        = ['mattress'], ['couch'], ['tv monitor'], ['refrigerator'], ['chair'], ['shopping-cart'], ['clean-street']
         prevDate = None
-        index = 0
-        for upload_list in upload_lists.find({"isAlerted": True}, {"_id":0}):
+
+        for detected_list in detected_lists.find({}, {'_id': 0}):
             if index > 6:
                 break
 
-            datetime = str(upload_list['datetime']).split(',', 1)
-            date = str(datetime)[2:12]
+            detected_top3_accuracies, detected_top3_labels =  detected_list['top3_accuracies'], detected_list['top3_labels']
+            detected_datetime = time_transform(detected_list['datetime'])
+            if prevDate == None:
+                prevDate = detected_datetime
+                result_date.append(detected_datetime)
+                result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                = 0, 0, 0, 0, 0, 0, 0
+                index += 1
 
-            if date == prevDate:
-                count += 1
+            if detected_datetime != prevDate:
+                result_mattress.append(result['mattress'])
+                result_couch.append(result['couch'])
+                result_tvmonitor.append(result['tv monitor'])
+                result_refri.append(result['refrigerator'])
+                result_chair.append(result['chair'])
+                result_shopping.append(result['shopping-cart'])
+                result_clean.append(result['clean-street'])
+                result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                = 0, 0, 0, 0, 0, 0, 0
+                prevDate = detected_datetime
+                result_date.append(detected_datetime)
+                index += 1
 
             else:
-                if count != 0:
-                    result_potential.append(count)
-                prevDate = date
-                result_date.append(date)
-                index += 1
-                count = 1
+                label = label_transform(detected_top3_labels[0])
+                if label == 'mattress':
+                    result['mattress'] += 1
+                if label == 'couch':
+                    result['couch'] += 1
+                if label == 'tv monitor':
+                    result['tv monitor'] += 1
+                if label == 'refrigerator':
+                    result['refrigerator'] += 1
+                if label == 'chair':
+                    result['chair'] += 1
+                if label == 'shopping cart':
+                    result['shopping-cart'] += 1
+                if label == 'clean':
+                    result['clean-street'] += 1
 
-        if count != 0:
-            result_potential.append(count)
+        result_mattress.append(result['mattress'])
+        result_couch.append(result['couch'])
+        result_tvmonitor.append(result['tv monitor'])
+        result_refri.append(result['refrigerator'])
+        result_chair.append(result['chair'])
+        result_shopping.append(result['shopping-cart'])
+        result_clean.append(result['clean-street'])
 
-        json_str = json.dumps([result_date, result_potential])
+        json_str = json.dumps([result_date, result_mattress, result_couch, \
+            result_tvmonitor, result_refri, result_chair, result_shopping, \
+            result_clean
+            ])
+
         return json_str
-        # return json.dumps([
-        #     ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
-        #     ['mattress', 26, 20, 18, 19, 19, 16],
-        #     ['couch', 15, 16, 26, 26, 39, 36],
-        #     ['tv monitor', 55, 17, 13, 25, 39, 19],
-        #     ['clean-street', 55, 67, 73, 85, 89, 97]
-        # ])
+
     except Exception:
         return 'error'
 
@@ -366,32 +446,30 @@ def getAP():
     try:
         detected_lists = mongodb.detected_lists
         result_accuracy, result_time, index = ['average_accuracy'], ['x'], 0
-        prevTime = None
-        total_accuracy = 0
-        count = 0
+        prevTime, total_accuracy, count = None, 0, 0
+
         for detected_list in detected_lists.find({},{'_id':0}):
             if index > 6:
                 break
-
-            detected_datetime, detected_top3_accuracies, detected_top3_labels = str(detected_list['datetime']).split(',', 1), detected_list['top3_accuracies'], detected_list['top3_labels']
-            date = str(detected_datetime)[2:12]
-            print(date)
+            #
+            detected_datetime, detected_top3_accuracies, detected_top3_labels = time_transform(detected_list['datetime']), detected_list['top3_accuracies'], detected_list['top3_labels']
+            #
             if prevTime == None:
-                result_time.append(date)
-                prevTime = date
+                result_time.append(detected_datetime)
+                prevTime = detected_datetime
                 index += 1
 
-            if date == prevTime:
+            if detected_datetime == prevTime:
                 total_accuracy += detected_top3_accuracies[0]
                 count += 1
-                prevTime = date
+                prevTime = detected_datetime
 
             else:
-                result_time.append(date)
+                result_time.append(detected_datetime)
                 total_accuracy /= count
                 result_accuracy.append(total_accuracy)
                 count = 1
-                total_accuracy = detected_top3_accuracies[0]
+                # total_accuracy = detected_top3_accuracies[0]
                 index += 1
 
 
@@ -551,6 +629,15 @@ def trigger_detect():
 #helper function
 def allowed_file_type(filename):
 	return '.' in filename and filename.rsplit('.', 1)[-1] in ALLOWED_FILE_EXTENSIONS
+
+def time_transform(transform_time):
+    list_datetime = str(transform_time).split(',', 1)
+    date = str(list_datetime)[2:12]
+    return date
+
+def label_transform(transform_label):
+    label = str(transform_label)[2:-3]
+    return label
 
 
 if __name__ == "__main__":
