@@ -19,8 +19,8 @@ import shutil
 app = Flask(__name__)
 parent_path = os.path.dirname(os.getcwd())
 UPLOAD_FOLDER = 'static/detection-component/alert_image'
-RETRAIN_FOLDER = parent_path + '/tensorflow/tensorflow/retrain_image'
-print(RETRAIN_FOLDER)
+# RETRAIN_FOLDER = parent_path + '/tensorflow/tensorflow/retrain_image'
+RETRAIN_FOLDER = 'tensorflow/tensorflow/retrain_image'
 app.config['RETRAIN_FOLDER'] = RETRAIN_FOLDER
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -40,6 +40,8 @@ def hello():
 def index():
 	return render_template('index.html')
 
+
+
 @app.route("/retrain-model", methods=['POST'])
 def retrainmodel():
     """
@@ -48,25 +50,29 @@ def retrainmodel():
     result, count = [], 0
     confirmation_lists = mongodb.confirmation_lists
     retrain_lists = mongodb.retrain_lists
+    labelIndex = {'1' : 'mattress', '2' : 'couch', '3' : 'tv monitor', '4' : 'refrigerator' , '5' :'chair', '6' : 'shopping-cart', '7' : 'clean-street'}
     number_of_images = 0
     try:
-        # for confirmation_list in confirmation_lists.find({}, {'_id': 0}):
-        #     category = confirmation_list['category']
-        #     imagePath = confirmation_list['image_path']
-        #     datetime = transform_time(confirmation_list['datetime'])
-        #
-        #     result.append([category, imagePath, date])
+        for confirmation_list in confirmation_lists.find({}, {'_id': 0}):
+            category = confirmation_list['category']
+            imagePath = confirmation_list['image_path']
+
+            #copy file to certain category
+            command_line = "cp " + imagePath + " " + "tensorflow/tensorflow/retrain_image/" + category + "/"
+            output = subprocess.call(command_line, shell=True)
 
             #retrain command
             # result = subprocess.check_output('bazel build tensorflow/examples/image_retraining:retrain', shell=True)
 
-            #db insertion
+        #insert retrain data
         retrain_id = randint(0, 100000)
-        retrain_info =  get_retrain_info()
-        retrain_lists.insert({'retrain_id': retrain_id, 'retrain_info': retrain_info , 'datetime': datetime.datetime.utcnow()})
-            #move folder
+        retrain_info = get_retrain_info()
+        retrain_lists.insert({'retrain_id': retrain_id, 'retrain_info': retrain_info, 'datetime': datetime.datetime.utcnow()})
+        print(retrain_info)
+        retrain_list = retrain_lists.find_one({'retrain_id': retrain_id}, {"_id": 0})
+            # move folder
             # destination = shutil.move('static/detection-component/alert_image/' + imagePath, 'tensorflow/tensorflow/retrain_image/' + category +'/' + imagePath)
-        json_str = json.dumps(retrain_info)
+        json_str = json.dumps(retrain_list)
         return json_str
 
     except Exception:
@@ -145,7 +151,8 @@ def getImgStorage():
         0, 0, 0, 0, 0, 0, 0, 0
         result =[]
 
-        for retrain_list in retrain_lists.find({}, {"_id": 0}):
+        #get the latest retrain
+        for retrain_list in retrain_lists.find({}, {"_id": 0}).limit(1).sort('datetime', -1):
             for category_list in retrain_list['retrain_info']:
                 category, category_count = category_list, retrain_list['retrain_info'][category_list]
 
@@ -166,7 +173,7 @@ def getImgStorage():
 
                 if category == 'shopping-cart':
                     count_cart += category_count
-                    
+
                 if category == 'clean':
                     count_clean += category_count
 
@@ -181,14 +188,15 @@ def getImgStorage():
         return json.dumps(result_count)
 
     except Exception:
-        return traceback.format_exc()
+        return 'error'
 
 
-@app.route("/getLowAccuracyData", methods=['POST'])
+@app.route("/getDatasetSize", methods=['POST'])
 def getLowAccuracyData():
     """
     Function to get the image storage status from the database
-    ### rename API
+    ### TODO rename API!!!
+    ###TODO
     """
     try:
         low_accuracy_lists = mongodb.low_accuracy_lists
@@ -227,7 +235,7 @@ def getLowAccuracyData():
                                    ['refrigerator', count_refrigerator],
                                    ['shopping-cart', count_cart],
                                    ['clean-street', count_clean]]
-                                  
+
         return json.dumps([result_count, total_threshold
             # ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             # ['mattress', 176, 180, 188, 190, 192, 196],
