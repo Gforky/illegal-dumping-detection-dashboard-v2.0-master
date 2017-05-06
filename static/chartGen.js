@@ -361,7 +361,7 @@ $(document).ready(function() {
         }
         dbChart = c3.generate(dbChartConfig)
         //nnChart.transform('bar')
-        dbChart.axis.labels({ y : 'Images Confirmed'})
+        dbChart.axis.labels({ y : 'Images Classified'})
       },
       error: function(error) {
         console.log(error)
