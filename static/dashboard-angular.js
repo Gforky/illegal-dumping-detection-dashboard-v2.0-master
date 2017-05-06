@@ -50,7 +50,17 @@ app.controller('realTimeTrainingCtrl', function($scope) {
 
 app.controller('manuallyRetrain', function($scope) {
   $scope.retrain = function() {
-    
+    $.ajax({
+      url: '/retrain-model',
+      type: 'POST',
+      success: function(response) {
+        console.log($.parseJSON(response))
+        // convert JSON object into javascript array
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
   }
 })
 

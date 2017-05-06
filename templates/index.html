@@ -233,13 +233,14 @@
         <div class="dbStat">
           <h2>Database Status</h2>
           <div class="chartButtons">
-            <button onclick="setChartButtonsVisualbility([&quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.dbQuery&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button imgStorage">Total Images in Database</button>
-            <button onclick="setChartButtonsVisualbility([&quot;.datasetSize&quot;, &quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.dbQuery&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button datasetSize">Images automatically<br>rejected by the algorithm</button>
-            <button onclick="setChartButtonsVisualbility([&quot;.imgConf&quot;, &quot;.upImg&quot;, &quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.dbQuery&quot;])" class="button imgConf">Images Confirmed by Administrators</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.dbQuery&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button imgStorage">Total Images In Database</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.datasetSize&quot;, &quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.dbQuery&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button datasetSize">Low Accuracy<br>Than Threshold Images</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.imgConf&quot;, &quot;.upImg&quot;, &quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.dbQuery&quot;])" class="button imgConf">Images Confirmed By Administrators</button>
             <button onclick="setChartButtonsVisualbility([&quot;.upImg&quot;, &quot;.imgConf&quot;, &quot;.imgStorage&quot;, &quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.dbQuery&quot;])" class="button upImg">Uploaded Images</button>
             <!--<button onclick="setChartButtonsVisualbility([&quot;.dbIO&quot;, &quot;.datasetSize&quot;, &quot;.imgStorage&quot;, &quot;.dbQuery&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button dbIO">I/O Traffic</button>
             <button onclick="setChartButtonsVisualbility([&quot;.dbQuery&quot;, &quot;.datasetSize&quot;, &quot;.dbIO&quot;, &quot;.imgStorage&quot;, &quot;.imgConf&quot;, &quot;.upImg&quot;])" class="button dbQuery">Database Queries</button>-->
           </div>
+          <strong class="meanThreshold"></strong>
           <div ng-controller="chartCtrl" class="dbChart"></div>
         </div>
         
@@ -257,8 +258,9 @@
         <div class="nnStat">
           <h2>Neural Network Status</h2>
           <div class="chartButtons">
-            <button onclick="setChartButtonsVisualbility([&quot;.AP&quot;, &quot;.detectedObjects&quot;])" class="button AP">Mean Accuracy</button>
-            <button onclick="setChartButtonsVisualbility([&quot;.detectedObjects&quot;, &quot;.AP&quot;])" class="button detectedObjects">Detected Objects</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.AP&quot;, &quot;.detectedObjects&quot;, &quot;.retrainData&quot;])" class="button AP">Mean Accuracy</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.detectedObjects&quot;, &quot;.AP&quot;, &quot;.retrainData&quot;])" class="button detectedObjects">Detected Objects</button>
+            <button onclick="setChartButtonsVisualbility([&quot;.retrainData&quot;, &quot;.AP&quot;, &quot;.detectedObjects&quot;])" class="button retrainData">Retain Data</button>
           </div>
           <div ng-controller="chartCtrl" class="nnChart"></div>
         </div>
@@ -266,7 +268,7 @@
       </div>
     </div>
     <div class="footer">
-      <p>Copyright © 2016 Wendy Boo, Alan Chen, Luwen Miao, Xiaoming Chuang</p>
+      <p>Copyright © 2016 Wendy Boo, Wei-Chung Chen, Luwen Miao, Xiaoming Chuang</p>
     </div>
   </body>
 </html>

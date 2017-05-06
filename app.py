@@ -227,7 +227,7 @@ def getLowAccuracyData():
                                    ['refrigerator', count_refrigerator],
                                    ['shopping-cart', count_cart],
                                    ['clean-street', count_clean]]
-
+                                  
         return json.dumps([result_count, total_threshold
             # ['x', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12'],
             # ['mattress', 176, 180, 188, 190, 192, 196],

@@ -36,92 +36,106 @@ $(document).ready(function() {
   var dbChartConfig
   var dbChart
 
-  $.ajax({
-    url: '/getConfirmationStats',
-    type: 'POST',
-    success: function(response) {
-      var data = $.parseJSON(response)
-      data.splice(0, 0, ['x', 0])
-      dbChartConfig = {
-        bindto: '.dbChart',
-        data: {
-          x : 'x',
-          columns: data,
-          type : 'pie'
-        },
-        pie: {
-          label: {
-            format: function (value, ratio, id) {
-              return d3.format('')(value);
-            }
-          }
-        },
-        axis: {
-          x: {
-            type: 'timeseries',
-            tick: {
-                format: '%Y-%m-%d'
+  var generateTotalImg = function() {
+    $.ajax({
+      url: '/getConfirmationStats',
+      type: 'POST',
+      success: function(response) {
+        var data = $.parseJSON(response)
+        data.splice(0, 0, ['x', 0])
+        dbChartConfig = {
+          bindto: '.dbChart',
+          data: {
+            x : 'x',
+            columns: data,
+            type : 'pie'
+          },
+          pie: {
+            label: {
+              format: function (value, ratio, id) {
+                return d3.format('')(value);
+              }
             }
           },
-          y: {
-            label: { // ADD
-              position: 'outer-middle'
+          axis: {
+            x: {
+              type: 'timeseries',
+              tick: {
+                  culling: {
+                    max: 5
+                  },
+                  format: '%Y-%m-%d'
+              }
             },
-            tick: {
-              // ADD
+            y: {
+              label: { // ADD
+                position: 'outer-middle'
+              },
+              tick: {
+                // ADD
+              }
             }
           }
         }
-      }
 
-      dbChart = c3.generate(dbChartConfig)
-    },
-    error: function(error) {
-      console.log(error)
-    }
-  })
+        dbChart = c3.generate(dbChartConfig)
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
+  }
+
+  generateTotalImg()
 
   // chart of neural network status
   var nnChartConfig
   var nnChart
 
-  $.ajax({
-    url: '/getAP',
-    type: 'POST',
-    success: function(response) {
-      var data = $.parseJSON(response)
-      //data.splice(0, 0, ['x', 0])
-      nnChartConfig = {
-        bindto: '.nnChart',
-        data: {
-          x : 'x',
-          columns: data
-        },
-        axis: {
-          x: {
-            type: 'timeseries',
-            tick: {
-                format: '%Y-%m-%d'
-            }
+  var generateMeanAccuracy = function() {
+    $.ajax({
+      url: '/getAP',
+      type: 'POST',
+      success: function(response) {
+        var data = $.parseJSON(response)
+        //data.splice(0, 0, ['x', 0])
+        nnChartConfig = {
+          bindto: '.nnChart',
+          data: {
+            x : 'x',
+            columns: data
           },
-          y: {
-            label: { // ADD
-              text: 'Average Precisions',
-              position: 'outer-middle'
+          axis: {
+            x: {
+              type: 'timeseries',
+              tick: {
+                  culling: {
+                    max: 5
+                  },
+                  format: '%Y-%m-%d'
+              }
             },
-            tick: {
-              format: d3.format(",%") // ADD
+            y: {
+              label: { // ADD
+                text: 'Average Precisions',
+                position: 'outer-middle'
+              },
+              tick: {
+                format: d3.format(",%") // ADD
+              }
             }
           }
         }
-      }
 
-      nnChart = c3.generate(nnChartConfig)
-    },
-    error: function(error) {
-      console.log(error)
-    }
-  })
+        nnChart = c3.generate(nnChartConfig)
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
+  }
+
+  generateMeanAccuracy()
 
   /*var nnChartConfig = {
     bindto: '.nnChart',
@@ -289,6 +303,7 @@ $(document).ready(function() {
       url: '/getConfirmationStats',
       type: 'POST',
       success: function(response) {
+        $("strong.meanThreshold").replaceWith("<strong class='meanThreshold'></strong>")
         console.log(response)
         // convert JSON object into javascript array
         //sysChart.transform('bar');
@@ -296,7 +311,7 @@ $(document).ready(function() {
         dbChart.load({
           columns: $.parseJSON(response), 
           type: 'pie'})
-        dbChart.unload({ids: ['Database I/O Traffic', 'Database Queries']})
+        dbChart.unload({ids: ['upload_object']})
       },
       error: function(error) {
         console.log(error)
@@ -307,22 +322,19 @@ $(document).ready(function() {
   $(".datasetSize").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     $.ajax({
-      url: '/getDatasetSize',
+      url: '/getLowAccuracyData',
       type: 'POST',
       success: function(response) {
-        console.log(response)
+        console.log($.parseJSON(response))
+        var data = $.parseJSON(response)
+        $("strong.meanThreshold").replaceWith("<strong class='meanThreshold'>Mean Threshold is: " + data[1] + "</strong>")
         // convert JSON object into javascript array
         //sysChart.transform('bar');
-        dbChartConfig.axis.y.tick = { format : function (d) { return d + ""; } }
-        dbChartConfig.data = {
-          x : 'x',
-          columns: $.parseJSON(response),
-          groups: [['mattress', 'couch', 'tv-monitor', 'refrigerator', 'chair', 'shopping-cart', 'clean-street']],
-          type: 'bar'
-        }
-        dbChart = c3.generate(dbChartConfig)
-        //nnChart.transform('bar')
-        dbChart.axis.labels({ y : 'Dataset Size'})
+        dbChart.transform('pie')
+        dbChart.load({
+          columns: data[0], 
+          type: 'pie'})
+        dbChart.unload({ids: ['upload_object']})
       },
       error: function(error) {
         console.log(error)
@@ -336,6 +348,7 @@ $(document).ready(function() {
       url: '/getImgConf',
       type: 'POST',
       success: function(response) {
+        $("strong.meanThreshold").replaceWith("<strong class='meanThreshold'></strong>")
         console.log(response)
         // convert JSON object into javascript array
         //sysChart.transform('bar');
@@ -343,7 +356,7 @@ $(document).ready(function() {
         dbChartConfig.data = {
           x : 'x',
           columns: $.parseJSON(response),
-          groups: [['mattress', 'couch', 'tv-monitor', 'refrigerator', 'chair', 'shopping-cart', 'clean-street']],
+          groups: [['mattress', 'couch', 'tv monitor', 'refrigerator', 'chair', 'shopping-cart', 'clean-street']],
           type: 'bar'
         }
         dbChart = c3.generate(dbChartConfig)
@@ -362,6 +375,7 @@ $(document).ready(function() {
       url: '/getUpImg',
       type: 'POST',
       success: function(response) {
+        $("strong.meanThreshold").replaceWith("<strong class='meanThreshold'></strong>")
         console.log(response)
         // convert JSON object into javascript array
         //sysChart.transform('bar');
@@ -369,7 +383,7 @@ $(document).ready(function() {
         dbChartConfig.data = {
           x : 'x',
           columns: $.parseJSON(response),
-          groups: [['mattress', 'couch', 'tv-monitor', 'refrigerator', 'chair', 'shopping-cart', 'clean-street']],
+          groups: [['mattress', 'couch', 'tv monitor', 'refrigerator', 'chair', 'shopping-cart', 'clean-street']],
           type: 'bar'
         }
         dbChart = c3.generate(dbChartConfig)
@@ -449,7 +463,7 @@ $(document).ready(function() {
           type: 'line'
         }
         nnChart = c3.generate(nnChartConfig)
-        nnChart.axis.labels({ y : 'Avergae Precisions'})
+        nnChart.axis.labels({ y : 'Mean Accuracies'})
       },
       error: function(error) {
         console.log(error)
@@ -476,6 +490,28 @@ $(document).ready(function() {
         nnChart = c3.generate(nnChartConfig)
         //nnChart.transform('bar')
         nnChart.axis.labels({ y : 'Detected Objects'})
+      },
+      error: function(error) {
+        console.log(error)
+      }
+    })
+  })
+
+  $(".retrainData").click(function() {
+    //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
+    $.ajax({
+      url: '/getRetrainData',
+      type: 'POST',
+      success: function(response) {
+        console.log($.parseJSON(response))
+        var data = $.parseJSON(response)
+        // convert JSON object into javascript array
+        //sysChart.transform('bar');
+        nnChart.transform('pie')
+        nnChart.load({
+          columns: data, 
+          type: 'pie'})
+        nnChart.unload({ids: ['average_accuracy']})
       },
       error: function(error) {
         console.log(error)

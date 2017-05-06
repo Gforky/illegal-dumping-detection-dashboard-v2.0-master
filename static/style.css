@@ -171,7 +171,8 @@ button {
 .dbIO,
 .dbQuery,
 .imgConf,
-.upImg {
+.upImg,
+.retrainData {
   border: none;
   text-align: center;
   text-decoration: none;
