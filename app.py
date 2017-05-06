@@ -191,7 +191,7 @@ def getImgStorage():
         return 'error'
 
 
-@app.route("/getDatasetSize", methods=['POST'])
+@app.route("/getLowAccuracyData", methods=['POST'])
 def getLowAccuracyData():
     """
     Function to get the image storage status from the database
