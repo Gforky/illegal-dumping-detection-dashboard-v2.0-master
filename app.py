@@ -58,21 +58,22 @@ def retrainmodel():
             imagePath = confirmation_list['image_path']
 
             #copy file to certain category
-            command_line = "cp " + imagePath + " " + "tensorflow/tensorflow/retrain_image/" + category + "/"
+            command_line = "cp " + imagePath + " " + "../tensorflow/tensorflow/retrain_image/" + category + "/"
             output = subprocess.call(command_line, shell=True)
 
             #retrain command
             # result = subprocess.check_output('bazel build tensorflow/examples/image_retraining:retrain', shell=True)
 
         #insert retrain data
-        retrain_id = randint(0, 100000)
+        # retrain_id = randint(0, 1000000000)
         retrain_info = get_retrain_info()
-        retrain_lists.insert({'retrain_id': retrain_id, 'retrain_info': retrain_info, 'datetime': datetime.datetime.utcnow()})
-        print(retrain_info)
-        retrain_list = retrain_lists.find_one({'retrain_id': retrain_id}, {"_id": 0})
+        retrain_lists.insert({'retrain_info': retrain_info, 'datetime': datetime.datetime.utcnow()})
+        # retrain_lists.insert({'retrain_info': retrain_info, 'datetime': datetime.datetime.utcnow()})
+        for retrain_list in retrain_lists.find({}, {'_id': 0}).limit(1).sort('datetime', -1):
+            result.append(retrain_list)
             # move folder
             # destination = shutil.move('static/detection-component/alert_image/' + imagePath, 'tensorflow/tensorflow/retrain_image/' + category +'/' + imagePath)
-        json_str = json.dumps(retrain_list)
+        json_str = json.dumps(result)
         return json_str
 
     except Exception:
@@ -118,19 +119,19 @@ def imgConfirmation():
         # print(data['labels'])
 
         #mongod db insertion
-        confirmation_id = randint(0, 100000)
+        # confirmation_id = randint(0, 100000)
         confirmation_lists = mongodb.confirmation_lists
-        confirmation_lists.insert({'confirmation_id':confirmation_id, 'image_path': data['img_path'], 'category':index_to_label[str(data['labels'][0])], 'datetime': datetime.datetime.utcnow()})
+        confirmation_lists.insert({'image_path': data['img_path'], 'category':index_to_label[str(data['labels'][0])], 'datetime': datetime.datetime.utcnow()})
 
         update_list = []
         upload_lists = mongodb.upload_lists
         # #get monogodb data
         for upload_list in upload_lists.find({"image_path": data['img_path']}):
             #print("confima image : " + data['img_path'])
-            update_list.append(upload_list['waiting_id'])
+            update_list.append(upload_list['_id'])
         # # update mongodb
         for elem in update_list:
-            upload_lists.update_one({"waiting_id": int(elem)},{"$set":{"isAlerted": True}})
+            upload_lists.update_one({"_id": int(elem)},{"$set":{"isAlerted": True}})
 
         return json.dumps([{'msg' : 'successfully transfered'}])
 
@@ -561,30 +562,30 @@ def trigger_detect():
             result_imagepath = unpickled_result['imagepath']
             result_top3labels = unpickled_result['top3labels']
             result_top3accuracies = unpickled_result['top3accuracies']
-            detected_id, low_accuracy_id = randint(0, 100000), randint(0, 100000)
+            # detected_id, low_accuracy_id = randint(0, 100000), randint(0, 100000)
 
             #save detection result if not in the detected_lists
             detected_object = detected_lists.find_one({'image_path': result_imagepath}, {"_id":0})
             if not detected_object:
-                detected_lists.insert({'detected_id': detected_id,
-                                    'image_path': result_imagepath,
+                detected_lists.insert({'image_path': result_imagepath,
                                     'top3_labels': result_top3labels,
                                     'top3_accuracies': result_top3accuracies,
                                     'datetime':datetime.datetime.utcnow()})
 
             #add into probelm list waiting for return
             problem_list.append([result_imagepath, result_top3labels, result_top3accuracies])
-
+            isAboveThreshold = False
             #if accuracy more than threshold set isAlerted true directly
             if result_top3accuracies[0] >= threshold:
+                isAboveThreshold = True
                 update_list = []
                 #get monogodb data
                 for upload_list in upload_lists.find({"image_path": result_imagepath}, {'_id': 0}):
-                    update_list.append(upload_list['waiting_id'])
+                    update_list.append(upload_list['_id'])
 
                 # update mongodb
                 for elem in update_list:
-                    upload_lists.update_one({"waiting_id": int(elem)},{"$set":{"isAlerted": True}})
+                    upload_lists.update_one({"_id": int(elem)},{"$set":{"isAlerted": True}})
 
             #if low accuracy, write into db, waiting for future examination
             else:
@@ -597,12 +598,16 @@ def trigger_detect():
                     continue
 
                 else:
-                    low_accuracy_lists.insert({'low_accuracy_id': low_accuracy_id, 'category': result_top3labels[0], 'threshold': threshold, 'image_path': result_imagepath, 'datetime': datetime.datetime.utcnow()})
+                    low_accuracy_lists.insert({'category': result_top3labels[0], 'threshold': threshold, 'image_path': result_imagepath, 'datetime': datetime.datetime.utcnow()})
 
             os.remove("result.pickle")
 
         # json_str = json.dumps([result_imagepath, result_top3labels, result_top3accuracies])
-        json_str = json.dumps(problem_list)
+        if not isAboveThreshold:
+            json_str = json.dumps(problem_list)
+        else:
+            json_str = 'Above threshold'
+
         return json_str
 
     except Exception:
