@@ -322,7 +322,7 @@ $(document).ready(function() {
   $(".datasetSize").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     $.ajax({
-      url: '/getLowAccuracyData',
+      url: '/getDatasetSize',
       type: 'POST',
       success: function(response) {
         console.log($.parseJSON(response))
@@ -485,6 +485,7 @@ $(document).ready(function() {
           x : 'x',
           columns: $.parseJSON(response),
           //groups: [['mattress', 'couch', 'tv-monitor']],
+          groups: [['mattress', 'couch', 'tv monitor', 'refrigerator', 'chair', 'shopping-cart', 'clean-street']],
           type: 'bar'
         }
         nnChart = c3.generate(nnChartConfig)

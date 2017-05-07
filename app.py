@@ -14,6 +14,7 @@ import datetime
 from pymongo import MongoClient
 from random import randint
 import shutil
+import traceback
 
 
 app = Flask(__name__)
@@ -114,7 +115,7 @@ def imgConfirmation():
 
     try:
         data = request.get_json()
-        index_to_label = {'1': 'mattress', '2':'couch', '3': 'tv monitor', '4': 'refrigerator', '5': 'chair', '6':  'shopping-cart', '7': 'clean-street'}
+        index_to_label = {'0': 'mattress', '1':'couch', '2': 'tv monitor', '3': 'refrigerator', '4': 'chair', '5':  'shopping-cart', '6': 'clean-street'}
         # print(data['img_path'])
         # print(data['labels'])
 
@@ -133,10 +134,11 @@ def imgConfirmation():
         for elem in update_list:
             upload_lists.update_one({"_id": int(elem)},{"$set":{"isAlerted": True}})
 
-        return json.dumps([{'msg' : 'successfully transfered'}])
+        return json.dumps({'msg' : 'successfully transfered'})
 
     except Exception:
-        return 'no new image'
+        print(traceback.format_exc())
+        return json.dumps({'msg' : 'failed transfered'})
 #########################   Image Confirmation  #########################
 
 #########################   C3 Chart AJAX   #############################
