@@ -48,7 +48,7 @@ def retrainmodel():
     result, count = [], 0
     confirmation_lists = mongodb.confirmation_lists
     retrain_lists = mongodb.retrain_lists
-    labelIndex = {'1' : 'mattress', '2' : 'couch', '3' : 'tv monitor', '4' : 'refrigerator' , '5' :'chair', '6' : 'shopping-cart', '7' : 'clean-street'}
+    labelIndex = {'1' : 'mattress', '2' : 'couch', '3' : 'tv-monitor', '4' : 'refrigerator' , '5' :'chair', '6' : 'shopping-cart', '7' : 'clean-street'}
     number_of_images = 0
     try:
         for confirmation_list in confirmation_lists.find({}, {'_id': 0}):
@@ -56,11 +56,12 @@ def retrainmodel():
             imagePath = confirmation_list['image_path']
 
             #copy file to certain category
-            command_line = "cp " + imagePath + " " + "../tensorflow/tensorflow/retrain_image/" + category + "/"
+            command_line = "cp " + imagePath + " " + "../images/training_images/" + category + "/"
             output = subprocess.call(command_line, shell=True)
 
             #retrain command
-            os.system("sh retrain.sh")
+            os.system("python3 ../tensorflow/tensorflow/examples/image_retraining/retrain.py")
+# python3 ../tensorflow/tensorflow/examples/image_retraining/retrain.py --image_dir ../images/training_images --output_graph ../results/output_graph.pb --output_labels ../results/output_labels.txt --bottleneck_dir ../results/bottleneck --summaries_dir ../results/retrain_logs
 
         #insert retrain data
         retrain_info = get_retrain_info()
@@ -102,9 +103,9 @@ def uploadfile(): #299 * 299, jpg
 #########################   Image Confirmation  #########################
 @app.route("/imgConfirmation", methods=['POST'])
 def imgConfirmation():
-    '''
+    """
     Function to move the images from tempory folder to the new dataset folder
-    '''
+    """
 
     try:
         data = request.get_json()
@@ -389,7 +390,7 @@ def getDetectedObj():
                 result_chair.append(result['chair'])
                 result_shopping.append(result['shopping-cart'])
                 result_clean.append(result['clean-street'])
-                result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
                 = 0, 0, 0, 0, 0, 0, 0
                 prevDate = detected_datetime
                 result_date.append(detected_datetime)
@@ -401,15 +402,15 @@ def getDetectedObj():
                     result['mattress'] += 1
                 if label == 'couch':
                     result['couch'] += 1
-                if label == 'tv monitor':
-                    result['tv monitor'] += 1
+                if label == 'tv-monitor':
+                    result['tv-monitor'] += 1
                 if label == 'refrigerator':
                     result['refrigerator'] += 1
                 if label == 'chair':
                     result['chair'] += 1
-                if label == 'shopping cart':
+                if label == 'shopping-cart':
                     result['shopping-cart'] += 1
-                if label == 'clean':
+                if label == 'clean-street':
                     result['clean-street'] += 1
 
         result_mattress.append(result['mattress'])
@@ -530,7 +531,7 @@ def trigger_detect():
     result, wait_list, problem_list = [], [], []
     data = request.get_json()
     threshold = data['threshold']
-    labelIndex = {'mattress' : 1, 'couch' : 2, 'tv monitor' : 3, 'refrigerator' : 4, 'chair' : 5, 'shopping-cart' : 6, 'clean-street' : 7}
+    labelIndex = {'mattress' : 1, 'couch' : 2, 'tv-monitor' : 3, 'refrigerator' : 4, 'chair' : 5, 'shopping-cart' : 6, 'clean-street' : 7}
 
     try:
         for upload_list in upload_lists.find({"isAlerted": False}, {"_id":0}):
@@ -624,7 +625,7 @@ def get_retrain_info():
     Get the data that need to be retrained
     """
     folderPath = os.path.join(RETRAIN_FOLDER)
-    result = {'mattress': 0, 'tv monitor': 0, 'shopping cart': 0, 'couch': 0, 'clean': 0, 'chair': 0, 'refrigerator': 0}
+    result = {'mattress': 0, 'tv-monitor': 0, 'shopping-cart': 0, 'couch': 0, 'clean-street': 0, 'chair': 0, 'refrigerator': 0}
     folder_file, folder_arr, count = [], [], 0
     for folder in os.listdir(folderPath):
         if not isfile(join(folderPath, folder)):
@@ -633,7 +634,7 @@ def get_retrain_info():
     for folder in folder_arr:
         for file in os.listdir(os.path.join(folderPath, folder)):
             if folder == 'tv monitor':
-                result['tv monitor'] += 1
+                result['tv-monitor'] += 1
 
             if folder == 'mattress':
                 result['mattress'] += 1
@@ -651,7 +652,7 @@ def get_retrain_info():
                 result['shopping-cart'] += 1
 
             if folder == 'clean':
-                result['clean'] += 1
+                result['clean-street'] += 1
 
     return result
 
