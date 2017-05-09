@@ -5,6 +5,7 @@ from werkzeug import secure_filename
 from flask import json
 import os
 from os.path import isfile, join
+import sys
 import zipfile
 import subprocess
 import re
@@ -59,7 +60,7 @@ def retrainmodel():
             output = subprocess.call(command_line, shell=True)
 
             #retrain command
-            # result = subprocess.check_output('bazel build ../tensorflow/examples/image_retraining:retrain', shell=True)
+            os.system("sh retrain.sh")
 
         #insert retrain data
         retrain_info = get_retrain_info()
@@ -321,15 +322,19 @@ def getUpImg():
 
         upload_lists = mongodb.upload_lists
         result_time, result_count = ['x'], ['upload_object']
-        prevTime, count = None, 0
+        prevTime, count, index = None, 0, 0
 
         #find the data from database
         for upload_list in upload_lists.find({}, {"_id": 0}):
+            if index > 6:
+                break
+
             time = time_transform(upload_list['datetime'])
             if prevTime == None:
                 prevTime = time
                 result_time.append(time)
                 count = 1
+                index += 1
 
             if time == prevTime:
                 count += 1
@@ -339,6 +344,7 @@ def getUpImg():
                 result_count.append(count)
                 result_time.append(time)
                 count = 1
+                index += 1
 
         if count != 0:
             result_count.append(count)
