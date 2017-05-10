@@ -322,7 +322,7 @@ $(document).ready(function() {
   $(".datasetSize").click(function() {
     //chart.axis.ticks{x : {format: '%Y-%m-%d'}, y : {format: d3.format(",%")}}
     $.ajax({
-      url: '/getDatasetSize',
+      url: '/getLowAccuracyData',
       type: 'POST',
       success: function(response) {
         console.log($.parseJSON(response))

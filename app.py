@@ -592,8 +592,9 @@ def trigger_detect():
             json_str = json.dumps(problem_list)
 
         else:
-            message = 'above threshold'
-            json_str = json.dumps(message)
+            json_str = json.dumps(problem_list)
+            #message = 'above threshold'
+            #json_str = json.dumps(message)
 
         return json_str
 
