@@ -322,31 +322,79 @@ app.controller('todoCtrl', function($scope) {
   // functions handling object decisions
   $scope.findMattress = function() {
     var hasMattress = confirmationList[0];
-    confirmationList[0] = !hasMattress;
+    for(index = 0; index < confirmationList.length; ++index) {
+      if(index == 0) {
+        confirmationList[index] = !hasMattress;
+      } else {
+        confirmationList[index] = false;
+      }
+    }
   }
   $scope.findSofa = function() {
     var hasSofa = confirmationList[1];
-    confirmationList[1] = !hasSofa;
+    //confirmationList[1] = !hasSofa;
+    for(index = 0; index < confirmationList.length; ++index) {
+      if(index == 1) {
+        confirmationList[index] = !hasSofa;
+      } else {
+        confirmationList[index] = false;
+      }
+    }
   }
   $scope.findTvMonitor = function() {
     var hasTvMonitor = confirmationList[2];
-    confirmationList[2] = !hasTvMonitor;
+    //confirmationList[2] = !hasTvMonitor;
+    for(index = 0; index < confirmationList.length; ++index) {
+      if(index == 2) {
+        confirmationList[index] = !hasTvMonitor;
+      } else {
+        confirmationList[index] = false;
+      }
+    }
   }
   $scope.findFridge = function() {
     var hasFridge = confirmationList[3];
-    confirmationList[3] = !hasFridge;
+    //confirmationList[3] = !hasFridge;
+    for(index = 0; index < confirmationList.length; ++index) {
+      if(index == 3) {
+        confirmationList[index] = !hasFridge;
+      } else {
+        confirmationList[index] = false;
+      }
+    }
   }
   $scope.findChair = function() {
     var hasChair = confirmationList[4];
-    confirmationList[4] = !hasChair;
+    //confirmationList[4] = !hasChair;
+    for(index = 0; index < confirmationList.length; ++index) {
+      if(index == 4) {
+        confirmationList[index] = !hasChair;
+      } else {
+        confirmationList[index] = false;
+      }
+    }
   }
   $scope.findShoppingCart = function() {
     var hasShoppingCart = confirmationList[5];
-    confirmationList[5] = !hasShoppingCart;
+    //confirmationList[5] = !hasShoppingCart;
+    for(index = 0; index < confirmationList.length; ++index) {
+      if(index == 5) {
+        confirmationList[index] = !hasShoppingCart;
+      } else {
+        confirmationList[index] = false;
+      }
+    }
   }
   $scope.findCleanStreet = function() {
     var hasCleanStreet = confirmationList[6];
-    confirmationList[6] = !hasCleanStreet;
+    //confirmationList[6] = !hasCleanStreet;
+    for(index = 0; index < confirmationList.length; ++index) {
+      if(index == 6) {
+        confirmationList[index] = !hasCleanStreet;
+      } else {
+        confirmationList[index] = false;
+      }
+    }
   }
 })
 
