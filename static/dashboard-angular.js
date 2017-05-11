@@ -257,7 +257,7 @@ app.controller('todoCtrl', function($scope) {
         for(index = 0; index < confirmationList.length; ++index) {
           confirmationList[index] = false;
         }
-        $("img.slide").replaceWith("<img class='slide' src='static/images/welcome.jpg'>")
+        $("img.slide").replaceWith("<img class='slide' src='static/images/blank.jpg'>")
         $("span.classificationResult").replaceWith("<span style='color:#ff4000' class='classificationResult'>N/A</span>")
         $("span.accuracy").replaceWith("<span style='color:#ff4000' class='accuracy'>N/A</span>")
       }
@@ -267,7 +267,7 @@ app.controller('todoCtrl', function($scope) {
     var threshold = $("input.accuracyThreshold").val() / 100
     var myData = { 'threshold' : threshold}
     $("b.oneTimeClassificationResult").replaceWith("<b class='oneTimeClassificationResult'>Waiting for classification result</b>")
-    $("img.slide").replaceWith("<img class='slide' src='static/images/welcome.jpg'>")
+    $("img.slide").replaceWith("<img class='slide' src='static/images/blank.jpg'>")
     $("span.classificationResult").replaceWith("<span style='color:#ff4000' class='classificationResult'>N/A</span>")
     $("span.accuracy").replaceWith("<span style='color:#ff4000' class='accuracy'>N/A</span>")
     $.ajax({
