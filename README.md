@@ -1,2 +1,2 @@
-# illegal-dumping-detection-dashboard
-Python Flask sever with SQLALchemy schema connecting with PostgreSQL
+# illegal-dumping-recognition-web-app
+Python Flask web app with Angular dashboard for illegal dumping recognition
