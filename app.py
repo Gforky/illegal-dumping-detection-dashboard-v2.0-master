@@ -1,6 +1,5 @@
 from flask import Flask
 from flask import render_template, request
-import models
 from werkzeug import secure_filename
 from flask import json
 import os
@@ -25,7 +24,6 @@ app.config['RETRAIN_FOLDER'] = RETRAIN_FOLDER
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['current_path'] = os.getcwd()
-ALLOWED_FILE_EXTENSIONS = set(['jpg'])
 
 #connect mongodb
 client = MongoClient()
@@ -60,8 +58,7 @@ def retrainmodel():
             output = subprocess.call(command_line, shell=True)
 
             #retrain command
-            os.system("python3 ../tensorflow/tensorflow/examples/image_retraining/retrain.py")
-# python3 ../tensorflow/tensorflow/examples/image_retraining/retrain.py --image_dir ../images/training_images --output_graph ../results/output_graph.pb --output_labels ../results/output_labels.txt --bottleneck_dir ../results/bottleneck --summaries_dir ../results/retrain_logs
+            os.system('python3 ../tensorflow/tensorflow/examples/image_retraining/retrain.py --image_dir ../images/training_images --output_graph ../results/output_graph.pb --output_labels ../results/output_labels.txt --bottleneck_dir ../results/bottleneck --summaries_dir ../results/retrain_logs')
 
         #insert retrain data
         retrain_info = get_retrain_info()
@@ -109,7 +106,7 @@ def imgConfirmation():
 
     try:
         data = request.get_json()
-        index_to_label = {'0' : 'clean-street', '1' : 'shopping-cart', '2' : 'tv monitor', '3' : 'chair' , '4' :'chair', '5' : 'refridgerator', '6' : 'couch'}
+        index_to_label = {'0' : 'couch', '1' : 'mattress', '2' : 'tv-monitor', '3' : 'chair' , '4' :'tv-monitor', '5' : 'shopping-cart', '6' : 'clean-street'}
 
         #mongod db insertion
         confirmation_lists = mongodb.confirmation_lists
@@ -477,13 +474,8 @@ def getAP():
 def getConfirmationStats():
     """
     This is function for API of getting confirmation data from db
-
-    Returns:
-        json String: [count for category 1, count for category 2,
-         count for category 3, count for unkonwn, total image count]
-
-    ---
     """
+
     if request.method == 'POST':
         confirmation_arr, time_stamp = [], []
         count, count_tv, count_mattress, count_couch, count_chair, count_refrigerator, count_cart, count_clean = 0, 0, 0, 0, 0, 0, 0, 0
@@ -493,7 +485,7 @@ def getConfirmationStats():
         for confirmation_list in confirmation_lists.find({},{'_id':0}):
             print(confirmation_list)
             result.append(confirmation_list)
-            if confirmation_list['category'] == 'tv monitor':
+            if confirmation_list['category'] == 'tv-monitor':
                 count_tv += 1
             if confirmation_list['category'] == 'couch':
                 count_couch += 1
@@ -525,6 +517,7 @@ def trigger_detect():
     """
     This API is for detecting object which is triggered by admin
     """
+
     upload_lists = mongodb.upload_lists
     detected_lists = mongodb.detected_lists
     low_accuracy_lists = mongodb.low_accuracy_lists
@@ -539,7 +532,7 @@ def trigger_detect():
 
         for elem in wait_list:
             elem_path = elem['image_path']
-            result = subprocess.check_output('python3 static/detection-component/classify.py --image_dir '+ elem_path +' --model_dir static/detection-component/output_graph.pb --label_dir static/detection-component/output_labels.txt', shell=True)
+            result = subprocess.check_output('python3 ../results/classify.py --image_dir '+ elem_path +' --model_dir ../results/output_graph.pb --label_dir ../results/output_labels.txt', shell=True)
             with open('result.pickle', 'rb') as f:
                 unpickled_result = pickle.load(f)
 
@@ -556,8 +549,6 @@ def trigger_detect():
                                     'top3_accuracies': result_top3accuracies,
                                     'datetime':datetime.datetime.utcnow()})
 
-            #add into probelm list waiting for return
-            # problem_list.append([result_imagepath, result_top3labels, result_top3accuracies])
 
             isAboveThreshold = False
             #if accuracy more than threshold set isAlerted true directly
@@ -593,8 +584,6 @@ def trigger_detect():
 
         else:
             json_str = json.dumps(problem_list)
-            #message = 'above threshold'
-            #json_str = json.dumps(message)
 
         return json_str
 
@@ -603,9 +592,6 @@ def trigger_detect():
 
 
 #helper function
-# def allowed_file_type(filename):
-# 	return '.' in filename and filename.rsplit('.', 1)[-1] in ALLOWED_FILE_EXTENSIONS
-
 def time_transform(transform_time):
     """
     Function to transform time to the desired format
@@ -634,7 +620,7 @@ def get_retrain_info():
 
     for folder in folder_arr:
         for file in os.listdir(os.path.join(folderPath, folder)):
-            if folder == 'tv monitor':
+            if folder == 'tv-monitor':
                 result['tv-monitor'] += 1
 
             if folder == 'mattress':
@@ -652,11 +638,10 @@ def get_retrain_info():
             if folder == 'shopping-cart':
                 result['shopping-cart'] += 1
 
-            if folder == 'clean':
+            if folder == 'clean-street':
                 result['clean-street'] += 1
 
     return result
-
 
 if __name__ == "__main__":
     app.run(debug=True)
