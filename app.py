@@ -458,6 +458,8 @@ def getAP():
                 result_time.append(detected_datetime)
                 total_accuracy /= count
                 result_accuracy.append(total_accuracy)
+                total_accuracy = detected_top3_accuracies[0]
+                prevTime = detected_datetime
                 count = 1
                 index += 1
 
