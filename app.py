@@ -106,7 +106,7 @@ def imgConfirmation():
 
     try:
         data = request.get_json()
-        index_to_label = {'0' : 'couch', '1' : 'mattress', '2' : 'tv-monitor', '3' : 'chair' , '4' :'tv-monitor', '5' : 'shopping-cart', '6' : 'clean-street'}
+        index_to_label =  {'1' : 'mattress', '2' : 'couch', '3' : 'tv-monitor', '4' : 'refrigerator' , '5' :'chair', '6' : 'shopping-cart', '7' : 'clean-street'}
 
         #mongod db insertion
         confirmation_lists = mongodb.confirmation_lists
@@ -148,7 +148,7 @@ def getImgStorage():
             for category_list in retrain_list['retrain_info']:
                 category, category_count = category_list, retrain_list['retrain_info'][category_list]
 
-                if category == 'tv monitor':
+                if category == 'tv-monitor':
                     count_tv += category_count
 
                 if category == 'couch':
@@ -169,7 +169,7 @@ def getImgStorage():
                 if category == 'clean':
                     count_clean += category_count
 
-        result_count = [['tv monitor', count_tv],
+        result_count = [['tv-monitor', count_tv],
                                    ['mattress', count_mattress],
                                    ['couch', count_couch],
                                    ['chair', count_chair],
@@ -198,7 +198,7 @@ def getLowAccuracyData():
             result_category, result_threshold = label_transform(low_accuracy_list['category']), low_accuracy_list['threshold']
             result.append([result_category, result_threshold])
 
-            if result_category == 'tv monitor':
+            if result_category == 'tv-monitor':
                 count_tv += 1
             if result_category == 'couch':
                 count_couch += 1
@@ -255,7 +255,7 @@ def getImgConf():
             if prevDate == None:
                 prevDate = date
                 result_date.append(date)
-                result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
                 = 0, 0, 0, 0, 0, 0, 0
                 index += 1
 
@@ -267,7 +267,7 @@ def getImgConf():
                 result_chair.append(result['chair'])
                 result_shopping.append(result['shopping-cart'])
                 result_clean.append(result['clean-street'])
-                result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
                 = 0, 0, 0, 0, 0, 0, 0
                 prevDate = date
                 result_date.append(date)
@@ -278,20 +278,20 @@ def getImgConf():
                 result['mattress'] += 1
             if label == 'couch':
                 result['couch'] += 1
-            if label == 'tv monitor':
-                result['tv monitor'] += 1
+            if label == 'tv-monitor':
+                result['tv-monitor'] += 1
             if label == 'refrigerator':
                 result['refrigerator'] += 1
             if label == 'chair':
                 result['chair'] += 1
-            if label == 'shopping cart':
+            if label == 'shopping-cart':
                 result['shopping-cart'] += 1
             if label == 'clean':
                 result['clean-street'] += 1
 
         result_mattress.append(result['mattress'])
         result_couch.append(result['couch'])
-        result_tvmonitor.append(result['tv monitor'])
+        result_tvmonitor.append(result['tv-monitor'])
         result_refri.append(result['refrigerator'])
         result_chair.append(result['chair'])
         result_shopping.append(result['shopping-cart'])
@@ -363,7 +363,7 @@ def getDetectedObj():
         result, index = {}, 0
         result_date = ['x']
         result_mattress, result_couch, result_tvmonitor, result_refri, result_chair, result_shopping, result_clean \
-        = ['mattress'], ['couch'], ['tv monitor'], ['refrigerator'], ['chair'], ['shopping-cart'], ['clean-street']
+        = ['mattress'], ['couch'], ['tv-monitor'], ['refrigerator'], ['chair'], ['shopping-cart'], ['clean-street']
         prevDate = None
 
         for detected_list in detected_lists.find({}, {'_id': 0}):
@@ -375,14 +375,14 @@ def getDetectedObj():
             if prevDate == None:
                 prevDate = detected_datetime
                 result_date.append(detected_datetime)
-                result['mattress'], result['couch'], result['tv monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
+                result['mattress'], result['couch'], result['tv-monitor'], result['refrigerator'], result['chair'], result['shopping-cart'], result['clean-street'] \
                 = 0, 0, 0, 0, 0, 0, 0
                 index += 1
 
             if detected_datetime != prevDate:
                 result_mattress.append(result['mattress'])
                 result_couch.append(result['couch'])
-                result_tvmonitor.append(result['tv monitor'])
+                result_tvmonitor.append(result['tv-monitor'])
                 result_refri.append(result['refrigerator'])
                 result_chair.append(result['chair'])
                 result_shopping.append(result['shopping-cart'])
@@ -412,7 +412,7 @@ def getDetectedObj():
 
         result_mattress.append(result['mattress'])
         result_couch.append(result['couch'])
-        result_tvmonitor.append(result['tv monitor'])
+        result_tvmonitor.append(result['tv-monitor'])
         result_refri.append(result['refrigerator'])
         result_chair.append(result['chair'])
         result_shopping.append(result['shopping-cart'])
@@ -501,7 +501,7 @@ def getConfirmationStats():
                 count_clean += 1
             count += 1
 
-        confirmation_stats_arr = [['tv monitor', count_tv],
+        confirmation_stats_arr = [['tv-monitor', count_tv],
                                    ['mattress', count_mattress],
                                    ['couch', count_couch],
                                    ['chair', count_chair],
